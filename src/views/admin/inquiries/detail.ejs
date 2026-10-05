@@ -1,0 +1,35 @@
+<% const photos = Array.isArray(meta.photos) ? meta.photos : []; %>
+<a href="/admin/inquiries" class="link text-sm">← Inquiries</a>
+<div class="grid lg:grid-cols-[1fr_320px] gap-6 mt-4 items-start">
+  <section class="card p-5">
+    <p class="text-sm text-stone-500"><%= titleCase(inquiry.type) %> · <%= formatDateTime(inquiry.createdAt) %></p>
+    <h2 class="text-xl font-bold mt-1"><%= inquiry.subject || 'Message from ' + inquiry.name %></h2>
+    <p class="mt-2"><%= inquiry.name %> · <a class="link" href="tel:<%= inquiry.phone %>"><%= inquiry.phone %></a> · <a class="link" href="https://wa.me/977<%= inquiry.phone %>" target="_blank" rel="noopener">WhatsApp</a><%= inquiry.email ? ' · ' + inquiry.email : '' %></p>
+    <% if (inquiry.message) { %><p class="mt-4 whitespace-pre-line"><%= inquiry.message %></p><% } %>
+    <% const metaKeys = Object.keys(meta).filter(function (k) { return k !== 'photos'; }); if (metaKeys.length) { %>
+      <dl class="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
+        <% metaKeys.forEach(function (k) { %><dt class="text-stone-500"><%= titleCase(k.replace(/([A-Z])/g, '_$1')) %></dt><dd><%= meta[k] === true ? 'Yes' : meta[k] === false ? 'No' : meta[k] === null ? '—' : meta[k] %></dd><% }) %>
+      </dl>
+      <% if (meta.latitude && meta.longitude) { %><a class="link text-sm mt-2 inline-block" href="https://www.google.com/maps?q=<%= meta.latitude %>,<%= meta.longitude %>" target="_blank" rel="noopener">Open location in Google Maps ↗</a><% } %>
+    <% } %>
+    <% if (photos.length) { %>
+      <div class="mt-5 grid grid-cols-3 sm:grid-cols-4 gap-2">
+        <% photos.forEach(function (p) { %><a href="<%= imgSrc(p, 1200) %>" target="_blank"><img src="<%= imgSrc(p, 400) %>" alt="Submitted photo" width="160" height="160" class="w-full aspect-square object-cover rounded-lg"></a><% }) %>
+      </div>
+    <% } %>
+  </section>
+  <div class="space-y-4">
+    <form action="/admin/inquiries/<%= inquiry.id %>/status" method="post" class="card p-5">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label class="label" for="is">Status</label>
+      <select id="is" name="status" class="input"><% statuses.forEach(function (s) { %><option value="<%= s %>" <%= inquiry.status === s ? 'selected' : '' %>><%= titleCase(s) %></option><% }) %></select>
+      <button class="btn-primary w-full mt-4">Update</button>
+    </form>
+    <% if (history.length) { %>
+      <section class="card p-5 text-sm">
+        <h3 class="font-bold mb-2">Earlier from this phone</h3>
+        <ul class="space-y-1"><% history.forEach(function (h) { %><li><a class="link" href="/admin/inquiries/<%= h.id %>"><%= formatDate(h.createdAt) %> · <%= titleCase(h.type) %></a></li><% }) %></ul>
+      </section>
+    <% } %>
+  </div>
+</div>

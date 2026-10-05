@@ -1,0 +1,30 @@
+<% const sv = service; const inc = Array.isArray(sv.included) ? sv.included : []; %>
+<div class="flex justify-between mb-4"><a href="/admin/settings#services" class="link text-sm">← Settings</a><a href="/services/<%= sv.slug %>" class="link text-sm" target="_blank">View page ↗</a></div>
+<div class="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
+  <form action="/admin/services/<%= sv.id %>" method="post" class="card p-5">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="grid md:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'name', label: 'Name', required: true, value: oldValue('name', sv.name) }) %>
+      <%- include('../partials/field', { name: 'basePricePaisa', label: sv.type === 'BOARDING' ? 'From price per night (Rs)' : 'Starting price (Rs)', type: 'number', value: oldValue('basePricePaisa', sv.basePricePaisa !== null ? sv.basePricePaisa / 100 : ''), hint: 'Empty = price on request' }) %>
+    </div>
+    <%- include('../partials/field', { name: 'shortDesc', label: 'Short description', required: true, value: oldValue('shortDesc', sv.shortDesc) }) %>
+    <%- include('../partials/field', { name: 'content', label: 'Page content (HTML allowed)', type: 'textarea', rows: 8, value: oldValue('content', sv.content || '') }) %>
+    <%- include('../partials/field', { name: 'included', label: 'What is included (one per line)', type: 'textarea', rows: 5, value: oldValue('included', inc.join('\n')) }) %>
+    <div class="grid md:grid-cols-4 gap-x-4">
+      <%- include('../partials/field', { name: 'durationMinutes', label: 'Slot length (min)', type: 'number', value: oldValue('durationMinutes', sv.durationMinutes) }) %>
+      <%- include('../partials/field', { name: 'slotCapacity', label: 'Capacity per slot', type: 'number', value: oldValue('slotCapacity', sv.slotCapacity), hint: sv.type === 'HOUSE_CALL' ? 'Ignored: number of active vets is used' : '' }) %>
+      <%- include('../partials/field', { name: 'leadMinutes', label: 'Lead time (min)', type: 'number', value: oldValue('leadMinutes', sv.leadMinutes) }) %>
+      <%- include('../partials/field', { name: 'advancePaisa', label: 'Advance (Rs)', type: 'number', value: oldValue('advancePaisa', sv.advancePaisa / 100), hint: sv.type === 'BOARDING' ? 'Any value > 0 means one night advance' : '0 = no advance' }) %>
+      <%- include('../partials/field', { name: 'sortOrder', label: 'Order', type: 'number', value: oldValue('sortOrder', sv.sortOrder) }) %>
+      <%- include('../partials/field', { name: 'metaTitle', label: 'Meta title', value: oldValue('metaTitle', sv.metaTitle || ''), attrs: 'maxlength="70"' }) %>
+      <div class="md:col-span-2"><%- include('../partials/field', { name: 'metaDesc', label: 'Meta description', value: oldValue('metaDesc', sv.metaDesc || ''), attrs: 'maxlength="160"' }) %></div>
+    </div>
+    <label class="flex items-center gap-2 text-sm mb-4"><input type="checkbox" name="isActive" class="checkbox" <%= sv.isActive ? 'checked' : '' %>> Bookable</label>
+    <button class="btn-primary">Save service</button>
+  </form>
+  <section class="card p-5 text-sm">
+    <h2 class="font-bold">FAQs on this page</h2>
+    <ul class="mt-2 space-y-1"><% faqs.forEach(function (f) { %><li><a class="link" href="/admin/faqs?edit=<%= f.id %>"><%= f.question %></a></li><% }) %></ul>
+    <p class="hint mt-3">Add FAQs with group <code>service:<%= sv.type %></code>.</p>
+  </section>
+</div>

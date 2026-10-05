@@ -1,0 +1,54 @@
+<section class="container-x py-8">
+  <h1 class="text-3xl font-extrabold">Your cart</h1>
+  <% if (!summary.items.length) { %>
+    <div class="card p-10 text-center mt-6">
+      <p class="text-5xl" aria-hidden="true">🛒</p>
+      <p class="font-semibold mt-3">Your cart is empty</p>
+      <a href="/shop" class="btn-primary mt-5">Start shopping</a>
+    </div>
+  <% } else { %>
+    <% if (summary.problems.length) { %>
+      <div class="alert alert-error mt-4" role="alert"><% summary.problems.forEach(function (p) { %><p><%= p.message %>. Please reduce the quantity.</p><% }) %></div>
+    <% } %>
+    <div class="mt-6 grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+      <ul class="card divide-y divide-stone-100">
+        <% summary.items.forEach(function (i) { const img = i.variant.product.images[0]; %>
+          <li class="p-4 flex gap-4">
+            <a href="/shop/product/<%= i.variant.product.slug %>" class="shrink-0">
+              <img src="<%= imgSrc(img && img.path, 400) %>" alt="" width="80" height="80" class="w-20 h-20 rounded-xl object-cover bg-stone-100">
+            </a>
+            <div class="flex-1 min-w-0">
+              <a href="/shop/product/<%= i.variant.product.slug %>" class="font-semibold hover:text-brand-700 line-clamp-2"><%= i.variant.product.name %></a>
+              <p class="text-sm text-stone-500"><%= i.variant.label %> · <%= formatNpr(i.variant.pricePaisa) %></p>
+              <div class="mt-2 flex flex-wrap items-center gap-2">
+                <form action="/cart/items/<%= i.id %>" method="post" class="flex items-center gap-2">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <label for="q-<%= i.id %>" class="sr-only">Quantity</label>
+                  <input id="q-<%= i.id %>" name="quantity" type="number" min="0" max="50" value="<%= i.quantity %>" class="input h-9 w-20 text-center">
+                  <button class="btn-outline btn-sm">Update</button>
+                </form>
+                <form action="/cart/items/<%= i.id %>/remove" method="post">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="btn-ghost btn-sm text-red-700">Remove</button>
+                </form>
+              </div>
+            </div>
+            <p class="font-bold whitespace-nowrap"><%= formatNpr(i.variant.pricePaisa * i.quantity) %></p>
+          </li>
+        <% }) %>
+      </ul>
+      <aside class="card p-6 lg:sticky lg:top-24">
+        <h2 class="font-bold text-lg">Order summary</h2>
+        <dl class="mt-4 space-y-2 text-sm">
+          <div class="flex justify-between"><dt>Subtotal (<%= summary.count %> items)</dt><dd class="font-semibold"><%= formatNpr(summary.subtotalPaisa) %></dd></div>
+          <div class="flex justify-between text-stone-500"><dt>Delivery</dt><dd>Calculated at checkout</dd></div>
+        </dl>
+        <% if (settings.delivery.freeAbovePaisa > 0) { %>
+          <p class="text-xs text-stone-500 mt-3">Free delivery inside the valley on orders over <%= formatNpr(settings.delivery.freeAbovePaisa) %>.</p>
+        <% } %>
+        <a href="/checkout" class="btn-primary w-full mt-5 <%= summary.problems.length ? 'pointer-events-none opacity-50' : '' %>" <%= summary.problems.length ? 'aria-disabled=true' : '' %>>Checkout</a>
+        <a href="/shop" class="btn-ghost w-full mt-2">Continue shopping</a>
+      </aside>
+    </div>
+  <% } %>
+</section>

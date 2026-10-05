@@ -1,0 +1,34 @@
+<% const a = animal; const v = function (k, fb) { return oldValue(k, a ? (a[k] === null || a[k] === undefined ? '' : a[k]) : (fb === undefined ? '' : fb)); }; %>
+<div class="flex justify-between mb-4"><a href="/admin/shelter" class="link text-sm">← Shelter</a><% if (a && ['ADOPTABLE','ADOPTION_PENDING','ADOPTED'].includes(a.status)) { %><a class="link text-sm" href="/shelter/adopt/<%= a.slug %>" target="_blank">View ↗</a><% } %></div>
+<div class="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
+  <form action="<%= a ? '/admin/shelter/' + a.id : '/admin/shelter' %>" method="post" enctype="multipart/form-data" class="card p-5">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="grid md:grid-cols-3 gap-x-4">
+      <%- include('../../partials/field', { name: 'name', label: 'Name', required: true, value: v('name') }) %>
+      <%- include('../../partials/field', { name: 'species', label: 'Species', type: 'select', value: v('species', 'DOG'), options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['RABBIT','Rabbit'],['OTHER','Other']] }) %>
+      <%- include('../../partials/field', { name: 'breedText', label: 'Breed / type', value: v('breedText'), hint: 'e.g. Local street dog' }) %>
+      <%- include('../../partials/field', { name: 'gender', label: 'Gender', type: 'select', value: v('gender'), options: [['','Unknown'],['MALE','Male'],['FEMALE','Female']] }) %>
+      <%- include('../../partials/field', { name: 'ageText', label: 'Age', value: v('ageText'), hint: 'e.g. About 2 years' }) %>
+      <%- include('../../partials/field', { name: 'intakeDate', label: 'Intake date', type: 'date', required: true, value: oldValue('intakeDate', a ? isoDay(a.intakeDate) : isoDay(new Date())) }) %>
+    </div>
+    <%- include('../../partials/field', { name: 'temperament', label: 'Temperament', value: v('temperament'), hint: 'Shown on the card, e.g. “Gentle, good with kids”' }) %>
+    <%- include('../../partials/field', { name: 'story', label: 'Story', type: 'textarea', rows: 5, value: v('story') }) %>
+    <div class="flex flex-wrap gap-6 mb-4">
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="vaccinated" class="checkbox" <%= a && a.vaccinated ? 'checked' : '' %>> Vaccinated</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="sterilized" class="checkbox" <%= a && a.sterilized ? 'checked' : '' %>> Sterilized</label>
+    </div>
+    <%- include('../../partials/field', { name: 'status', label: 'Status', type: 'select', value: v('status', 'IN_CARE'), options: [['IN_CARE','In care (not public)'],['ADOPTABLE','Adoptable (public)'],['ADOPTION_PENDING','Adoption pending (public)'],['ADOPTED','Adopted'],['DECEASED','Deceased']] }) %>
+    <div class="field flex items-center gap-4">
+      <% if (a && a.photoPath) { %><img src="<%= imgSrc(a.photoPath, 400) %>" alt="" width="80" height="80" class="w-20 h-20 rounded-xl object-cover"><% } %>
+      <div><label for="sp" class="label">Photo</label><input id="sp" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="file-input"></div>
+    </div>
+    <button class="btn-primary">Save</button>
+  </form>
+  <% if (a) { %>
+    <section class="card p-5">
+      <h2 class="font-bold">Applications</h2>
+      <% if (!a.applications.length) { %><p class="text-sm text-stone-500 mt-2">None yet.</p><% } %>
+      <ul class="mt-2 space-y-2 text-sm"><% a.applications.forEach(function (ap) { %><li><a class="link" href="/admin/shelter/applications/<%= ap.id %>"><%= ap.name %></a> · <%= formatDate(ap.createdAt) %> <span class="status status-<%= ap.status %>"><%= titleCase(ap.status) %></span></li><% }) %></ul>
+    </section>
+  <% } %>
+</div>

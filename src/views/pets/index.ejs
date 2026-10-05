@@ -1,0 +1,87 @@
+<section class="container-x py-8">
+  <h1 class="text-3xl font-extrabold"><%= seo.title.replace(' | The Everest Kennel', '') %></h1>
+  <p class="text-stone-600 mt-1">Every pet comes with vaccination and deworming records. Visit us at Soaltee Mode or ask on WhatsApp with the listing code.</p>
+  <div class="mt-6 grid lg:grid-cols-[250px_1fr] gap-8">
+    <aside>
+      <details class="card p-4" <%= Object.keys(query).length ? 'open' : '' %>>
+        <summary class="font-bold cursor-pointer">Filters</summary>
+        <form method="get" action="/pets" class="mt-4 space-y-4 text-sm">
+          <div>
+            <label class="label" for="ps">Species</label>
+            <select id="ps" name="species" class="input h-10">
+              <option value="">All</option>
+              <% [['DOG','Dogs & puppies'],['CAT','Cats & kittens'],['BIRD','Birds'],['RABBIT','Rabbits'],['FISH','Fish'],['OTHER','Other']].forEach(function (o) { %><option value="<%= o[0] %>" <%= filters.species === o[0] ? 'selected' : '' %>><%= o[1] %></option><% }) %>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="pb">Breed</label>
+            <select id="pb" name="breed" class="input h-10">
+              <option value="">All breeds</option>
+              <% breeds.forEach(function (b) { %><option value="<%= b.slug %>" <%= filters.breed === b.slug ? 'selected' : '' %>><%= b.name %></option><% }) %>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="pg">Gender</label>
+            <select id="pg" name="gender" class="input h-10">
+              <option value="">Any</option>
+              <option value="MALE" <%= filters.gender === 'MALE' ? 'selected' : '' %>>Male</option>
+              <option value="FEMALE" <%= filters.gender === 'FEMALE' ? 'selected' : '' %>>Female</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="po">Origin</label>
+            <select id="po" name="origin" class="input h-10">
+              <option value="">Local & imported</option>
+              <option value="LOCAL" <%= filters.origin === 'LOCAL' ? 'selected' : '' %>>Locally bred</option>
+              <option value="IMPORTED" <%= filters.origin === 'IMPORTED' ? 'selected' : '' %>>Imported</option>
+            </select>
+          </div>
+          <fieldset>
+            <legend class="label">Age (months)</legend>
+            <div class="flex gap-2">
+              <label class="sr-only" for="pamin">Minimum age in months</label>
+              <input id="pamin" name="minAge" type="number" min="0" placeholder="Min" value="<%= filters.minAge ?? '' %>" class="input h-10">
+              <label class="sr-only" for="pamax">Maximum age in months</label>
+              <input id="pamax" name="maxAge" type="number" min="0" placeholder="Max" value="<%= filters.maxAge ?? '' %>" class="input h-10">
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend class="label">Price (Rs)</legend>
+            <div class="flex gap-2">
+              <label class="sr-only" for="ppmin">Minimum price</label>
+              <input id="ppmin" name="minPrice" type="number" min="0" placeholder="Min" value="<%= filters.minPrice ?? '' %>" class="input h-10">
+              <label class="sr-only" for="ppmax">Maximum price</label>
+              <input id="ppmax" name="maxPrice" type="number" min="0" placeholder="Max" value="<%= filters.maxPrice ?? '' %>" class="input h-10">
+            </div>
+          </fieldset>
+          <div>
+            <label class="label" for="psort">Sort</label>
+            <select id="psort" name="sort" class="input h-10">
+              <% [['newest','Newest'],['price_asc','Price: low to high'],['price_desc','Price: high to low'],['youngest','Youngest first']].forEach(function (o) { %><option value="<%= o[0] %>" <%= filters.sort === o[0] ? 'selected' : '' %>><%= o[1] %></option><% }) %>
+            </select>
+          </div>
+          <div class="flex gap-2"><button class="btn-primary btn-sm flex-1">Apply</button><a href="/pets" class="btn-ghost btn-sm">Clear</a></div>
+        </form>
+      </details>
+      <div class="card p-4 mt-4 text-sm">
+        <p class="font-semibold">Have puppies to sell?</p>
+        <p class="text-stone-600 mt-1">Send us photos and details and get an offer.</p>
+        <a href="/sell-your-pet" class="btn-outline btn-sm w-full mt-3">Sell your pet</a>
+      </div>
+    </aside>
+    <div>
+      <% if (!listings.length) { %>
+        <div class="card p-10 text-center">
+          <p class="text-4xl" aria-hidden="true">🐕</p>
+          <p class="font-semibold mt-3">No pets match these filters right now</p>
+          <p class="text-stone-600 text-sm mt-1">New litters arrive often. <a class="link" href="<%= whatsappLink('Hello, I am looking for a puppy. Please let me know when one is available.') %>" target="_blank" rel="noopener">Tell us what you are looking for on WhatsApp</a>.</p>
+        </div>
+      <% } else { %>
+        <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <% listings.forEach(function (l) { %><%- include('../partials/pet-card', { l: l }) %><% }) %>
+        </div>
+        <%- include('../partials/pagination') %>
+      <% } %>
+    </div>
+  </div>
+</section>

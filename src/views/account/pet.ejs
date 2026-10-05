@@ -1,0 +1,59 @@
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <div class="flex flex-col sm:flex-row gap-6 items-start">
+    <img src="<%= imgSrc(pet.photoPath, 400) %>" alt="<%= pet.name %>" width="140" height="140" class="w-32 h-32 rounded-3xl object-cover bg-stone-100">
+    <div class="flex-1">
+      <h2 class="text-2xl font-extrabold"><%= pet.name %></h2>
+      <p class="text-stone-600"><%= [speciesLabel(pet.species), pet.breed && pet.breed.name, pet.gender && (pet.gender === 'MALE' ? 'Male' : 'Female'), pet.dateOfBirth && ageFrom(pet.dateOfBirth)].filter(Boolean).join(' · ') %></p>
+      <% if (pet.weightKg) { %><p class="text-sm mt-1">Weight: <strong><%= Number(pet.weightKg) %> kg</strong></p><% } %>
+      <% if (pet.notes) { %><p class="text-sm text-stone-600 mt-2 whitespace-pre-line"><%= pet.notes %></p><% } %>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <a href="/book?service=VACCINATION" class="btn-primary btn-sm">Book vaccination</a>
+        <a href="/account/pets/<%= pet.id %>/edit" class="btn-outline btn-sm">Edit</a>
+        <form action="/account/pets/<%= pet.id %>/delete" method="post" data-confirm="Remove <%= pet.name %> and all its records?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn-ghost btn-sm text-red-700">Remove</button></form>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6 mt-8">
+    <div class="card p-5">
+      <h3 class="font-bold">Vaccinations</h3>
+      <% if (!pet.vaccinations.length) { %><p class="text-sm text-stone-500 mt-2">No vaccinations recorded yet. Records are added by our vet after each visit.</p><% } else { %>
+      <div class="overflow-x-auto mt-3"><table class="table"><thead><tr><th>Vaccine</th><th>Given</th><th>Next due</th></tr></thead><tbody>
+        <% pet.vaccinations.forEach(function (v) { %><tr><td><%= v.vaccine %><% if (v.batchNo) { %><span class="block text-xs text-stone-500">Batch <%= v.batchNo %></span><% } %></td><td><%= formatDay(v.givenOn) %></td><td class="<%= v.nextDueOn && new Date(v.nextDueOn) < new Date() ? 'text-red-700 font-semibold' : '' %>"><%= v.nextDueOn ? formatDay(v.nextDueOn) : '—' %></td></tr><% }) %>
+      </tbody></table></div><% } %>
+    </div>
+    <div class="card p-5">
+      <h3 class="font-bold">Weight log</h3>
+      <% if (pet.weights.length) { const max = Math.max.apply(null, pet.weights.map(function (w) { return Number(w.weightKg); })); %>
+        <ul class="mt-3 space-y-1.5 text-sm" aria-label="Weight history">
+          <% pet.weights.slice(-10).forEach(function (w) { %>
+            <li class="grid grid-cols-[90px_1fr_60px] items-center gap-2"><span class="text-stone-500"><%= formatDay(w.recordedOn) %></span><span class="h-2.5 rounded-full bg-brand-500" style="width: <%= Math.max(4, Math.round(Number(w.weightKg) / max * 100)) %>%"></span><span class="text-right font-medium"><%= Number(w.weightKg) %> kg</span></li>
+          <% }) %>
+        </ul>
+      <% } else { %><p class="text-sm text-stone-500 mt-2">No weights yet.</p><% } %>
+      <form action="/account/pets/<%= pet.id %>/weights" method="post" class="mt-4 flex flex-wrap gap-2 items-end">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div><label class="label" for="wkg">Weight (kg)</label><input id="wkg" name="weightKg" type="number" step="0.01" min="0.01" max="200" class="input h-10 w-28" required></div>
+        <div><label class="label" for="wdate">Date</label><input id="wdate" name="recordedOn" type="date" value="<%= isoDay(new Date()) %>" class="input h-10" required></div>
+        <button class="btn-outline btn-sm h-10">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card p-5 mt-6">
+    <h3 class="font-bold">Medical history</h3>
+    <% if (!pet.medicals.length) { %><p class="text-sm text-stone-500 mt-2">No visits recorded.</p><% } %>
+    <ul class="mt-3 divide-y divide-stone-100">
+      <% pet.medicals.forEach(function (m) { %>
+        <li class="py-3 text-sm">
+          <p class="font-semibold"><%= formatDate(m.visitDate) %><%= m.vetName ? ' · ' + m.vetName : '' %></p>
+          <p><span class="text-stone-500">Complaint:</span> <%= m.complaint %></p>
+          <% if (m.diagnosis) { %><p><span class="text-stone-500">Diagnosis:</span> <%= m.diagnosis %></p><% } %>
+          <% if (m.treatment) { %><p><span class="text-stone-500">Treatment:</span> <%= m.treatment %></p><% } %>
+          <% if (m.prescription) { %><p class="whitespace-pre-line"><span class="text-stone-500">Prescription:</span> <%= m.prescription %></p><% } %>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>

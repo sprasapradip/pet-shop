@@ -1,0 +1,42 @@
+<section class="section">
+  <div class="container-x">
+    <h1 class="text-3xl sm:text-4xl font-extrabold">Contact us</h1>
+    <p class="text-stone-600 mt-2">Call, WhatsApp or send a message. We usually reply within a few hours during opening times.</p>
+    <div class="mt-8 grid lg:grid-cols-[1fr_1.2fr] gap-8">
+      <div class="space-y-4">
+        <div class="card p-6 space-y-3">
+          <a href="<%= telLink() %>" class="flex items-center gap-3 font-semibold text-lg hover:text-brand-700">📞 <%= business.landlineDisplay %></a>
+          <% if (settings.business.mobile) { %><a href="<%= telLink(settings.business.mobile) %>" class="flex items-center gap-3 font-semibold hover:text-brand-700">📱 <%= settings.business.mobile %></a><% } %>
+          <a href="<%= whatsappLink() %>" class="btn-wa w-full" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
+          <% if (settings.business.email) { %><p>✉️ <a class="link" href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a></p><% } %>
+          <p>📍 <%= business.address %></p>
+        </div>
+        <div class="card p-6">
+          <h2 class="font-bold text-lg">Opening hours</h2>
+          <dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
+            <% hours.forEach(function (h) { %><dt class="text-stone-500"><%= weekdays[h.weekday] %></dt><dd class="font-medium"><%= h.isClosed ? 'Closed' : h.opensAt + ' – ' + h.closesAt %></dd><% }) %>
+          </dl>
+        </div>
+        <div class="card overflow-hidden h-72 relative bg-brand-50">
+          <button type="button" class="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-2 text-brand-800 hover:bg-brand-100" data-map-src="<%= settings.business.mapEmbedUrl %>">
+            <span class="text-4xl" aria-hidden="true">🗺️</span><span class="font-semibold">Show map</span><span class="text-xs text-stone-500">Loads Google Maps</span>
+          </button>
+        </div>
+      </div>
+      <form action="/contact" method="post" class="card p-6 sm:p-8" novalidate>
+        <h2 class="font-bold text-xl mb-4">Send a message</h2>
+        <%- include('../partials/form-guard') %>
+        <div class="grid sm:grid-cols-2 gap-x-4">
+          <%- include('../partials/field', { name: 'name', label: 'Your name', required: true, attrs: 'autocomplete="name" maxlength="120"' }) %>
+          <%- include('../partials/field', { name: 'phone', label: 'Phone', type: 'tel', required: true, hint: 'e.g. 98XXXXXXXX', attrs: 'autocomplete="tel" inputmode="tel"' }) %>
+        </div>
+        <%- include('../partials/field', { name: 'email', label: 'Email (optional)', type: 'email', attrs: 'autocomplete="email"' }) %>
+        <%- include('../partials/field', { name: 'topic', label: 'Topic', type: 'select', options: [['CONTACT','General question'],['PET_BUY_REQUEST','I want to buy a puppy / pet'],['MATING_REQUEST','Mating / stud service']] }) %>
+        <%- include('../partials/field', { name: 'subject', label: 'Subject (optional)', value: oldValue('subject', subject), attrs: 'maxlength="191"' }) %>
+        <%- include('../partials/field', { name: 'message', label: 'Message', type: 'textarea', required: true, rows: 5, attrs: 'maxlength="3000"' }) %>
+        <button class="btn-primary w-full sm:w-auto">Send message</button>
+        <p class="text-xs text-stone-500 mt-3">We use your details only to reply. See our <a class="link" href="/privacy-policy">privacy policy</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>

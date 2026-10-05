@@ -1,0 +1,11 @@
+<article class="card overflow-hidden flex flex-col">
+  <a href="/shelter/adopt/<%= a.slug %>" class="relative block aspect-[4/3] bg-amber-50">
+    <img src="<%= imgSrc(a.photoPath, 800) %>" <% if (a.photoPath) { %>srcset="<%= imgSrcset(a.photoPath) %>" sizes="(max-width: 640px) 100vw, 380px"<% } %> alt="<%= a.name %>" width="800" height="600" loading="lazy" class="w-full h-full object-cover">
+    <% if (a.status === 'ADOPTION_PENDING') { %><span class="badge absolute top-3 left-3 status-ADOPTION_PENDING">Adoption pending</span><% } %>
+  </a>
+  <div class="p-4">
+    <h3 class="font-bold text-lg"><a href="/shelter/adopt/<%= a.slug %>" class="hover:text-brand-700"><%= a.name %></a></h3>
+    <p class="text-sm text-stone-600"><%= [a.breedText || speciesLabel(a.species), a.gender ? (a.gender === 'MALE' ? 'Male' : 'Female') : '', a.ageText].filter(Boolean).join(' · ') %></p>
+    <% if (a.temperament) { %><p class="text-sm text-stone-700 mt-2 line-clamp-2"><%= a.temperament %></p><% } %>
+  </div>
+</article>

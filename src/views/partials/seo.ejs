@@ -1,0 +1,64 @@
+<%
+  const s = typeof seo !== 'undefined' && seo ? seo : {};
+  const pageTitle = s.title || settings.seo.defaultTitle;
+  const pageDesc = s.description || settings.seo.defaultDescription;
+  const canonical = s.canonical || (baseUrl + currentPath);
+  const og = s.ogImage || settings.seo.ogImage;
+  const ogUrl = og && og.startsWith('http') ? og : baseUrl + og;
+  const openingHoursSchema = hours.filter(h => !h.isClosed).map(h => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: 'https://schema.org/' + weekdays[h.weekday],
+    opens: h.opensAt,
+    closes: h.closesAt,
+  }));
+  const businessLd = {
+    '@context': 'https://schema.org',
+    '@type': ['PetStore', 'LocalBusiness'],
+    '@id': baseUrl + '/#business',
+    name: business.name,
+    url: baseUrl,
+    logo: baseUrl + '/assets/img/logo.svg',
+    image: baseUrl + '/assets/img/storefront.jpg',
+    telephone: business.landline,
+    priceRange: 'Rs',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: business.street,
+      addressLocality: business.city,
+      addressRegion: business.region,
+      postalCode: business.postalCode,
+      addressCountry: 'NP',
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: settings.business.geoLat, longitude: settings.business.geoLng },
+    areaServed: business.areaServed,
+    openingHoursSpecification: openingHoursSchema,
+    founder: { '@type': 'Person', name: business.owner },
+    makesOffer: ['Veterinary house call', 'Pet vaccination', 'Dog boarding', 'Dog training', 'Stud and mating service'].map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
+    sameAs: settings.business.socialLinks || [],
+  };
+  if (settings.business.googleReviewCount > 0) {
+    businessLd.aggregateRating = { '@type': 'AggregateRating', ratingValue: settings.business.googleRating, reviewCount: settings.business.googleReviewCount };
+  }
+%>
+<title><%= pageTitle %></title>
+<meta name="description" content="<%= pageDesc %>">
+<link rel="canonical" href="<%= canonical %>">
+<% if (s.noindex) { %><meta name="robots" content="noindex, follow"><% } %>
+<link rel="alternate" hreflang="en" href="<%= canonical %>">
+<meta property="og:site_name" content="<%= business.name %>">
+<meta property="og:type" content="<%= s.ogType || 'website' %>">
+<meta property="og:title" content="<%= pageTitle %>">
+<meta property="og:description" content="<%= pageDesc %>">
+<meta property="og:url" content="<%= canonical %>">
+<meta property="og:image" content="<%= ogUrl %>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_NP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= pageTitle %>">
+<meta name="twitter:description" content="<%= pageDesc %>">
+<meta name="twitter:image" content="<%= ogUrl %>">
+<script type="application/ld+json"><%- jsonLd(businessLd) %></script>
+<% (s.jsonLd || []).forEach(function (ld) { %>
+<script type="application/ld+json"><%- jsonLd(ld) %></script>
+<% }) %>

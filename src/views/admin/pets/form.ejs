@@ -1,0 +1,86 @@
+<%
+  const l = listing;
+  const v = function (k, fb) { return oldValue(k, l ? (l[k] === null || l[k] === undefined ? '' : l[k]) : (fb === undefined ? '' : fb)); };
+  const checked = function (k, fb) { const o = oldValue(k, null); if (o !== null && o !== '') return o === 'on'; return l ? !!l[k] : !!fb; };
+%>
+<div class="flex justify-between items-center mb-4">
+  <a href="/admin/pets" class="link text-sm">← All listings</a>
+  <% if (l) { %><span class="text-sm">Code <strong class="font-mono"><%= l.code %></strong> · <a href="/pets/<%= l.slug %>" class="link" target="_blank">View ↗</a></span><% } %>
+</div>
+<form action="<%= l ? '/admin/pets/' + l.id : '/admin/pets' %>" method="post" class="space-y-6">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <section class="card p-5">
+    <h2 class="font-bold mb-4">Pet</h2>
+    <%- include('../../partials/field', { name: 'title', label: 'Title', required: true, value: v('title'), hint: 'e.g. “German Shepherd puppy, black and tan”' }) %>
+    <div class="grid md:grid-cols-3 gap-x-4">
+      <%- include('../../partials/field', { name: 'species', label: 'Species', type: 'select', value: v('species', 'DOG'), options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['RABBIT','Rabbit'],['FISH','Fish'],['OTHER','Other']] }) %>
+      <%- include('../../partials/field', { name: 'breedId', label: 'Breed', type: 'select', required: true, value: v('breedId'), options: breeds.map(function (b) { return [b.id, b.name + ' (' + speciesLabel(b.species) + ')']; }) }) %>
+      <%- include('../../partials/field', { name: 'gender', label: 'Gender', type: 'select', value: v('gender', 'MALE'), options: [['MALE','Male'],['FEMALE','Female']] }) %>
+      <%- include('../../partials/field', { name: 'dateOfBirth', label: 'Date of birth', type: 'date', required: true, value: oldValue('dateOfBirth', l ? isoDay(l.dateOfBirth) : '') }) %>
+      <%- include('../../partials/field', { name: 'color', label: 'Color', value: v('color') }) %>
+      <%- include('../../partials/field', { name: 'origin', label: 'Origin', type: 'select', value: v('origin', 'LOCAL'), options: [['LOCAL','Locally bred'],['IMPORTED','Imported']] }) %>
+      <%- include('../../partials/field', { name: 'pricePaisa', label: 'Price (Rs)', type: 'number', required: true, value: oldValue('pricePaisa', l ? l.pricePaisa / 100 : ''), attrs: 'min="0" step="1"' }) %>
+      <%- include('../../partials/field', { name: 'depositPaisa', label: 'Online deposit (Rs)', type: 'number', value: oldValue('depositPaisa', l ? l.depositPaisa / 100 : 5000), attrs: 'min="0" step="1"', hint: '0 = no online reservation' }) %>
+      <%- include('../../partials/field', { name: 'status', label: 'Status', type: 'select', value: v('status', 'AVAILABLE'), options: [['AVAILABLE','Available'],['RESERVED','Reserved'],['SOLD','Sold'],['HIDDEN','Hidden']] }) %>
+    </div>
+  </section>
+  <section class="card p-5">
+    <h2 class="font-bold mb-4">Health and papers</h2>
+    <div class="flex flex-wrap gap-6 mb-4">
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="vaccinated" class="checkbox" <%= checked('vaccinated') ? 'checked' : '' %>> Vaccinated</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="dewormed" class="checkbox" <%= checked('dewormed') ? 'checked' : '' %>> Dewormed</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="healthCertificate" class="checkbox" <%= checked('healthCertificate') ? 'checked' : '' %>> Import permit / health certificate available</label>
+    </div>
+    <div class="grid md:grid-cols-2 gap-x-4">
+      <%- include('../../partials/field', { name: 'microchipNo', label: 'Microchip number', value: v('microchipNo') }) %>
+      <%- include('../../partials/field', { name: 'registrationNo', label: 'KCI / registration number', value: v('registrationNo') }) %>
+    </div>
+    <%- include('../../partials/field', { name: 'parentsInfo', label: 'Parents', type: 'textarea', rows: 3, value: v('parentsInfo') }) %>
+    <%- include('../../partials/field', { name: 'description', label: 'Description', type: 'textarea', rows: 5, value: v('description') }) %>
+    <%- include('../../partials/field', { name: 'videoUrl', label: 'Video URL (YouTube / Facebook / Vimeo)', type: 'url', value: v('videoUrl') }) %>
+  </section>
+  <div class="flex gap-2"><button class="btn-primary">Save listing</button><a href="/admin/pets" class="btn-ghost">Cancel</a></div>
+</form>
+
+<% if (l) { %>
+  <section class="card p-5 mt-6" id="images">
+    <h2 class="font-bold mb-3">Photos</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+      <% l.images.forEach(function (im) { %>
+        <form action="/admin/pet-images/<%= im.id %>" method="post" class="card p-2 text-xs space-y-1">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <img src="<%= imgSrc(im.path, 400) %>" alt="<%= im.alt %>" width="200" height="200" class="w-full aspect-square object-cover rounded-lg">
+          <label class="sr-only" for="alt-<%= im.id %>">Alt text</label><input id="alt-<%= im.id %>" name="alt" value="<%= im.alt %>" class="input h-8 text-xs">
+          <div class="flex gap-1"><label class="sr-only" for="so-<%= im.id %>">Order</label><input id="so-<%= im.id %>" name="sortOrder" type="number" value="<%= im.sortOrder %>" class="input h-8 w-14 text-xs"><button class="btn-outline btn-sm h-8 flex-1">Save</button></div>
+          <button name="action" value="delete" class="text-red-700 hover:underline w-full">Delete</button>
+        </form>
+      <% }) %>
+    </div>
+    <form action="/admin/pets/<%= l.id %>/images" method="post" enctype="multipart/form-data" class="mt-4 flex flex-wrap gap-2 items-center">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple required class="file-input max-w-xs">
+      <button class="btn-primary btn-sm">Upload photos</button>
+    </form>
+  </section>
+
+  <section class="card p-5 mt-6">
+    <h2 class="font-bold mb-3">Sale</h2>
+    <% if (buyer) { %><p class="text-sm">Buyer: <a class="link" href="/admin/customers/<%= buyer.id %>"><%= buyer.name %></a> (<%= buyer.phone %>)</p><% } %>
+    <% if (l.status !== 'SOLD') { %>
+      <form action="/admin/pets/<%= l.id %>/sell" method="post" class="mt-3 flex flex-wrap gap-2 items-end" data-confirm="Mark <%= l.code %> as sold?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div><label class="label" for="bp">Buyer phone (optional, links to their account)</label><input id="bp" name="buyerPhone" type="tel" class="input h-10 w-56" placeholder="98XXXXXXXX"></div>
+        <button class="btn-primary btn-sm h-10">Mark as sold</button>
+      </form>
+    <% } else { %><p class="text-sm text-stone-600">Sold on <%= formatDate(l.soldAt) %>. Shown as “Sold” for 30 days, then hidden automatically.</p><% } %>
+    <% if (typeof payments !== 'undefined' && payments.length) { %>
+      <h3 class="font-semibold mt-4 text-sm">Deposit payments</h3>
+      <ul class="text-sm mt-1 space-y-1"><% payments.forEach(function (p) { %><li><%= formatDateTime(p.createdAt) %> · <%= p.gateway %> · <%= formatNpr(p.amountPaisa) %> · <span class="status status-<%= p.status %>"><%= p.status %></span></li><% }) %></ul>
+    <% } %>
+  </section>
+
+  <form action="/admin/pets/<%= l.id %>/delete" method="post" class="mt-6" data-confirm="Delete this listing?">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button class="btn-ghost text-red-700">Delete listing</button>
+  </form>
+<% } %>

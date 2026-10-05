@@ -1,0 +1,74 @@
+<%
+  const addr = addresses[0];
+  const pre = function (k, fallback) { return oldValue(k, fallback || ''); };
+%>
+<section class="container-x py-8">
+  <h1 class="text-3xl font-extrabold">Checkout</h1>
+  <% if (!user) { %><p class="text-stone-600 mt-1">Checking out as a guest. <a class="link" href="/login?next=/checkout">Log in</a> to save your address and track orders.</p><% } %>
+  <form action="/checkout" method="post" class="mt-6 grid lg:grid-cols-[1fr_360px] gap-8 items-start" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="space-y-6">
+      <fieldset class="card p-6">
+        <legend class="font-bold text-lg px-1">1. Contact</legend>
+        <div class="grid sm:grid-cols-2 gap-x-4 mt-2">
+          <%- include('../partials/field', { name: 'customerName', label: 'Full name', required: true, value: pre('customerName', profile ? profile.name : ''), attrs: 'autocomplete="name"' }) %>
+          <%- include('../partials/field', { name: 'customerPhone', label: 'Phone', type: 'tel', required: true, value: pre('customerPhone', profile ? profile.phone : ''), attrs: 'autocomplete="tel" inputmode="tel"', hint: 'We call to confirm delivery' }) %>
+        </div>
+        <%- include('../partials/field', { name: 'customerEmail', label: 'Email (optional, for the receipt)', type: 'email', value: pre('customerEmail', profile && profile.email ? profile.email : ''), attrs: 'autocomplete="email"' }) %>
+      </fieldset>
+
+      <fieldset class="card p-6">
+        <legend class="font-bold text-lg px-1">2. Delivery</legend>
+        <div class="grid sm:grid-cols-3 gap-3 mt-2" data-zone-select role="radiogroup" aria-label="Delivery area">
+          <% Object.keys(zones).forEach(function (z) { %>
+            <div>
+              <input type="radio" name="deliveryZone" id="z-<%= z %>" value="<%= z %>" class="choice-input sr-only" <%= zone === z ? 'checked' : '' %>>
+              <label for="z-<%= z %>" class="choice-card text-sm"><span class="font-semibold block"><%= zones[z] %></span>
+                <span class="text-stone-500"><%= z === 'RING_ROAD' ? formatNpr(settings.delivery.ringRoadPaisa) : z === 'VALLEY' ? formatNpr(settings.delivery.valleyPaisa) : 'From ' + formatNpr(settings.delivery.outsideBasePaisa) %></span></label>
+            </div>
+          <% }) %>
+        </div>
+        <noscript><p class="hint mt-2">Delivery charge is recalculated on the next page if you change the area.</p></noscript>
+        <div class="grid sm:grid-cols-2 gap-x-4 mt-5">
+          <%- include('../partials/field', { name: 'line1', label: 'Street / tole / house', required: true, value: pre('line1', addr ? addr.line1 : ''), attrs: 'autocomplete="address-line1"' }) %>
+          <%- include('../partials/field', { name: 'area', label: 'Area / ward', required: true, value: pre('area', addr ? addr.area : ''), attrs: 'autocomplete="address-line2"' }) %>
+          <%- include('../partials/field', { name: 'city', label: 'City', required: true, value: pre('city', addr ? addr.city : 'Kathmandu'), attrs: 'autocomplete="address-level2"' }) %>
+          <%- include('../partials/field', { name: 'district', label: 'District', required: true, value: pre('district', addr ? addr.district : 'Kathmandu'), attrs: 'autocomplete="address-level1"' }) %>
+        </div>
+        <%- include('../partials/field', { name: 'landmark', label: 'Landmark (optional)' }) %>
+        <%- include('../partials/field', { name: 'notes', label: 'Delivery notes (optional)', type: 'textarea', rows: 2 }) %>
+        <% if (user) { %><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="saveAddress" class="checkbox" <%= addresses.length ? '' : 'checked' %>> Save this address to my account</label><% } %>
+      </fieldset>
+
+      <fieldset class="card p-6">
+        <legend class="font-bold text-lg px-1">3. Payment</legend>
+        <% const methods = [['COD','Cash on delivery','Pay the rider in cash', settings.payments.codEnabled],['ESEWA','eSewa','Pay with your eSewa wallet', settings.payments.esewaEnabled],['KHALTI','Khalti','Pay with Khalti wallet or mobile banking', settings.payments.khaltiEnabled]].filter(function (m) { return m[3]; }); %>
+        <div class="grid sm:grid-cols-3 gap-3 mt-2" role="radiogroup" aria-label="Payment method">
+          <% methods.forEach(function (m, i) { %>
+            <div>
+              <input type="radio" name="paymentMethod" id="pm-<%= m[0] %>" value="<%= m[0] %>" class="choice-input sr-only" <%= pre('paymentMethod', methods[0][0]) === m[0] ? 'checked' : '' %>>
+              <label for="pm-<%= m[0] %>" class="choice-card"><span class="font-semibold block"><%= m[1] %></span><span class="text-sm text-stone-500"><%= m[2] %></span></label>
+            </div>
+          <% }) %>
+        </div>
+        <% if (fieldError('paymentMethod')) { %><p class="field-error"><%= fieldError('paymentMethod') %></p><% } %>
+      </fieldset>
+    </div>
+
+    <aside class="card p-6 lg:sticky lg:top-24">
+      <h2 class="font-bold text-lg">Your order</h2>
+      <ul class="mt-4 space-y-3 text-sm">
+        <% summary.items.forEach(function (i) { %>
+          <li class="flex justify-between gap-3"><span><%= i.variant.product.name %> <span class="text-stone-500">(<%= i.variant.label %>) × <%= i.quantity %></span></span><span class="font-medium whitespace-nowrap"><%= formatNpr(i.variant.pricePaisa * i.quantity) %></span></li>
+        <% }) %>
+      </ul>
+      <dl class="mt-4 pt-4 border-t border-stone-200 space-y-2 text-sm">
+        <div class="flex justify-between"><dt>Subtotal</dt><dd><%= formatNpr(summary.subtotalPaisa) %></dd></div>
+        <div class="flex justify-between"><dt>Delivery</dt><dd data-delivery><%= summary.deliveryPaisa ? formatNpr(summary.deliveryPaisa) : 'Free' %></dd></div>
+        <div class="flex justify-between text-lg font-bold pt-2"><dt>Total</dt><dd data-total><%= formatNpr(summary.totalPaisa) %></dd></div>
+      </dl>
+      <button class="btn-primary w-full mt-5">Place order</button>
+      <p class="text-xs text-stone-500 mt-3">By placing your order you agree to our <a class="link" href="/terms">terms</a> and <a class="link" href="/refund-policy">refund policy</a>.</p>
+    </aside>
+  </form>
+</section>

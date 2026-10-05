@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.git
+public/uploads/*
+!public/uploads/.gitkeep
+storage/logs/*
+coverage
+playwright-report
+test-results
+everest-kennel-project.md

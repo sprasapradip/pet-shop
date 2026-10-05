@@ -1,0 +1,12 @@
+<% if (seo && seo.breadcrumbs && seo.breadcrumbs.length) { %>
+<nav aria-label="Breadcrumb" class="text-sm text-stone-500 mb-4">
+  <ol class="flex flex-wrap items-center gap-1">
+    <% seo.breadcrumbs.forEach(function (c, i) { %>
+      <li class="flex items-center gap-1">
+        <% if (i < seo.breadcrumbs.length - 1) { %><a href="<%= c.url %>" class="hover:text-brand-700 hover:underline"><%= c.name %></a><span aria-hidden="true">›</span>
+        <% } else { %><span aria-current="page" class="text-stone-700 line-clamp-1"><%= c.name %></span><% } %>
+      </li>
+    <% }) %>
+  </ol>
+</nav>
+<% } %>

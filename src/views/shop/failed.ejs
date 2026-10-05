@@ -1,0 +1,18 @@
+<section class="container-x py-12 max-w-xl">
+  <div class="card p-8 text-center">
+    <p class="text-5xl" aria-hidden="true">⚠️</p>
+    <h1 class="text-2xl font-extrabold mt-3">Payment not completed</h1>
+    <p class="text-stone-600 mt-2">Order <strong><%= order.orderNo %></strong> for <%= formatNpr(order.totalPaisa) %> is not paid yet. No money was taken, or it will be refunded automatically if your wallet was charged.</p>
+    <% if (order.status === 'PENDING_PAYMENT') { %>
+      <form action="/checkout/pay/<%= order.orderNo %>" method="post" class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% if (settings.payments.esewaEnabled) { %><button name="gateway" value="ESEWA" class="btn-primary">Try again with eSewa</button><% } %>
+        <% if (settings.payments.khaltiEnabled) { %><button name="gateway" value="KHALTI" class="btn-outline">Pay with Khalti</button><% } %>
+      </form>
+      <p class="text-sm text-stone-500 mt-4">Unpaid orders are cancelled after 30 minutes. Prefer cash? <a class="link" href="<%= whatsappLink('Hello, please change my order ' + order.orderNo + ' to cash on delivery.') %>" target="_blank" rel="noopener">Ask us on WhatsApp</a>.</p>
+    <% } else { %>
+      <p class="mt-4"><span class="status status-<%= order.status %>"><%= orderStatusLabel(order.status) %></span></p>
+      <a href="/cart" class="btn-primary mt-6">Back to cart</a>
+    <% } %>
+  </div>
+</section>

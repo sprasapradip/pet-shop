@@ -1,0 +1,16 @@
+<section class="container-x py-12 max-w-md">
+  <div class="card p-6 sm:p-8">
+    <h1 class="text-2xl font-extrabold">Verify your phone</h1>
+    <p class="text-stone-600 mt-2">We sent a 6 digit code by SMS to <strong><%= phone %></strong>. Enter it to confirm your booking.</p>
+    <form action="/book/verify" method="post" class="mt-6">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <%- include('../partials/field', { name: 'code', label: 'Verification code', required: true, value: '', attrs: 'inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" autofocus' }) %>
+      <button class="btn-primary w-full">Verify and book</button>
+    </form>
+    <form action="/book/verify" method="post" class="mt-3">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button name="resend" value="1" class="btn-ghost w-full">Send a new code</button>
+    </form>
+    <p class="text-sm text-stone-500 mt-4 text-center">Wrong number? <a class="link" href="/book">Go back</a>.</p>
+  </div>
+</section>

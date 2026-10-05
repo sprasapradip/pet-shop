@@ -1,0 +1,27 @@
+<%#
+  Labelled form field with error message linked via aria-describedby.
+  Params: name, label, type (text|email|tel|number|date|password|textarea|select), value, required, options [[value,label]], hint, attrs, rows
+%>
+<%
+  const fid = 'f-' + name.replace(/[^a-zA-Z0-9_-]/g, '-');
+  const err = fieldError(name);
+  const t = typeof type !== 'undefined' ? type : 'text';
+  const v = typeof value !== 'undefined' && value !== null ? value : oldValue(name, '');
+  const req = typeof required !== 'undefined' && required;
+  const extra = typeof attrs !== 'undefined' ? attrs : '';
+  const describedBy = [typeof hint !== 'undefined' && hint ? fid + '-hint' : '', err ? fid + '-err' : ''].filter(Boolean).join(' ');
+%>
+<div class="field">
+  <label for="<%= fid %>" class="label"><%= label %><% if (req) { %> <span class="text-red-600" aria-hidden="true">*</span><% } %></label>
+  <% if (t === 'textarea') { %>
+    <textarea id="<%= fid %>" name="<%= name %>" rows="<%= typeof rows !== 'undefined' ? rows : 4 %>" class="input <%= err ? 'input-error' : '' %>" <%= req ? 'required' : '' %> <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %> <% if (err) { %>aria-invalid="true"<% } %> <%- extra %>><%= v %></textarea>
+  <% } else if (t === 'select') { %>
+    <select id="<%= fid %>" name="<%= name %>" class="input <%= err ? 'input-error' : '' %>" <%= req ? 'required' : '' %> <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %> <% if (err) { %>aria-invalid="true"<% } %> <%- extra %>>
+      <% options.forEach(function (o) { %><option value="<%= o[0] %>" <%= String(o[0]) === String(v) ? 'selected' : '' %>><%= o[1] %></option><% }) %>
+    </select>
+  <% } else { %>
+    <input id="<%= fid %>" name="<%= name %>" type="<%= t %>" value="<%= t === 'password' ? '' : v %>" class="input <%= err ? 'input-error' : '' %>" <%= req ? 'required' : '' %> <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %> <% if (err) { %>aria-invalid="true"<% } %> <%- extra %>>
+  <% } %>
+  <% if (typeof hint !== 'undefined' && hint) { %><p id="<%= fid %>-hint" class="hint"><%= hint %></p><% } %>
+  <% if (err) { %><p id="<%= fid %>-err" class="field-error"><%= err %></p><% } %>
+</div>

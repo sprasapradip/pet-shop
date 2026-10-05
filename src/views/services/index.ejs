@@ -1,0 +1,29 @@
+<section class="bg-brand-50 border-b border-brand-100">
+  <div class="container-x py-12">
+    <h1 class="text-3xl sm:text-4xl font-extrabold">Pet services in the Kathmandu Valley</h1>
+    <p class="text-stone-700 mt-3 max-w-2xl">Vet house calls, vaccination, treatment, boarding, training and stud service, all from one trusted team. Book online in a minute.</p>
+    <a href="/book" class="btn-primary mt-6">Book a service</a>
+  </div>
+</section>
+<section class="section">
+  <div class="container-x grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <% services.forEach(function (s) { %>
+      <article class="card p-6 flex flex-col">
+        <h2 class="text-xl font-bold"><a href="/services/<%= s.slug %>" class="hover:text-brand-700"><%= s.name %></a></h2>
+        <p class="text-stone-600 mt-2 flex-1"><%= s.shortDesc %></p>
+        <p class="mt-4 font-semibold text-brand-800"><%= s.basePricePaisa ? 'From ' + formatNpr(s.basePricePaisa) : 'Price on request' %><% if (s.type === 'BOARDING') { %> / night<% } %></p>
+        <div class="mt-4 flex gap-2">
+          <a href="/book?service=<%= s.type %>" class="btn-primary btn-sm flex-1">Book</a>
+          <a href="/services/<%= s.slug %>" class="btn-outline btn-sm flex-1">Details</a>
+        </div>
+      </article>
+    <% }) %>
+    <% serviceCards.filter(function (c) { return c.code === 'PUPPY_TRADE' || c.code === 'SHELTER'; }).forEach(function (c) { %>
+      <article class="card p-6 flex flex-col bg-amber-50/50">
+        <h2 class="text-xl font-bold"><a href="<%= c.href %>" class="hover:text-brand-700"><%= c.title %></a></h2>
+        <p class="text-stone-600 mt-2 flex-1"><%= c.text %></p>
+        <a href="<%= c.href %>" class="btn-outline btn-sm mt-4">Learn more</a>
+      </article>
+    <% }) %>
+  </div>
+</section>

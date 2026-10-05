@@ -1,0 +1,73 @@
+<div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+  <a href="/admin/orders" class="link text-sm">← All orders</a>
+  <div class="flex gap-2">
+    <a href="/admin/invoices/<%= order.orderNo %>" class="btn-outline btn-sm" target="_blank">Invoice</a>
+    <a href="/admin/invoices/<%= order.orderNo %>?slip=1" class="btn-outline btn-sm" target="_blank">Packing slip</a>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+  <div class="space-y-6">
+    <section class="card p-5">
+      <div class="flex justify-between items-start">
+        <div><h2 class="text-xl font-bold"><%= order.orderNo %></h2><p class="text-sm text-stone-500"><%= formatDateTime(order.createdAt) %> · <%= order.paymentMethod %></p></div>
+        <span class="status status-<%= order.status %>"><%= orderStatusLabel(order.status) %></span>
+      </div>
+      <div class="overflow-x-auto mt-4"><table class="table">
+        <thead><tr><th>Item</th><th>SKU</th><th class="text-right">Qty</th><th class="text-right">Rate</th><th class="text-right">Amount</th></tr></thead>
+        <tbody><% order.items.forEach(function (i) { %><tr><td><a class="link" href="/admin/products/<%= i.variant.product.id %>/edit"><%= i.name %></a></td><td class="text-xs"><%= i.sku %></td><td class="text-right"><%= i.quantity %></td><td class="text-right"><%= formatNpr(i.unitPaisa) %></td><td class="text-right"><%= formatNpr(i.totalPaisa) %></td></tr><% }) %></tbody>
+      </table></div>
+      <dl class="ml-auto w-64 mt-3 text-sm space-y-1">
+        <div class="flex justify-between"><dt>Subtotal</dt><dd><%= formatNpr(order.subtotalPaisa) %></dd></div>
+        <div class="flex justify-between"><dt>Delivery (<%= order.deliveryZone.replace('_', ' ').toLowerCase() %>)</dt><dd><%= formatNpr(order.deliveryPaisa) %></dd></div>
+        <div class="flex justify-between font-bold"><dt>Total</dt><dd><%= formatNpr(order.totalPaisa) %></dd></div>
+      </dl>
+      <p class="text-xs text-stone-500 mt-2">Stock <%= order.stockDeducted ? 'deducted' : 'not deducted' %>.</p>
+    </section>
+    <section class="card p-5">
+      <h3 class="font-bold">Timeline</h3>
+      <ol class="mt-3 space-y-2 text-sm"><% order.events.forEach(function (e) { %><li><span class="status status-<%= e.status %>"><%= orderStatusLabel(e.status) %></span> <span class="text-stone-500"><%= formatDateTime(e.createdAt) %></span><% if (e.note) { %><span class="block text-stone-700"><%= e.note %></span><% } %></li><% }) %></ol>
+      <form action="/admin/orders/<%= order.id %>/note" method="post" class="mt-4 flex gap-2">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label class="sr-only" for="note">Internal note</label><input id="note" name="note" class="input h-10" placeholder="Add an internal note" maxlength="255">
+        <button class="btn-outline btn-sm h-10">Add</button>
+      </form>
+    </section>
+    <% if (order.payments.length) { %>
+      <section class="card p-5">
+        <h3 class="font-bold">Payments</h3>
+        <ul class="mt-2 text-sm space-y-1"><% order.payments.forEach(function (p) { %><li><%= formatDateTime(p.createdAt) %> · <%= p.gateway %> · <%= formatNpr(p.amountPaisa) %> · <span class="status status-<%= p.status %>"><%= p.status %></span> <span class="text-xs text-stone-500"><%= p.transactionId %><%= p.gatewayRef ? ' / ' + p.gatewayRef : '' %></span></li><% }) %></ul>
+      </section>
+    <% } %>
+  </div>
+  <aside class="space-y-4">
+    <section class="card p-5 text-sm">
+      <h3 class="font-bold mb-2">Customer</h3>
+      <p class="font-medium"><%= order.customerName %></p>
+      <p><a class="link" href="tel:<%= order.customerPhone %>"><%= order.customerPhone %></a> · <a class="link" href="https://wa.me/977<%= order.customerPhone %>" target="_blank" rel="noopener">WhatsApp</a></p>
+      <% if (order.customerEmail) { %><p><%= order.customerEmail %></p><% } %>
+      <% if (order.user) { %><p class="mt-1"><a class="link" href="/admin/customers/<%= order.user.id %>">Customer account →</a></p><% } %>
+      <p class="mt-3 text-stone-700"><%= order.shippingAddress %></p>
+      <% if (order.notes) { %><p class="mt-2 text-stone-600"><strong>Notes:</strong> <%= order.notes %></p><% } %>
+    </section>
+    <% if (nextStatuses.length) { %>
+      <form action="/admin/orders/<%= order.id %>/status" method="post" class="card p-5">
+        <h3 class="font-bold mb-3">Update status</h3>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label class="label" for="st">New status</label>
+        <select id="st" name="status" class="input"><% nextStatuses.forEach(function (s) { %><option value="<%= s %>"><%= orderStatusLabel(s) %></option><% }) %></select>
+        <label class="label mt-3" for="sn">Note</label><input id="sn" name="note" class="input" maxlength="255">
+        <label class="flex items-center gap-2 text-sm mt-3"><input type="checkbox" name="notify" class="checkbox" checked> SMS the customer</label>
+        <button class="btn-primary w-full mt-4">Update</button>
+        <p class="hint mt-2">Cancelling or refunding returns items to stock.</p>
+      </form>
+    <% } %>
+    <% if (order.paymentMethod === 'COD' && ['DELIVERED','OUT_FOR_DELIVERY'].includes(order.status)) { %>
+      <form action="/admin/orders/<%= order.id %>/cod" method="post" class="card p-5">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <h3 class="font-bold mb-2">Cash on delivery</h3>
+        <p class="text-sm mb-3"><%= order.codCollected ? '✓ Cash collected' : 'Cash not yet received from rider' %></p>
+        <button name="collected" value="<%= order.codCollected ? '0' : '1' %>" class="<%= order.codCollected ? 'btn-ghost' : 'btn-primary' %> btn-sm w-full"><%= order.codCollected ? 'Undo' : 'Mark cash collected' %></button>
+      </form>
+    <% } %>
+  </aside>
+</div>

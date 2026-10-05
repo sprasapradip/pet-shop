@@ -1,0 +1,48 @@
+<div class="grid gap-4 grid-cols-2 lg:grid-cols-4">
+  <a href="/admin/bookings?status=PENDING" class="stat hover:shadow-md"><p class="stat-label">Pending bookings</p><p class="stat-value"><%= pendingBookings %></p></a>
+  <% if (role !== 'VET') { %>
+    <a href="/admin/orders?status=PLACED" class="stat hover:shadow-md"><p class="stat-label">Orders to process</p><p class="stat-value"><%= pendingOrders %></p></a>
+    <a href="/admin/boarding" class="stat hover:shadow-md"><p class="stat-label">Boarding tonight</p><p class="stat-value"><%= occupancy.occupied %> / <%= occupancy.units %></p></a>
+    <a href="/admin/inquiries" class="stat hover:shadow-md"><p class="stat-label">New inquiries</p><p class="stat-value"><%= newInquiries %></p></a>
+  <% } %>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6 mt-6">
+  <section class="card p-5">
+    <div class="flex justify-between items-center"><h2 class="font-bold">Today’s bookings</h2><a class="link text-sm" href="/admin/bookings/calendar">Calendar</a></div>
+    <% if (!todaysBookings.length) { %><p class="text-sm text-stone-500 mt-3">Nothing scheduled today.</p><% } %>
+    <ul class="mt-3 divide-y divide-stone-100">
+      <% todaysBookings.forEach(function (b) { %>
+        <li class="py-2.5 flex justify-between gap-3 text-sm">
+          <div><a class="font-medium link" href="/admin/bookings/<%= b.id %>"><%= nptTime(b.startAt) %> · <%= b.service.name %></a><p class="text-stone-500"><%= b.contactName %> · <%= b.petSummary || '' %><%= b.assignedTo ? ' · ' + b.assignedTo.name : ' · unassigned' %></p></div>
+          <span class="status status-<%= b.status %> self-start"><%= bookingStatusLabel(b.status) %></span>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <% if (role !== 'VET') { %>
+  <section class="card p-5">
+    <h2 class="font-bold">Revenue, last 14 days</h2>
+    <% const max = Math.max.apply(null, revenue.map(function (d) { return d.paisa; }).concat([1])); const total = revenue.reduce(function (s, d) { return s + d.paisa; }, 0); %>
+    <p class="text-sm text-stone-500"><%= formatNpr(total) %> from paid orders</p>
+    <svg viewBox="0 0 <%= revenue.length * 30 %> 130" class="w-full h-40 mt-3" role="img" aria-label="Daily revenue bar chart">
+      <% revenue.forEach(function (d, i) { const h = Math.round(d.paisa / max * 100); %>
+        <g><title><%= d.date %>: <%= formatNpr(d.paisa) %></title>
+          <rect x="<%= i * 30 + 5 %>" y="<%= 105 - h %>" width="20" height="<%= Math.max(h, 1) %>" rx="3" class="fill-brand-500"></rect>
+          <text x="<%= i * 30 + 15 %>" y="122" text-anchor="middle" class="fill-stone-400" font-size="9"><%= d.date.slice(8) %></text>
+        </g>
+      <% }) %>
+    </svg>
+  </section>
+
+  <section class="card p-5 lg:col-span-2">
+    <div class="flex justify-between items-center"><h2 class="font-bold">Low stock</h2><a class="link text-sm" href="/admin/products?low=1">All low stock</a></div>
+    <% if (!lowStock.length) { %><p class="text-sm text-stone-500 mt-3">All products are well stocked.</p><% } else { %>
+      <div class="overflow-x-auto mt-3"><table class="table"><thead><tr><th>Product</th><th>Variant</th><th>SKU</th><th class="text-right">Stock</th></tr></thead><tbody>
+        <% lowStock.forEach(function (v) { %><tr><td><a class="link" href="/admin/products/<%= v.productId %>/edit"><%= v.name %></a></td><td><%= v.label %></td><td><%= v.sku %></td><td class="text-right font-semibold <%= v.stock <= 0 ? 'text-red-700' : 'text-amber-700' %>"><%= v.stock %></td></tr><% }) %>
+      </tbody></table></div>
+    <% } %>
+  </section>
+  <% } %>
+</div>

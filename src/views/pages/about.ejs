@@ -1,0 +1,41 @@
+<section class="bg-brand-50 border-b border-brand-100">
+  <div class="container-x py-12 sm:py-16 max-w-3xl">
+    <p class="eyebrow">About us</p>
+    <h1 class="text-3xl sm:text-4xl font-extrabold mt-1">Caring for Kathmandu’s pets, from puppyhood to old age</h1>
+    <p class="mt-4 text-lg text-stone-700">The Everest Kennel is a pet shop, kennel, veterinary home service and animal care shelter at Soaltee Mode, run by <%= business.owner %>.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container-x grid lg:grid-cols-[2fr_1fr] gap-10">
+    <div class="prose-ek">
+      <h2>Our story</h2>
+      <p>We started with a simple idea: pet owners in Kathmandu deserve one trusted place for healthy puppies, good food, proper medical care and a safe kennel when they travel. Today our team helps families across the Kathmandu Valley with everything from a first vaccination to boarding for a festival holiday.</p>
+      <h2>What we offer</h2>
+      <ul>
+        <li><strong>Pets for sale:</strong> locally bred and imported puppies, kittens, birds and small pets, each with vaccination and deworming records.</li>
+        <li><strong>Pet shop:</strong> dog and cat food, bird feed, accessories, kennel accessories, toys and supplements, with delivery across Nepal.</li>
+        <li><strong>Veterinary home service:</strong> house calls, vaccinations and treatment by a registered veterinarian.</li>
+        <li><strong>Boarding and training:</strong> clean kennels with daily walks and care logs, plus obedience training packages.</li>
+        <li><strong>Mating / stud service:</strong> healthy, registered studs by appointment.</li>
+        <li><strong>Animal Care Shelter:</strong> rescue, treatment and adoption of injured and stray animals.</li>
+      </ul>
+      <h2>Our promise</h2>
+      <p>Every animal we sell is health checked at handover, and we keep its records so you and your vet always know its history. We are honest about breeds, ages and prices, and we are a phone call away after you take your pet home.</p>
+    </div>
+    <aside class="space-y-4">
+      <div class="card p-6">
+        <h2 class="font-bold text-lg">Visit us</h2>
+        <p class="text-sm text-stone-600 mt-2"><%= business.address %></p>
+        <a href="<%= telLink() %>" class="btn-primary w-full mt-4">Call <%= business.landlineDisplay %></a>
+        <a href="<%= whatsappLink() %>" class="btn-wa w-full mt-2" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <% if (settings.business.vetName) { %>
+      <div class="card p-6">
+        <h2 class="font-bold text-lg">Our veterinarian</h2>
+        <p class="text-sm text-stone-700 mt-2"><%= settings.business.vetName %></p>
+        <% if (settings.business.vetRegistrationNo) { %><p class="text-xs text-stone-500 mt-1">Nepal Veterinary Council Reg. No. <%= settings.business.vetRegistrationNo %></p><% } %>
+      </div>
+      <% } %>
+    </aside>
+  </div>
+</section>

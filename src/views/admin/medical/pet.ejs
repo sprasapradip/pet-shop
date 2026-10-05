@@ -1,0 +1,59 @@
+<a href="/admin/medical" class="link text-sm">← Medical</a>
+<div class="card p-5 mt-4 flex flex-wrap gap-4 items-center">
+  <img src="<%= imgSrc(pet.photoPath, 400) %>" alt="" width="64" height="64" class="w-16 h-16 rounded-2xl object-cover bg-stone-100">
+  <div>
+    <h2 class="text-xl font-bold"><%= pet.name %></h2>
+    <p class="text-sm text-stone-600"><%= [speciesLabel(pet.species), pet.breed && pet.breed.name, pet.gender, pet.dateOfBirth && ageFrom(pet.dateOfBirth), pet.weightKg && Number(pet.weightKg) + ' kg'].filter(Boolean).join(' · ') %></p>
+    <p class="text-sm">Owner: <%= pet.user.name %> · <a class="link" href="tel:<%= pet.user.phone %>"><%= pet.user.phone %></a></p>
+    <% if (pet.notes) { %><p class="text-sm text-stone-600 mt-1">Notes: <%= pet.notes %></p><% } %>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6 mt-6">
+  <section class="card p-5">
+    <h3 class="font-bold">Vaccinations</h3>
+    <ul class="mt-3 divide-y divide-stone-100 text-sm">
+      <% pet.vaccinations.forEach(function (v) { %>
+        <li class="py-2 flex justify-between gap-3"><span><strong><%= v.vaccine %></strong> · <%= formatDay(v.givenOn) %><%= v.batchNo ? ' · batch ' + v.batchNo : '' %><%= v.givenBy ? ' · ' + v.givenBy : '' %><br><span class="text-stone-500">Next due: <%= v.nextDueOn ? formatDay(v.nextDueOn) : '—' %></span></span>
+          <form action="/admin/medical/pets/<%= pet.id %>/vaccination/<%= v.id %>/delete" method="post" data-confirm="Delete this record?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></li>
+      <% }) %>
+    </ul>
+    <form action="/admin/medical/pets/<%= pet.id %>/vaccinations" method="post" class="mt-4 border-t border-stone-100 pt-4">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="bookingId" value="<%= bookingId %>">
+      <div class="grid sm:grid-cols-2 gap-x-3">
+        <%- include('../../partials/field', { name: 'vaccine', label: 'Vaccine', required: true, attrs: 'list="vaccines"' }) %>
+        <%- include('../../partials/field', { name: 'batchNo', label: 'Batch no.' }) %>
+        <%- include('../../partials/field', { name: 'givenOn', label: 'Given on', type: 'date', required: true, value: oldValue('givenOn', today) }) %>
+        <%- include('../../partials/field', { name: 'nextDueOn', label: 'Next due', type: 'date', hint: 'Reminders go out 7 days and 1 day before' }) %>
+      </div>
+      <%- include('../../partials/field', { name: 'givenBy', label: 'Given by', value: oldValue('givenBy', user.name) }) %>
+      <datalist id="vaccines"><option>DHPPiL (5 in 1)</option><option>DHPPiL + Corona (7 in 1)</option><option>Anti-rabies</option><option>Kennel cough</option><option>Tricat (FVRCP)</option><option>Deworming</option></datalist>
+      <button class="btn-primary btn-sm">Add vaccination</button>
+    </form>
+  </section>
+
+  <section class="card p-5">
+    <h3 class="font-bold">Medical records</h3>
+    <ul class="mt-3 divide-y divide-stone-100 text-sm">
+      <% pet.medicals.forEach(function (m) { %>
+        <li class="py-2">
+          <div class="flex justify-between"><strong><%= formatDate(m.visitDate) %><%= m.vetName ? ' · ' + m.vetName : '' %></strong>
+            <form action="/admin/medical/pets/<%= pet.id %>/medical/<%= m.id %>/delete" method="post" data-confirm="Delete this record?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></div>
+          <p>Complaint: <%= m.complaint %></p><% if (m.diagnosis) { %><p>Diagnosis: <%= m.diagnosis %></p><% } %><% if (m.treatment) { %><p>Treatment: <%= m.treatment %></p><% } %><% if (m.prescription) { %><p class="whitespace-pre-line">Rx: <%= m.prescription %></p><% } %>
+        </li>
+      <% }) %>
+    </ul>
+    <form action="/admin/medical/pets/<%= pet.id %>/records" method="post" class="mt-4 border-t border-stone-100 pt-4">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="bookingId" value="<%= bookingId %>">
+      <div class="grid sm:grid-cols-2 gap-x-3">
+        <%- include('../../partials/field', { name: 'visitDate', label: 'Visit date', type: 'date', required: true, value: oldValue('visitDate', today) }) %>
+        <%- include('../../partials/field', { name: 'vetName', label: 'Vet', value: oldValue('vetName', user.name) }) %>
+      </div>
+      <%- include('../../partials/field', { name: 'complaint', label: 'Complaint', type: 'textarea', rows: 2, required: true }) %>
+      <%- include('../../partials/field', { name: 'diagnosis', label: 'Diagnosis', type: 'textarea', rows: 2 }) %>
+      <%- include('../../partials/field', { name: 'treatment', label: 'Treatment', type: 'textarea', rows: 2 }) %>
+      <%- include('../../partials/field', { name: 'prescription', label: 'Prescription', type: 'textarea', rows: 2 }) %>
+      <button class="btn-primary btn-sm">Add record</button>
+    </form>
+  </section>
+</div>

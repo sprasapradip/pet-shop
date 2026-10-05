@@ -1,0 +1,26 @@
+<% const e = editing; %>
+<div class="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Testimonial</th><th>Rating</th><th>Shown</th><th></th></tr></thead>
+      <tbody>
+        <% testimonials.forEach(function (t) { %>
+          <tr><td class="whitespace-nowrap"><a class="link" href="?edit=<%= t.id %>"><%= t.name %></a></td><td class="text-xs"><%= t.content.slice(0, 120) %></td><td><%= '★'.repeat(t.rating) %></td><td><%= t.isActive ? 'Yes' : 'No' %></td>
+            <td><form action="/admin/testimonials/<%= t.id %>/delete" method="post" data-confirm="Delete?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="<%= e ? '/admin/testimonials/' + e.id : '/admin/testimonials' %>" method="post" class="card p-5">
+    <h2 class="font-bold mb-4"><%= e ? 'Edit testimonial' : 'New testimonial' %></h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../../partials/field', { name: 'name', label: 'Customer name', required: true, value: oldValue('name', e ? e.name : '') }) %>
+    <%- include('../../partials/field', { name: 'content', label: 'Testimonial', type: 'textarea', rows: 4, required: true, value: oldValue('content', e ? e.content : '') }) %>
+    <div class="grid grid-cols-2 gap-3">
+      <%- include('../../partials/field', { name: 'rating', label: 'Rating', type: 'select', value: oldValue('rating', e ? e.rating : 5), options: [[5,'5'],[4,'4'],[3,'3'],[2,'2'],[1,'1']] }) %>
+      <%- include('../../partials/field', { name: 'sortOrder', label: 'Order', type: 'number', value: oldValue('sortOrder', e ? e.sortOrder : 0) }) %>
+    </div>
+    <label class="flex items-center gap-2 text-sm mb-4"><input type="checkbox" name="isActive" class="checkbox" <%= !e || e.isActive ? 'checked' : '' %>> Show on website</label>
+    <div class="flex gap-2"><button class="btn-primary btn-sm">Save</button><% if (e) { %><a href="/admin/testimonials" class="btn-ghost btn-sm">New instead</a><% } %></div>
+  </form>
+</div>

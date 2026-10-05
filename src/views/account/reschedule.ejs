@@ -1,0 +1,31 @@
+<% const isBoarding = booking.service.type === 'BOARDING'; %>
+<section class="container-x py-8 max-w-2xl">
+  <h1 class="text-2xl font-extrabold">Reschedule <%= booking.service.name %></h1>
+  <p class="text-stone-600 mt-1">Currently <%= formatDateTime(booking.startAt) %> · Ref <%= booking.reference %></p>
+  <% if (!isBoarding) { %>
+    <form method="get" class="card p-6 mt-6 flex flex-wrap items-end gap-3">
+      <div class="flex-1 min-w-[180px]"><label class="label" for="rd">New date</label><input id="rd" type="date" name="date" value="<%= date %>" min="<%= minDate %>" max="<%= maxDate %>" class="input" required></div>
+      <button class="btn-outline">Show times</button>
+    </form>
+  <% } %>
+  <form action="/account/bookings/<%= booking.reference %>/reschedule" method="post" class="card p-6 mt-4">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% if (isBoarding) { %>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <%- include('../partials/field', { name: 'date', label: 'Check in', type: 'date', required: true, value: date, attrs: 'min="' + minDate + '"' }) %>
+        <%- include('../partials/field', { name: 'endDate', label: 'Check out', type: 'date', required: true, value: endDate, attrs: 'min="' + minDate + '"' }) %>
+      </div>
+    <% } else { %>
+      <input type="hidden" name="date" value="<%= date %>">
+      <% if (!slots) { %><p class="text-stone-600">Choose a date above to see available times.</p>
+      <% } else if (!slots.length) { %><p class="text-stone-600">No times available on that day.</p>
+      <% } else { %>
+        <p class="label">Available times on <%= date %></p>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          <% slots.forEach(function (s, i) { %><div><input type="radio" name="slot" id="rs-<%= i %>" value="<%= s.time %>" class="slot-input sr-only" required><label for="rs-<%= i %>" class="slot-label"><%= s.time %></label></div><% }) %>
+        </div>
+      <% } %>
+    <% } %>
+    <div class="mt-5 flex gap-2"><button class="btn-primary" <%= !isBoarding && !(slots && slots.length) ? 'disabled' : '' %>>Save new time</button><a href="/account/bookings" class="btn-ghost">Cancel</a></div>
+  </form>
+</section>

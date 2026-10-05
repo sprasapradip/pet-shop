@@ -1,0 +1,20 @@
+<div class="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Breed</th><th>Species</th><th class="text-right">Listings</th><th class="text-right">Customer pets</th><th></th></tr></thead>
+      <tbody>
+        <% breeds.forEach(function (b) { %>
+          <tr><td class="font-medium"><%= b.name %></td><td><%= speciesLabel(b.species) %></td><td class="text-right"><%= b._count.listings %></td><td class="text-right"><%= b._count.pets %></td>
+            <td><% if (!b._count.listings && !b._count.pets) { %><form action="/admin/pets/breeds/<%= b.id %>/delete" method="post" data-confirm="Delete <%= b.name %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-red-700 text-xs hover:underline">Delete</button></form><% } %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="/admin/pets/breeds" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">Add breed</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../../partials/field', { name: 'species', label: 'Species', type: 'select', options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['RABBIT','Rabbit'],['FISH','Fish'],['OTHER','Other']] }) %>
+    <%- include('../../partials/field', { name: 'name', label: 'Name', required: true }) %>
+    <button class="btn-primary btn-sm">Add</button>
+  </form>
+</div>

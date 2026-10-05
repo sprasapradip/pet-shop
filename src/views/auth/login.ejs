@@ -1,0 +1,13 @@
+<h1 class="text-2xl font-extrabold">Log in</h1>
+<p class="text-sm text-stone-600 mt-1">Track orders and bookings, and keep your pets’ health records.</p>
+<form action="/login" method="post" class="mt-6" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="next" value="<%= next %>">
+  <%- include('../partials/field', { name: 'identifier', label: 'Phone or email', required: true, attrs: 'autocomplete="username" autofocus' }) %>
+  <%- include('../partials/field', { name: 'password', label: 'Password', type: 'password', required: true, attrs: 'autocomplete="current-password"' }) %>
+  <button class="btn-primary w-full">Log in</button>
+</form>
+<div class="mt-5 flex justify-between text-sm">
+  <a class="link" href="/forgot-password">Forgot password?</a>
+  <a class="link" href="/register<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Create an account</a>
+</div>

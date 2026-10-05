@@ -1,0 +1,14 @@
+<section class="container-x py-8">
+  <h1 class="text-3xl font-extrabold">Adopt a dog or cat</h1>
+  <p class="text-stone-600 mt-1">Rescued animals, health checked and ready for a loving home in the Kathmandu Valley.</p>
+  <nav class="flex gap-2 mt-5" aria-label="Filter by species">
+    <a href="/shelter/adopt" class="btn-sm <%= !species ? 'btn-primary' : 'btn-outline' %>">All</a>
+    <a href="/shelter/adopt?species=dog" class="btn-sm <%= species === 'DOG' ? 'btn-primary' : 'btn-outline' %>">Dogs</a>
+    <a href="/shelter/adopt?species=cat" class="btn-sm <%= species === 'CAT' ? 'btn-primary' : 'btn-outline' %>">Cats</a>
+  </nav>
+  <% if (!animals.length) { %>
+    <p class="mt-8 text-stone-600">No animals listed right now. Please check back soon.</p>
+  <% } else { %>
+    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"><% animals.forEach(function (a) { %><%- include('../partials/animal-card', { a: a }) %><% }) %></div>
+  <% } %>
+</section>

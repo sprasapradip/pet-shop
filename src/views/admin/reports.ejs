@@ -1,0 +1,44 @@
+<form method="get" class="flex flex-wrap gap-2 items-end mb-6">
+  <div><label class="label" for="rf">From</label><input id="rf" type="date" name="from" value="<%= from %>" class="input h-10"></div>
+  <div><label class="label" for="rt">To</label><input id="rt" type="date" name="to" value="<%= to %>" class="input h-10"></div>
+  <button class="btn-primary btn-sm h-10">Show</button>
+  <a href="?from=<%= from %>&to=<%= to %>&format=csv" class="btn-outline btn-sm h-10">Download CSV</a>
+</form>
+<div class="grid gap-4 grid-cols-2 lg:grid-cols-4">
+  <div class="stat"><p class="stat-label">Product sales</p><p class="stat-value"><%= formatNpr(totals.sales) %></p></div>
+  <div class="stat"><p class="stat-label">Paid orders</p><p class="stat-value"><%= totals.orders %></p></div>
+  <div class="stat"><p class="stat-label">Average order</p><p class="stat-value"><%= formatNpr(totals.orders ? Math.round(totals.sales / totals.orders) : 0) %></p></div>
+  <div class="stat"><p class="stat-label">Service revenue (completed)</p><p class="stat-value"><%= formatNpr(totals.serviceRevenue) %></p></div>
+</div>
+
+<section class="card p-5 mt-6">
+  <h2 class="font-bold">Daily sales</h2>
+  <% const max = Math.max.apply(null, daily.map(function (d) { return d.paisa; }).concat([1])); const w = Math.max(8, Math.floor(900 / daily.length)); %>
+  <div class="overflow-x-auto">
+    <svg viewBox="0 0 <%= daily.length * w %> 140" class="h-48 min-w-full" style="width: <%= daily.length * w %>px" role="img" aria-label="Daily sales chart">
+      <% daily.forEach(function (d, i) { const h = Math.round(d.paisa / max * 110); %>
+        <g><title><%= d.date %>: <%= formatNpr(d.paisa) %></title><rect x="<%= i * w + 1 %>" y="<%= 115 - h %>" width="<%= w - 2 %>" height="<%= Math.max(h, 1) %>" rx="2" class="fill-brand-500"></rect>
+        <% if (daily.length <= 31 || i % 7 === 0) { %><text x="<%= i * w + w / 2 %>" y="132" text-anchor="middle" font-size="8" class="fill-stone-400"><%= d.date.slice(5) %></text><% } %></g>
+      <% }) %>
+    </svg>
+  </div>
+</section>
+
+<div class="grid lg:grid-cols-2 gap-6 mt-6">
+  <section class="card p-5">
+    <h2 class="font-bold">Top products</h2>
+    <div class="overflow-x-auto mt-3"><table class="table"><thead><tr><th>Item</th><th class="text-right">Qty</th><th class="text-right">Sales</th></tr></thead><tbody>
+      <% topItems.forEach(function (t) { %><tr><td><%= t.name %><span class="block text-xs text-stone-500"><%= t.sku %></span></td><td class="text-right"><%= t._sum.quantity %></td><td class="text-right"><%= formatNpr(t._sum.totalPaisa) %></td></tr><% }) %>
+      <% if (!topItems.length) { %><tr><td colspan="3" class="text-stone-500">No sales in this period.</td></tr><% } %>
+    </tbody></table></div>
+  </section>
+  <section class="card p-5">
+    <h2 class="font-bold">Bookings by service</h2>
+    <div class="overflow-x-auto mt-3"><table class="table"><thead><tr><th>Service</th><th class="text-right">Bookings</th><th class="text-right">Completed</th><th class="text-right">Revenue</th></tr></thead><tbody>
+      <% services.forEach(function (s) { %><tr><td><%= s.name %></td><td class="text-right"><%= s.count %></td><td class="text-right"><%= s.completed %></td><td class="text-right"><%= formatNpr(s.revenue) %></td></tr><% }) %>
+      <% if (!services.length) { %><tr><td colspan="4" class="text-stone-500">No bookings in this period.</td></tr><% } %>
+    </tbody></table></div>
+    <h3 class="font-bold mt-6">Sales by payment method</h3>
+    <ul class="mt-2 text-sm space-y-1"><% byMethod.forEach(function (m) { %><li><%= m.paymentMethod %>: <%= m._count._all %> orders, <%= formatNpr(m._sum.totalPaisa || 0) %></li><% }) %></ul>
+  </section>
+</div>

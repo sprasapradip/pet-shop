@@ -1,0 +1,24 @@
+<%
+  const v = function (k, fb) { return oldValue(k, pet ? (pet[k] === null || pet[k] === undefined ? '' : pet[k]) : (fb || '')); };
+  const dob = pet && pet.dateOfBirth ? isoDay(pet.dateOfBirth) : '';
+%>
+<section class="container-x py-8 max-w-2xl">
+  <h1 class="text-2xl font-extrabold"><%= pet ? 'Edit ' + pet.name : 'Add a pet' %></h1>
+  <form action="<%= pet ? '/account/pets/' + pet.id : '/account/pets' %>" method="post" enctype="multipart/form-data" class="card p-6 mt-6" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'name', label: 'Name', required: true, value: v('name') }) %>
+      <%- include('../partials/field', { name: 'species', label: 'Species', type: 'select', value: v('species', 'DOG'), options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['RABBIT','Rabbit'],['FISH','Fish'],['OTHER','Other']] }) %>
+      <%- include('../partials/field', { name: 'breedId', label: 'Breed', type: 'select', value: v('breedId'), options: [['','Not sure / mixed']].concat(breeds.map(function (b) { return [b.id, b.name + ' (' + speciesLabel(b.species) + ')']; })) }) %>
+      <%- include('../partials/field', { name: 'gender', label: 'Gender', type: 'select', value: v('gender'), options: [['',''],['MALE','Male'],['FEMALE','Female']] }) %>
+      <%- include('../partials/field', { name: 'dateOfBirth', label: 'Date of birth', type: 'date', value: oldValue('dateOfBirth', dob) }) %>
+      <%- include('../partials/field', { name: 'weightKg', label: 'Weight (kg)', type: 'number', value: pet && pet.weightKg ? Number(pet.weightKg) : oldValue('weightKg'), attrs: 'step="0.01" min="0" max="200"' }) %>
+    </div>
+    <div class="field">
+      <label for="photo" class="label">Photo</label>
+      <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="file-input">
+    </div>
+    <%- include('../partials/field', { name: 'notes', label: 'Notes (allergies, diet, behaviour)', type: 'textarea', rows: 3, value: v('notes') }) %>
+    <div class="flex gap-2"><button class="btn-primary">Save</button><a href="<%= pet ? '/account/pets/' + pet.id : '/account/pets' %>" class="btn-ghost">Cancel</a></div>
+  </form>
+</section>

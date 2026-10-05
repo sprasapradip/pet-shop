@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title><%= (typeof pageTitle !== 'undefined' ? pageTitle : 'Admin') %> | Everest Kennel Admin</title>
+  <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+</head>
+<body class="bg-stone-100 text-stone-800 antialiased">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <%
+    const r = role;
+    const ops = r === 'STAFF' || r === 'ADMIN';
+    const groups = [
+      ['', [['/admin', 'Dashboard', true]]],
+      ['Sales', [['/admin/orders', 'Orders', ops], ['/admin/products', 'Products', ops], ['/admin/categories', 'Categories', ops], ['/admin/brands', 'Brands', ops]]],
+      ['Pets', [['/admin/pets', 'Pet listings', ops], ['/admin/pets/breeds', 'Breeds', ops]]],
+      ['Care', [['/admin/bookings', 'Bookings', true], ['/admin/bookings/calendar', 'Calendar', true], ['/admin/boarding', 'Boarding', ops], ['/admin/medical', 'Medical', true]]],
+      ['People', [['/admin/inquiries', 'Inquiries', ops], ['/admin/customers', 'Customers', ops], ['/admin/shelter', 'Shelter', ops]]],
+      ['Content', [['/admin/posts', 'Blog', ops], ['/admin/faqs', 'FAQs', ops], ['/admin/testimonials', 'Testimonials', ops]]],
+      ['System', [['/admin/reports', 'Reports', ops], ['/admin/settings', 'Settings', r === 'ADMIN'], ['/admin/users', 'Users', r === 'ADMIN'], ['/admin/audit-log', 'Audit log', r === 'ADMIN']]],
+    ];
+    const activeHref = groups.flatMap(function (g) { return g[1]; }).map(function (l) { return l[0]; })
+      .filter(function (h) { return h === '/admin' ? currentPath === '/admin' || currentPath === '/admin/' : ('/admin' + currentPath).startsWith(h) || currentPath.startsWith(h); })
+      .sort(function (a, b) { return b.length - a.length; })[0];
+  %>
+  <div class="lg:grid lg:grid-cols-[230px_1fr] min-h-screen">
+    <aside class="bg-brand-900 text-brand-100 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <div class="flex items-center justify-between px-4 h-14 border-b border-brand-800">
+        <a href="/admin" class="flex items-center gap-2 font-bold text-white"><img src="/assets/img/logo.svg" alt="" width="28" height="28"> Everest Admin</a>
+        <button type="button" class="lg:hidden icon-btn text-white hover:bg-brand-800" data-nav-toggle aria-controls="mobile-nav" aria-expanded="false" aria-label="Menu">☰</button>
+      </div>
+      <nav id="mobile-nav" class="hidden lg:block p-3 space-y-4 text-sm" aria-label="Admin">
+        <% groups.forEach(function (g) { const links = g[1].filter(function (l) { return l[2]; }); if (!links.length) return; %>
+          <div>
+            <% if (g[0]) { %><p class="px-3 text-[11px] uppercase tracking-wider text-brand-400 mb-1"><%= g[0] %></p><% } %>
+            <% links.forEach(function (l) { %><a href="<%= l[0] %>" class="admin-link <%= activeHref === l[0] ? 'admin-link-active' : '' %>" <%= activeHref === l[0] ? 'aria-current=page' : '' %>><%= l[1] %></a><% }) %>
+          </div>
+        <% }) %>
+        <div class="border-t border-brand-800 pt-3">
+          <a href="/" class="admin-link" target="_blank">View website ↗</a>
+          <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="admin-link w-full">Log out (<%= user.name %>)</button></form>
+        </div>
+      </nav>
+    </aside>
+    <div class="min-w-0">
+      <header class="bg-white border-b border-stone-200 h-14 flex items-center px-4 sm:px-6 justify-between">
+        <h1 class="font-bold text-lg truncate"><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Admin' %></h1>
+        <span class="text-xs text-stone-500"><%= user.name %> · <%= role %></span>
+      </header>
+      <main id="main" class="p-4 sm:p-6" tabindex="-1">
+        <% if (flash && (flash.success || flash.error || flash.info)) { %>
+          <div class="space-y-2 mb-4" role="status" aria-live="polite">
+            <% ['success','error','info'].forEach(function (t) { (flash[t] || []).forEach(function (m) { %><div class="alert alert-<%= t %>"><%= m %></div><% }) }) %>
+          </div>
+        <% } %>
+        <% if (fieldErrors.length) { %><div class="alert alert-error mb-4"><ul class="list-disc pl-5"><% fieldErrors.forEach(function (e) { %><li><strong><%= e.field %></strong>: <%= e.message %></li><% }) %></ul></div><% } %>
+        <%- body %>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

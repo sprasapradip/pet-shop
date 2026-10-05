@@ -1,0 +1,24 @@
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <div class="flex justify-end mb-4"><a href="/account/pets/new" class="btn-primary btn-sm">+ Add a pet</a></div>
+  <% if (!pets.length) { %>
+    <div class="card p-10 text-center">
+      <p class="text-4xl" aria-hidden="true">🐕</p>
+      <p class="font-semibold mt-2">Add your first pet</p>
+      <p class="text-sm text-stone-600 mt-1">We will keep its vaccination and medical history and remind you before each due date.</p>
+    </div>
+  <% } else { %>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <% pets.forEach(function (p) { const next = p.vaccinations[0]; %>
+        <a href="/account/pets/<%= p.id %>" class="card p-5 flex gap-4 hover:shadow-md">
+          <img src="<%= imgSrc(p.photoPath, 400) %>" alt="" width="64" height="64" class="w-16 h-16 rounded-2xl object-cover bg-stone-100">
+          <div>
+            <p class="font-bold text-lg"><%= p.name %></p>
+            <p class="text-sm text-stone-600"><%= p.breed ? p.breed.name : speciesLabel(p.species) %><%= p.dateOfBirth ? ' · ' + ageFrom(p.dateOfBirth) : '' %></p>
+            <% if (next && next.nextDueOn) { %><p class="text-xs mt-1 <%= new Date(next.nextDueOn) < new Date() ? 'text-red-700' : 'text-brand-700' %>">Next vaccine: <%= formatDay(next.nextDueOn) %></p><% } %>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</section>

@@ -1,0 +1,13 @@
+<p class="mb-4">Delivered cash orders not yet reconciled: <strong><%= orders.length %></strong> orders, <strong><%= formatNpr(total) %></strong>.</p>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Order</th><th>Delivered</th><th>Customer</th><th class="text-right">Amount</th><th></th></tr></thead>
+    <tbody>
+      <% if (!orders.length) { %><tr><td colspan="5" class="text-center text-stone-500 py-8">All cash collected. 🎉</td></tr><% } %>
+      <% orders.forEach(function (o) { %>
+        <tr><td><a class="link" href="/admin/orders/<%= o.id %>"><%= o.orderNo %></a></td><td><%= formatDateTime(o.updatedAt) %></td><td><%= o.customerName %> · <%= o.customerPhone %></td><td class="text-right"><%= formatNpr(o.totalPaisa) %></td>
+          <td><form action="/admin/orders/<%= o.id %>/cod" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button name="collected" value="1" class="btn-outline btn-sm">Collected</button></form></td></tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

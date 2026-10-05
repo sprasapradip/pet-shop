@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: everest_kennel
+          MYSQL_USER: ek_user
+          MYSQL_PASSWORD: ek_pass
+        ports: ["3306:3306"]
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1" --health-interval=10s --health-retries=10
+    env:
+      NODE_ENV: test
+      APP_URL: http://localhost:3000
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/everest_kennel
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: everest_kennel
+      SESSION_SECRET: ci_session_secret_ci_session_secret_123
+      CSRF_SECRET: ci_csrf_secret_ci_csrf_secret_1234567
+      ADMIN_NOTIFY_EMAIL: ci@example.com
+      ESEWA_PRODUCT_CODE: EPAYTEST
+      ESEWA_SECRET_KEY: 8gBm/:&EnhH.1/q
+      ESEWA_FORM_URL: https://rc-epay.esewa.com.np/api/epay/main/v2/form
+      ESEWA_STATUS_URL: https://rc.esewa.com.np/api/epay/transaction/status/
+      KHALTI_SECRET_KEY: test
+      KHALTI_BASE_URL: https://dev.khalti.com/api/v2
+      WHATSAPP_NUMBER: "9779800000000"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

@@ -1,0 +1,28 @@
+<div class="flex flex-wrap gap-3 justify-between items-end mb-4">
+  <form method="get" class="flex flex-wrap gap-2 items-end">
+    <div><label class="label" for="lq">Search</label><input id="lq" name="q" value="<%= filters.q %>" class="input h-10 w-56" placeholder="Code, title, breed"></div>
+    <div><label class="label" for="ls">Status</label><select id="ls" name="status" class="input h-10 w-40"><option value="">All</option><% ['AVAILABLE','RESERVED','SOLD','HIDDEN'].forEach(function (s) { %><option <%= filters.status === s ? 'selected' : '' %>><%= s %></option><% }) %></select></div>
+    <button class="btn-outline btn-sm h-10">Filter</button>
+  </form>
+  <a href="/admin/pets/new" class="btn-primary btn-sm">+ New listing</a>
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th></th><th>Code</th><th>Title</th><th>Breed</th><th>Age</th><th class="text-right">Price</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!listings.length) { %><tr><td colspan="7" class="text-center text-stone-500 py-8">No listings.</td></tr><% } %>
+      <% listings.forEach(function (l) { %>
+        <tr>
+          <td class="w-14"><img src="<%= imgSrc(l.images[0] && l.images[0].path, 400) %>" alt="" width="40" height="40" class="w-10 h-10 rounded-lg object-cover bg-stone-100"></td>
+          <td class="font-mono text-xs"><%= l.code %></td>
+          <td><a class="link font-medium" href="/admin/pets/<%= l.id %>/edit"><%= l.title %></a></td>
+          <td><%= l.breed.name %> · <%= l.gender === 'MALE' ? 'M' : 'F' %><%= l.origin === 'IMPORTED' ? ' · imported' : '' %></td>
+          <td><%= ageFrom(l.dateOfBirth) %></td>
+          <td class="text-right"><%= formatNpr(l.pricePaisa) %></td>
+          <td><span class="status status-<%= l.status %>"><%= l.status %></span><% if (l.status === 'RESERVED' && l.reservedUntil) { %><span class="block text-xs text-stone-500">until <%= formatDateTime(l.reservedUntil) %></span><% } %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../../partials/pagination') %>

@@ -1,0 +1,41 @@
+<% const c = customer; %>
+<a href="/admin/customers" class="link text-sm">← Customers</a>
+<div class="grid lg:grid-cols-[1fr_340px] gap-6 mt-4 items-start">
+  <div class="space-y-6">
+    <section class="card p-5">
+      <h2 class="text-xl font-bold"><%= c.name %></h2>
+      <p class="text-sm"><a class="link" href="tel:<%= c.phone %>"><%= c.phone %></a><%= c.email ? ' · ' + c.email : '' %> · joined <%= formatDate(c.createdAt) %><%= c.lastLoginAt ? ' · last login ' + formatDate(c.lastLoginAt) : '' %></p>
+      <div class="grid grid-cols-3 gap-3 mt-4 text-center">
+        <div class="stat"><p class="stat-label">Spent</p><p class="text-lg font-bold"><%= formatNpr(spent) %></p></div>
+        <div class="stat"><p class="stat-label">Orders</p><p class="text-lg font-bold"><%= c.orders.length %></p></div>
+        <div class="stat"><p class="stat-label">Bookings</p><p class="text-lg font-bold"><%= c.bookings.length %></p></div>
+      </div>
+      <% if (guestOrders) { %><p class="hint mt-3"><%= guestOrders %> guest order(s) with the same phone: <a class="link" href="/admin/orders?q=<%= c.phone %>">view</a>.</p><% } %>
+    </section>
+    <section class="card p-5">
+      <h3 class="font-bold">Pets</h3>
+      <ul class="mt-2 text-sm space-y-1"><% c.pets.forEach(function (p) { %><li><a class="link" href="/admin/medical/pets/<%= p.id %>"><%= p.name %></a> · <%= speciesLabel(p.species) %><%= p.breed ? ' · ' + p.breed.name : '' %></li><% }) %><% if (!c.pets.length) { %><li class="text-stone-500">None</li><% } %></ul>
+    </section>
+    <section class="card p-5">
+      <h3 class="font-bold">Orders</h3>
+      <ul class="mt-2 text-sm space-y-1"><% c.orders.forEach(function (o) { %><li><a class="link" href="/admin/orders/<%= o.id %>"><%= o.orderNo %></a> · <%= formatDate(o.createdAt) %> · <%= formatNpr(o.totalPaisa) %> · <span class="status status-<%= o.status %>"><%= orderStatusLabel(o.status) %></span></li><% }) %><% if (!c.orders.length) { %><li class="text-stone-500">None</li><% } %></ul>
+    </section>
+    <section class="card p-5">
+      <h3 class="font-bold">Bookings</h3>
+      <ul class="mt-2 text-sm space-y-1"><% c.bookings.forEach(function (b) { %><li><a class="link" href="/admin/bookings/<%= b.id %>"><%= b.reference %></a> · <%= b.service.name %> · <%= formatDateTime(b.startAt) %> · <span class="status status-<%= b.status %>"><%= bookingStatusLabel(b.status) %></span></li><% }) %><% if (!c.bookings.length) { %><li class="text-stone-500">None</li><% } %></ul>
+    </section>
+  </div>
+  <div class="space-y-4">
+    <form action="/admin/customers/<%= c.id %>/notes" method="post" class="card p-5">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label class="label" for="an">Internal notes</label>
+      <textarea id="an" name="adminNotes" rows="6" class="input"><%= c.adminNotes || '' %></textarea>
+      <button class="btn-primary btn-sm mt-3">Save notes</button>
+    </form>
+    <section class="card p-5 text-sm">
+      <h3 class="font-bold mb-2">Addresses</h3>
+      <% c.addresses.forEach(function (a) { %><p class="mb-1"><%= [a.line1, a.area, a.city, a.district].join(', ') %></p><% }) %>
+      <% if (!c.addresses.length) { %><p class="text-stone-500">None saved</p><% } %>
+    </section>
+  </div>
+</div>

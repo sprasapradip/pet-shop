@@ -1,0 +1,25 @@
+<div class="flex flex-wrap gap-2 mb-3 text-sm">
+  <a href="?status=<%= filters.status %>" class="btn-sm <%= !filters.type ? 'btn-primary' : 'btn-outline' %>">All types</a>
+  <% types.forEach(function (t) { %><a href="?type=<%= t %>&status=<%= filters.status %>" class="btn-sm <%= filters.type === t ? 'btn-primary' : 'btn-outline' %>"><%= titleCase(t) %><%= counts[t] ? ' (' + counts[t] + ')' : '' %></a><% }) %>
+</div>
+<div class="flex flex-wrap gap-2 mb-4 text-sm">
+  <% [['open','Open'],['NEW','New'],['IN_PROGRESS','In progress'],['CLOSED','Closed'],['SPAM','Spam'],['all','All']].forEach(function (s) { %><a href="?type=<%= filters.type %>&status=<%= s[0] %>" class="px-3 py-1 rounded-full <%= filters.status === s[0] ? 'bg-stone-800 text-white' : 'bg-white border border-stone-200' %>"><%= s[1] %></a><% }) %>
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Date</th><th>Type</th><th>From</th><th>Subject</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!inquiries.length) { %><tr><td colspan="5" class="text-center text-stone-500 py-8">Nothing here.</td></tr><% } %>
+      <% inquiries.forEach(function (i) { %>
+        <tr class="<%= i.status === 'NEW' ? 'font-semibold' : '' %>">
+          <td class="whitespace-nowrap"><%= formatDateTime(i.createdAt) %></td>
+          <td><%= titleCase(i.type) %></td>
+          <td><%= i.name %><span class="block text-xs text-stone-500 font-normal"><%= i.phone %></span></td>
+          <td><a class="link" href="/admin/inquiries/<%= i.id %>"><%= i.subject || i.message.slice(0, 60) %></a></td>
+          <td><span class="status status-<%= i.status %>"><%= titleCase(i.status) %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../../partials/pagination') %>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Everest Kennel logo">
+  <rect width="64" height="64" rx="16" fill="#1d5546"/>
+  <path d="M8 46 24 20l8 12 6-8 18 22z" fill="#d5ece4"/>
+  <path d="M24 20l4.5 7-4.5-2-4 3z" fill="#ffffff"/>
+  <path d="M38 24l3.5 4.6L38 27l-3 2.2z" fill="#ffffff"/>
+  <g fill="#f6b445">
+    <ellipse cx="32" cy="49" rx="6" ry="4.6"/>
+    <circle cx="24.5" cy="42" r="2.4"/>
+    <circle cx="29" cy="38.6" r="2.4"/>
+    <circle cx="35" cy="38.6" r="2.4"/>
+    <circle cx="39.5" cy="42" r="2.4"/>
+  </g>
+</svg>

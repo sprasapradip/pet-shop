@@ -1,0 +1,123 @@
+<%
+  const selected = product.variants.find(function (v) { return v.id === selectedVariantId; }) || product.variants[0];
+  const stockInfo = function (v) {
+    const s = stockState(v.stock, v.lowStockAlert);
+    if (s === 'out') return { label: 'Out of stock', cls: 'bg-stone-200 text-stone-700' };
+    if (s === 'low') return { label: 'Only ' + v.stock + ' left', cls: 'bg-amber-100 text-amber-900' };
+    return { label: 'In stock', cls: 'bg-brand-100 text-brand-800' };
+  };
+  const cover = product.images[0];
+  const selOut = !selected || selected.stock <= 0;
+  const selInfo = selected ? stockInfo(selected) : { label: '', cls: '' };
+%>
+<section class="container-x py-8" data-product-record="<%= JSON.stringify({ slug: product.slug, name: product.name, image: cover ? '/' + cover.path + '-400.webp' : null }) %>">
+  <%- include('../partials/breadcrumbs') %>
+  <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+    <div data-gallery>
+      <div class="card overflow-hidden aspect-square bg-stone-100">
+        <img data-gallery-main src="<%= imgSrc(cover && cover.path, 800) %>" <% if (cover) { %>srcset="<%= imgSrcset(cover.path) %>" sizes="(max-width: 1024px) 100vw, 600px"<% } %> alt="<%= cover ? cover.alt : product.name %>" width="800" height="800" class="w-full h-full object-contain" fetchpriority="high">
+      </div>
+      <% if (product.images.length > 1) { %>
+        <div class="mt-3 grid grid-cols-5 gap-2">
+          <% product.images.forEach(function (im, i) { %>
+            <button type="button" class="card overflow-hidden aspect-square aria-[current=true]:ring-2 aria-[current=true]:ring-brand-600" data-gallery-thumb data-full="<%= imgSrc(im.path, 800) %>" data-srcset="<%= imgSrcset(im.path) %>" data-alt="<%= im.alt %>" aria-current="<%= i === 0 %>" aria-label="Show photo <%= i + 1 %>">
+              <img src="<%= imgSrc(im.path, 400) %>" alt="" width="100" height="100" loading="lazy" class="w-full h-full object-cover">
+            </button>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <div>
+      <% if (product.brand) { %><p class="text-sm uppercase tracking-wide text-stone-500"><%= product.brand.name %></p><% } %>
+      <h1 class="text-2xl sm:text-3xl font-extrabold mt-1"><%= product.name %></h1>
+      <% if (product.shortDesc) { %><p class="text-stone-600 mt-3"><%= product.shortDesc %></p><% } %>
+
+      <div class="mt-5 flex items-baseline gap-3">
+        <span class="text-3xl font-extrabold text-brand-800" data-price><%= selected ? formatNpr(selected.pricePaisa) : '' %></span>
+        <span class="text-stone-400 line-through <%= selected && selected.comparePaisa > selected.pricePaisa ? '' : 'hidden' %>" data-compare><%= selected && selected.comparePaisa > selected.pricePaisa ? formatNpr(selected.comparePaisa) : '' %></span>
+        <span class="badge <%= selInfo.cls %>" data-stock><%= selInfo.label %></span>
+      </div>
+
+      <% if (product.variants.length > 1) { %>
+        <fieldset class="mt-6" data-variant-picker>
+          <legend class="label">Choose size</legend>
+          <div class="flex flex-wrap gap-2">
+            <% product.variants.forEach(function (v) { const si = stockInfo(v); %>
+              <div>
+                <input type="radio" name="variantChoice" id="v-<%= v.id %>" value="<%= v.id %>" class="choice-input sr-only" <%= v.id === selected.id ? 'checked' : '' %>
+                  data-price-label="<%= formatNpr(v.pricePaisa) %>" data-compare-label="<%= v.comparePaisa > v.pricePaisa ? formatNpr(v.comparePaisa) : '' %>"
+                  data-stock-label="<%= si.label %>" data-stock-class="<%= si.cls %>" data-out="<%= v.stock <= 0 ? 1 : 0 %>">
+                <label for="v-<%= v.id %>" class="choice-card !p-3 !h-auto min-w-[88px] text-center <%= v.stock <= 0 ? 'opacity-60' : '' %>">
+                  <span class="block font-semibold"><%= v.label %></span>
+                  <span class="block text-xs text-stone-500"><%= formatNpr(v.pricePaisa) %></span>
+                </label>
+              </div>
+            <% }) %>
+          </div>
+          <noscript><p class="hint mt-2">Selected: <strong><%= selected.label %></strong>. Change size:
+            <% product.variants.forEach(function (v) { %><a class="link mr-2" href="?variant=<%= v.id %>"><%= v.label %></a><% }) %></p></noscript>
+        </fieldset>
+      <% } %>
+
+      <div class="mt-6" data-when-in <%= selOut ? 'hidden' : '' %>>
+        <form action="/cart/add" method="post" class="flex gap-3" data-add-to-cart>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="variantId" value="<%= selected ? selected.id : '' %>" data-variant-field>
+          <label for="qty" class="sr-only">Quantity</label>
+          <input id="qty" name="quantity" type="number" min="1" max="50" value="1" class="input w-20 text-center">
+          <button class="btn-primary flex-1">Add to cart</button>
+        </form>
+        <a href="<%= whatsappLink('Hello, I want to order ' + product.name + '. Is it available?') %>" class="btn-wa w-full mt-3" target="_blank" rel="noopener">💬 Order on WhatsApp</a>
+      </div>
+
+      <div class="mt-6 card p-5 bg-stone-50" data-when-out <%= selOut ? '' : 'hidden' %>>
+        <p class="font-semibold">Out of stock: notify me</p>
+        <p class="text-sm text-stone-600">We will SMS you when it is back.</p>
+        <form action="/shop/notify" method="post" class="mt-3 grid sm:grid-cols-[1fr_1fr_auto] gap-2">
+          <%- include('../partials/form-guard') %>
+          <input type="hidden" name="variantId" value="<%= selected ? selected.id : '' %>" data-variant-field>
+          <label class="sr-only" for="nn">Your name</label>
+          <input id="nn" name="name" class="input h-10" placeholder="Your name" required maxlength="120">
+          <label class="sr-only" for="np">Phone</label>
+          <input id="np" name="phone" type="tel" class="input h-10" placeholder="98XXXXXXXX" required>
+          <button class="btn-outline btn-sm h-10">Notify me</button>
+        </form>
+      </div>
+
+      <ul class="mt-6 grid sm:grid-cols-3 gap-2 text-sm">
+        <li class="chip justify-center py-2">🚚 Valley delivery</li>
+        <li class="chip justify-center py-2">💵 Cash on delivery</li>
+        <li class="chip justify-center py-2">📱 eSewa / Khalti</li>
+      </ul>
+
+      <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+        <dt class="text-stone-500">Category</dt><dd><a class="link" href="/shop/category/<%= product.category.slug %>"><%= product.category.name %></a></dd>
+        <% if (product.species) { %><dt class="text-stone-500">For</dt><dd><%= speciesLabel(product.species) %>s</dd><% } %>
+        <% if (product.lifeStage) { %><dt class="text-stone-500">Life stage</dt><dd class="capitalize"><%= product.lifeStage %></dd><% } %>
+        <% if (selected) { %><dt class="text-stone-500">SKU</dt><dd><%= selected.sku %></dd><% } %>
+      </dl>
+    </div>
+  </div>
+
+  <% if (product.description) { %>
+    <div class="mt-12 max-w-3xl">
+      <h2 class="text-xl font-bold">Description</h2>
+      <div class="prose-ek whitespace-pre-line mt-3"><%= product.description %></div>
+    </div>
+  <% } %>
+
+  <% if (related.length) { %>
+    <div class="mt-14">
+      <h2 class="text-xl font-bold">You may also like</h2>
+      <div class="mt-5 grid gap-4 grid-cols-2 md:grid-cols-4">
+        <% related.forEach(function (p) { %><%- include('../partials/product-card', { p: p }) %><% }) %>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="mt-14" data-recently-viewed hidden>
+    <h2 class="text-xl font-bold">Recently viewed</h2>
+    <div class="mt-4 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" data-grid></div>
+  </div>
+</section>

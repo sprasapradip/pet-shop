@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+public/uploads/*
+!public/uploads/.gitkeep
+public/assets/css/app.css
+public/sitemap.xml
+storage/logs/*
+!storage/logs/.gitkeep
+coverage/
+playwright-report/
+test-results/

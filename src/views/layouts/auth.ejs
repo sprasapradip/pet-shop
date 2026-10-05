@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d5546">
+  <%- include('../partials/seo') %>
+  <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand-50 via-stone-50 to-amber-50 text-stone-800 antialiased">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <main id="main" class="min-h-screen flex flex-col items-center justify-center px-4 py-10">
+    <a href="/" class="flex items-center gap-2 mb-6 text-brand-800 font-bold text-xl">
+      <img src="/assets/img/logo.svg" alt="" width="40" height="40"> <%= business.name %>
+    </a>
+    <div class="w-full max-w-md">
+      <%- include('../partials/flash') %>
+      <div class="card p-6 sm:p-8"><%- body %></div>
+      <p class="text-center text-sm text-stone-500 mt-6"><a class="link" href="/">← Back to the shop</a></p>
+    </div>
+  </main>
+</body>
+</html>

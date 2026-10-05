@@ -1,0 +1,24 @@
+<form method="get" class="flex gap-2 items-end mb-6">
+  <div><label class="label" for="mq">Find a pet</label><input id="mq" name="q" value="<%= q %>" class="input h-10 w-72" placeholder="Pet name, owner name or phone"></div>
+  <button class="btn-primary btn-sm h-10">Search</button>
+</form>
+<% if (q) { %>
+  <div class="table-wrap mb-8">
+    <table class="table">
+      <thead><tr><th>Pet</th><th>Species / breed</th><th>Owner</th><th>Phone</th></tr></thead>
+      <tbody>
+        <% if (!pets.length) { %><tr><td colspan="4" class="text-center text-stone-500 py-6">No pets found. Pets are added by customers in their account.</td></tr><% } %>
+        <% pets.forEach(function (p) { %><tr><td><a class="link font-medium" href="/admin/medical/pets/<%= p.id %>"><%= p.name %></a></td><td><%= speciesLabel(p.species) %><%= p.breed ? ' · ' + p.breed.name : '' %></td><td><%= p.user.name %></td><td><%= p.user.phone %></td></tr><% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+<section class="card p-5">
+  <h2 class="font-bold">Vaccinations due in the next 14 days</h2>
+  <% if (!dueSoon.length) { %><p class="text-sm text-stone-500 mt-2">None.</p><% } %>
+  <ul class="mt-3 divide-y divide-stone-100 text-sm">
+    <% dueSoon.forEach(function (v) { %>
+      <li class="py-2 flex justify-between gap-3"><span><a class="link" href="/admin/medical/pets/<%= v.pet.id %>"><%= v.pet.name %></a> · <%= v.vaccine %> · owner <%= v.pet.user.name %> (<%= v.pet.user.phone %>)</span><span class="whitespace-nowrap"><%= formatDay(v.nextDueOn) %> <%= v.reminderSent ? '✓ reminded' : '' %></span></li>
+    <% }) %>
+  </ul>
+</section>

@@ -1,0 +1,30 @@
+<% const e = editing; const v = function (k, fb) { return oldValue(k, e ? (e[k] === null ? '' : e[k]) : (fb === undefined ? '' : fb)); }; %>
+<div class="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Slug</th><th>Parent</th><th class="text-right">Products</th><th class="text-right">Order</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% categories.forEach(function (c) { %>
+          <tr>
+            <td class="font-medium"><a class="link" href="?edit=<%= c.id %>"><%= c.name %></a></td><td class="text-stone-500"><%= c.slug %></td><td><%= c.parent ? c.parent.name : '' %></td>
+            <td class="text-right"><%= c._count.products %></td><td class="text-right"><%= c.sortOrder %></td><td><%= c.isActive ? 'Active' : 'Hidden' %></td>
+            <td><form action="/admin/categories/<%= c.id %>/delete" method="post" data-confirm="Delete <%= c.name %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-red-700 text-xs hover:underline">Delete</button></form></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="<%= e ? '/admin/categories/' + e.id : '/admin/categories' %>" method="post" class="card p-5">
+    <h2 class="font-bold mb-4"><%= e ? 'Edit ' + e.name : 'New category' %></h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'name', label: 'Name', required: true, value: v('name') }) %>
+    <%- include('../partials/field', { name: 'slug', label: 'Slug', value: v('slug'), hint: 'Empty = generated' }) %>
+    <%- include('../partials/field', { name: 'parentId', label: 'Parent', type: 'select', value: v('parentId'), options: [['','None']].concat(categories.filter(function (c) { return !e || c.id !== e.id; }).map(function (c) { return [c.id, c.name]; })) }) %>
+    <%- include('../partials/field', { name: 'description', label: 'Description', type: 'textarea', rows: 3, value: v('description') }) %>
+    <%- include('../partials/field', { name: 'sortOrder', label: 'Sort order', type: 'number', value: v('sortOrder', 0) }) %>
+    <%- include('../partials/field', { name: 'metaTitle', label: 'Meta title', value: v('metaTitle'), attrs: 'maxlength="70"' }) %>
+    <%- include('../partials/field', { name: 'metaDesc', label: 'Meta description', value: v('metaDesc'), attrs: 'maxlength="160"' }) %>
+    <label class="flex items-center gap-2 text-sm mb-4"><input type="checkbox" name="isActive" class="checkbox" <%= (e ? e.isActive : true) ? 'checked' : '' %>> Active</label>
+    <div class="flex gap-2"><button class="btn-primary btn-sm">Save</button><% if (e) { %><a href="/admin/categories" class="btn-ghost btn-sm">New instead</a><% } %></div>
+  </form>
+</div>

@@ -1,0 +1,24 @@
+<% const e = editing; %>
+<div class="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Group</th><th>Question</th><th class="text-right">Order</th><th></th></tr></thead>
+      <tbody>
+        <% faqs.forEach(function (f) { %>
+          <tr><td class="text-xs whitespace-nowrap"><%= f.group %></td><td><a class="link" href="?edit=<%= f.id %>"><%= f.question %></a></td><td class="text-right"><%= f.sortOrder %></td>
+            <td><form action="/admin/faqs/<%= f.id %>/delete" method="post" data-confirm="Delete this FAQ?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="<%= e ? '/admin/faqs/' + e.id : '/admin/faqs' %>" method="post" class="card p-5">
+    <h2 class="font-bold mb-4"><%= e ? 'Edit FAQ' : 'New FAQ' %></h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../../partials/field', { name: 'group', label: 'Group', required: true, value: oldValue('group', e ? e.group : 'general'), attrs: 'list="faq-groups"', hint: 'general, shop, pets, boarding… or service:VACCINATION to show on a service page' }) %>
+    <datalist id="faq-groups"><option>general</option><option>shop</option><option>pets</option><option>shelter</option><option>service:HOUSE_CALL</option><option>service:VACCINATION</option><option>service:TREATMENT</option><option>service:BOARDING</option><option>service:TRAINING</option><option>service:MATING</option></datalist>
+    <%- include('../../partials/field', { name: 'question', label: 'Question', required: true, value: oldValue('question', e ? e.question : '') }) %>
+    <%- include('../../partials/field', { name: 'answer', label: 'Answer', type: 'textarea', rows: 5, required: true, value: oldValue('answer', e ? e.answer : '') }) %>
+    <%- include('../../partials/field', { name: 'sortOrder', label: 'Order', type: 'number', value: oldValue('sortOrder', e ? e.sortOrder : 0) }) %>
+    <div class="flex gap-2"><button class="btn-primary btn-sm">Save</button><% if (e) { %><a href="/admin/faqs" class="btn-ghost btn-sm">New instead</a><% } %></div>
+  </form>
+</div>

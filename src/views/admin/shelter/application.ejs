@@ -1,0 +1,21 @@
+<% const ans = application.answers || {}; const labels = { homeType: 'Home type', ownership: 'Own / rent', landlordAllows: 'Landlord allows pets', household: 'Household', otherPets: 'Other pets', experience: 'Experience', hoursAlone: 'Hours alone per day', whyAdopt: 'Why adopt', homeVisitOk: 'Agrees to home check' }; %>
+<a href="/admin/shelter/applications" class="link text-sm">← Applications</a>
+<div class="grid lg:grid-cols-[1fr_320px] gap-6 mt-4 items-start">
+  <section class="card p-5">
+    <h2 class="text-xl font-bold"><%= application.name %> → <a class="link" href="/admin/shelter/<%= application.animal.id %>/edit"><%= application.animal.name %></a></h2>
+    <p class="text-sm text-stone-500"><%= formatDateTime(application.createdAt) %></p>
+    <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+      <dt class="text-stone-500">Phone</dt><dd><a class="link" href="tel:<%= application.phone %>"><%= application.phone %></a></dd>
+      <dt class="text-stone-500">Address</dt><dd><%= application.address %></dd>
+      <% Object.keys(labels).forEach(function (k) { if (ans[k] === undefined || ans[k] === '') return; %><dt class="text-stone-500"><%= labels[k] %></dt><dd class="whitespace-pre-line"><%= ans[k] === 'on' ? 'Yes' : ans[k] %></dd><% }) %>
+    </dl>
+  </section>
+  <form action="/admin/shelter/applications/<%= application.id %>/status" method="post" class="card p-5">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <p class="mb-3">Current: <span class="status status-<%= application.status %>"><%= titleCase(application.status) %></span></p>
+    <label class="label" for="as">Change status</label>
+    <select id="as" name="status" class="input"><% ['NEW','HOME_CHECK','APPROVED','REJECTED','WITHDRAWN'].forEach(function (s) { %><option value="<%= s %>" <%= application.status === s ? 'selected' : '' %>><%= titleCase(s) %></option><% }) %></select>
+    <p class="hint mt-2">Home check marks the animal “adoption pending”. Approved marks it adopted.</p>
+    <button class="btn-primary w-full mt-4">Update</button>
+  </form>
+</div>

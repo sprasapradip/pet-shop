@@ -1,0 +1,30 @@
+<div class="flex flex-wrap gap-2 justify-between mb-4">
+  <div class="flex flex-wrap gap-2 text-sm">
+    <a href="/admin/shelter" class="btn-sm <%= !status ? 'btn-primary' : 'btn-outline' %>">All</a>
+    <% ['IN_CARE','ADOPTABLE','ADOPTION_PENDING','ADOPTED','DECEASED'].forEach(function (s) { %><a href="?status=<%= s %>" class="btn-sm <%= status === s ? 'btn-primary' : 'btn-outline' %>"><%= titleCase(s) %></a><% }) %>
+  </div>
+  <div class="flex gap-2">
+    <a href="/admin/shelter/applications" class="btn-outline btn-sm">Applications (<%= newApplications %> new)</a>
+    <a href="/admin/inquiries?type=SHELTER_REPORT" class="btn-outline btn-sm">Reports (<%= newReports %> new)</a>
+    <a href="/admin/shelter/new" class="btn-primary btn-sm">+ Add animal</a>
+  </div>
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th></th><th>Name</th><th>Species</th><th>Intake</th><th>Health</th><th>Applications</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!animals.length) { %><tr><td colspan="7" class="text-center text-stone-500 py-8">No animals.</td></tr><% } %>
+      <% animals.forEach(function (a) { %>
+        <tr>
+          <td class="w-14"><img src="<%= imgSrc(a.photoPath, 400) %>" alt="" width="40" height="40" class="w-10 h-10 rounded-lg object-cover bg-stone-100"></td>
+          <td><a class="link font-medium" href="/admin/shelter/<%= a.id %>/edit"><%= a.name %></a></td>
+          <td><%= speciesLabel(a.species) %><%= a.breedText ? ' · ' + a.breedText : '' %></td>
+          <td><%= formatDay(a.intakeDate) %></td>
+          <td class="text-xs"><%= a.vaccinated ? 'Vaccinated' : 'Not vaccinated' %> · <%= a.sterilized ? 'Sterilized' : 'Not sterilized' %></td>
+          <td><%= a._count.applications %></td>
+          <td><span class="status status-<%= a.status %>"><%= titleCase(a.status) %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

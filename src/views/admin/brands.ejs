@@ -1,0 +1,21 @@
+<% const e = editing; %>
+<div class="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Brand</th><th>Slug</th><th class="text-right">Products</th><th></th></tr></thead>
+      <tbody>
+        <% brands.forEach(function (b) { %>
+          <tr><td class="font-medium"><a class="link" href="?edit=<%= b.id %>"><%= b.name %></a></td><td class="text-stone-500"><%= b.slug %></td><td class="text-right"><%= b._count.products %></td>
+            <td><form action="/admin/brands/<%= b.id %>/delete" method="post" data-confirm="Delete <%= b.name %>?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-red-700 text-xs hover:underline">Delete</button></form></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="<%= e ? '/admin/brands/' + e.id : '/admin/brands' %>" method="post" class="card p-5">
+    <h2 class="font-bold mb-4"><%= e ? 'Edit ' + e.name : 'New brand' %></h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'name', label: 'Name', required: true, value: oldValue('name', e ? e.name : '') }) %>
+    <%- include('../partials/field', { name: 'slug', label: 'Slug', value: oldValue('slug', e ? e.slug : ''), hint: 'Empty = generated' }) %>
+    <div class="flex gap-2"><button class="btn-primary btn-sm">Save</button><% if (e) { %><a href="/admin/brands" class="btn-ghost btn-sm">New instead</a><% } %></div>
+  </form>
+</div>

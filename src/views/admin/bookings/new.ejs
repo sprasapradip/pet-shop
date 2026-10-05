@@ -1,0 +1,20 @@
+<a href="/admin/bookings" class="link text-sm">← All bookings</a>
+<form action="/admin/bookings" method="post" class="card p-6 mt-4 max-w-3xl">
+  <p class="text-sm text-stone-600 mb-4">For phone and walk-in customers. No SMS verification or lead time; the booking is created as confirmed. Capacity rules still apply. If the phone matches a customer account, the booking is linked to it.</p>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="grid sm:grid-cols-2 gap-x-4">
+    <%- include('../../partials/field', { name: 'serviceType', label: 'Service', type: 'select', value: oldValue('serviceType', serviceType), options: services.map(function (s) { return [s.type, s.name]; }) }) %>
+    <%- include('../../partials/field', { name: 'date', label: 'Date (check in for boarding)', type: 'date', required: true, value: oldValue('date', today) }) %>
+    <%- include('../../partials/field', { name: 'slot', label: 'Time (HH:MM, from the slot list)', hint: 'Not needed for boarding', attrs: 'pattern="[0-9]{2}:[0-9]{2}" placeholder="10:00"' }) %>
+    <%- include('../../partials/field', { name: 'endDate', label: 'Check out (boarding only)', type: 'date' }) %>
+    <%- include('../../partials/field', { name: 'contactName', label: 'Customer name', required: true }) %>
+    <%- include('../../partials/field', { name: 'contactPhone', label: 'Customer phone', type: 'tel', required: true }) %>
+  </div>
+  <%- include('../../partials/field', { name: 'petSummary', label: 'Pet', required: true, hint: 'Species, breed, age, name' }) %>
+  <div class="grid sm:grid-cols-[200px_1fr] gap-x-4">
+    <%- include('../../partials/field', { name: 'district', label: 'District (house call)', type: 'select', options: [['','—']].concat(districts.map(function (d) { return [d, d]; })) }) %>
+    <%- include('../../partials/field', { name: 'addressText', label: 'Address (house call)' }) %>
+  </div>
+  <%- include('../../partials/field', { name: 'notes', label: 'Notes', type: 'textarea', rows: 2 }) %>
+  <button class="btn-primary">Create booking</button>
+</form>

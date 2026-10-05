@@ -1,0 +1,15 @@
+<h1 class="text-2xl font-extrabold">Create your account</h1>
+<p class="text-sm text-stone-600 mt-1">Get vaccination reminders, faster checkout and booking history.</p>
+<form action="/register" method="post" class="mt-6" novalidate>
+  <%- include('../partials/form-guard') %>
+  <input type="hidden" name="next" value="<%= next %>">
+  <%- include('../partials/field', { name: 'name', label: 'Full name', required: true, attrs: 'autocomplete="name"' }) %>
+  <%- include('../partials/field', { name: 'phone', label: 'Mobile number', type: 'tel', required: true, attrs: 'autocomplete="tel" inputmode="tel"', hint: 'Used to log in and for SMS reminders' }) %>
+  <%- include('../partials/field', { name: 'email', label: 'Email (optional)', type: 'email', attrs: 'autocomplete="email"' }) %>
+  <%- include('../partials/field', { name: 'password', label: 'Password', type: 'password', required: true, attrs: 'autocomplete="new-password" minlength="8"', hint: 'At least 8 characters' }) %>
+  <%- include('../partials/field', { name: 'passwordConfirm', label: 'Confirm password', type: 'password', required: true, attrs: 'autocomplete="new-password"' }) %>
+  <label class="flex items-start gap-2 text-sm mb-1"><input type="checkbox" name="acceptTerms" class="checkbox mt-0.5" required> <span>I accept the <a class="link" href="/terms" target="_blank">terms</a> and <a class="link" href="/privacy-policy" target="_blank">privacy policy</a></span></label>
+  <% if (fieldError('acceptTerms')) { %><p class="field-error"><%= fieldError('acceptTerms') %></p><% } %>
+  <button class="btn-primary w-full mt-4">Create account</button>
+</form>
+<p class="mt-5 text-sm text-center">Already have an account? <a class="link" href="/login">Log in</a></p>

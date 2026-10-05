@@ -1,0 +1,31 @@
+<div class="flex flex-wrap gap-2 mb-4 text-sm">
+  <a href="/admin/orders" class="btn-sm <%= !filters.status ? 'btn-primary' : 'btn-outline' %>">All</a>
+  <% statuses.forEach(function (s) { %><a href="?status=<%= s %>" class="btn-sm <%= filters.status === s ? 'btn-primary' : 'btn-outline' %>"><%= orderStatusLabel(s) %> <span class="opacity-70">(<%= counts[s] || 0 %>)</span></a><% }) %>
+  <a href="/admin/orders/cod" class="btn-sm btn-outline ml-auto">COD to collect</a>
+</div>
+<form method="get" class="flex flex-wrap gap-2 items-end mb-4">
+  <input type="hidden" name="status" value="<%= filters.status %>">
+  <div><label class="label" for="oq">Search</label><input id="oq" name="q" value="<%= filters.q %>" class="input h-10 w-64" placeholder="Order no, phone, name"></div>
+  <div><label class="label" for="om">Payment</label><select id="om" name="method" class="input h-10 w-36"><option value="">All</option><% ['COD','ESEWA','KHALTI'].forEach(function (m) { %><option <%= filters.method === m ? 'selected' : '' %>><%= m %></option><% }) %></select></div>
+  <button class="btn-outline btn-sm h-10">Filter</button>
+</form>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Items</th><th class="text-right">Total</th><th>Payment</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!orders.length) { %><tr><td colspan="7" class="text-center text-stone-500 py-8">No orders.</td></tr><% } %>
+      <% orders.forEach(function (o) { %>
+        <tr>
+          <td><a class="link font-medium" href="/admin/orders/<%= o.id %>"><%= o.orderNo %></a></td>
+          <td class="whitespace-nowrap"><%= formatDateTime(o.createdAt) %></td>
+          <td><%= o.customerName %><span class="block text-xs text-stone-500"><%= o.customerPhone %></span></td>
+          <td><%= o._count.items %></td>
+          <td class="text-right"><%= formatNpr(o.totalPaisa) %></td>
+          <td><%= o.paymentMethod %><%= o.paymentMethod === 'COD' && o.codCollected ? ' ✓' : '' %></td>
+          <td><span class="status status-<%= o.status %>"><%= orderStatusLabel(o.status) %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../../partials/pagination') %>

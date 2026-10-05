@@ -1,0 +1,21 @@
+<%- include('_policy-head') %>
+<section class="section"><div class="container-x max-w-3xl prose-ek">
+  <h2>What we collect</h2>
+  <p>We collect only what we need to serve you: your name, phone number, email (optional), delivery or house call address, details about your pets (breed, age, vaccination and medical records), and your orders and bookings. When you pay online, eSewa or Khalti process your payment; we never see or store your wallet PIN or card details.</p>
+  <h2>How we use it</h2>
+  <ul>
+    <li>To deliver orders, confirm bookings and contact you about them by phone, SMS, WhatsApp or email.</li>
+    <li>To send vaccination reminders for pets in your account (you can remove a pet at any time).</li>
+    <li>To keep health records for animals we sell, as required by good veterinary practice.</li>
+    <li>To prevent fraud and abuse (for example rate limiting and spam checks on forms).</li>
+  </ul>
+  <p>We do not sell your data and we do not use it for third party advertising.</p>
+  <h2>Cookies</h2>
+  <p>We use essential cookies only: a session cookie to keep you logged in and remember your cart, and a security cookie that protects forms. Your list of recently viewed products is stored only in your browser. The map on our contact page loads from Google only when you click “Show map”.</p>
+  <h2>Sharing</h2>
+  <p>We share data only with service providers who help us run the shop: payment gateways (eSewa, Khalti), our SMS provider, our email provider and delivery partners. They may use it only to provide that service.</p>
+  <h2>How long we keep it</h2>
+  <p>Order and payment records are kept as required for accounting and tax. Other personal data is kept while your account is active.</p>
+  <h2>Your choices</h2>
+  <p>You can view and edit your profile and pets in <a href="/account">My account</a>, and delete your account from the profile page. When you delete your account we remove your pets, addresses and contact details, keeping only anonymised order records required by law. For any request, contact us at <a href="<%= telLink() %>"><%= business.landlineDisplay %></a><% if (settings.business.email) { %> or <a href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a><% } %>.</p>
+</div></section>

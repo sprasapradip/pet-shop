@@ -1,0 +1,40 @@
+<div class="flex gap-2 mb-4 text-sm">
+  <a href="/admin/users" class="btn-sm <%= !role ? 'btn-primary' : 'btn-outline' %>">Staff</a>
+  <a href="?role=CUSTOMER" class="btn-sm <%= role === 'CUSTOMER' ? 'btn-primary' : 'btn-outline' %>">Customers</a>
+</div>
+<div class="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Phone / email</th><th>Last login</th><th>Role and access</th></tr></thead>
+      <tbody>
+        <% users.forEach(function (u) { %>
+          <tr>
+            <td class="font-medium"><%= u.name %></td>
+            <td><%= u.phone %><span class="block text-xs text-stone-500"><%= u.email || '' %></span></td>
+            <td><%= u.lastLoginAt ? formatDateTime(u.lastLoginAt) : 'Never' %></td>
+            <td>
+              <form action="/admin/users/<%= u.id %>" method="post" class="flex flex-wrap gap-2 items-center">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <label class="sr-only" for="r-<%= u.id %>">Role</label>
+                <select id="r-<%= u.id %>" name="role" class="input h-8 w-28 text-sm"><% ['CUSTOMER','STAFF','VET','ADMIN'].forEach(function (r) { %><option <%= u.role === r ? 'selected' : '' %>><%= r %></option><% }) %></select>
+                <label class="flex items-center gap-1 text-xs"><input type="checkbox" name="isActive" class="checkbox" <%= u.isActive ? 'checked' : '' %>> Active</label>
+                <button class="btn-outline btn-sm h-8">Save</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <form action="/admin/users" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">Add staff member</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'name', label: 'Name', required: true }) %>
+    <%- include('../partials/field', { name: 'phone', label: 'Phone', type: 'tel', required: true }) %>
+    <%- include('../partials/field', { name: 'email', label: 'Email', type: 'email' }) %>
+    <%- include('../partials/field', { name: 'role', label: 'Role', type: 'select', value: oldValue('role', 'STAFF'), options: [['STAFF','Staff'],['VET','Vet'],['ADMIN','Admin']] }) %>
+    <%- include('../partials/field', { name: 'password', label: 'Temporary password', type: 'password', required: true, attrs: 'autocomplete="new-password" minlength="8"' }) %>
+    <button class="btn-primary btn-sm">Add user</button>
+    <p class="hint mt-2">House call capacity equals the number of active vets.</p>
+  </form>
+</div>

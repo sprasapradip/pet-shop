@@ -1,0 +1,15 @@
+<div class="flex justify-end mb-4"><a href="/admin/posts/new" class="btn-primary btn-sm">+ New post</a></div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Title</th><th>Slug</th><th>Published</th><th></th></tr></thead>
+    <tbody>
+      <% if (!posts.length) { %><tr><td colspan="4" class="text-center text-stone-500 py-8">No posts yet.</td></tr><% } %>
+      <% posts.forEach(function (p) { const live = p.publishedAt && new Date(p.publishedAt) <= new Date(); %>
+        <tr><td><a class="link font-medium" href="/admin/posts/<%= p.id %>/edit"><%= p.title %></a></td><td class="text-stone-500 text-xs"><%= p.slug %></td>
+          <td><%= p.publishedAt ? formatDate(p.publishedAt) + (live ? '' : ' (scheduled)') : 'Draft' %></td>
+          <td class="whitespace-nowrap"><% if (live) { %><a class="link text-xs mr-3" href="/blog/<%= p.slug %>" target="_blank">View</a><% } %>
+            <form action="/admin/posts/<%= p.id %>/delete" method="post" class="inline" data-confirm="Delete this post?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></td></tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

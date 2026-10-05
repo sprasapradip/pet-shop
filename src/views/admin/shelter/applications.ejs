@@ -1,0 +1,16 @@
+<div class="flex flex-wrap gap-2 mb-4 text-sm">
+  <a href="/admin/shelter" class="link mr-4">← Shelter</a>
+  <a href="/admin/shelter/applications" class="btn-sm <%= !status ? 'btn-primary' : 'btn-outline' %>">All</a>
+  <% ['NEW','HOME_CHECK','APPROVED','REJECTED','WITHDRAWN'].forEach(function (s) { %><a href="?status=<%= s %>" class="btn-sm <%= status === s ? 'btn-primary' : 'btn-outline' %>"><%= titleCase(s) %></a><% }) %>
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Date</th><th>Applicant</th><th>Animal</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!applications.length) { %><tr><td colspan="4" class="text-center text-stone-500 py-8">No applications.</td></tr><% } %>
+      <% applications.forEach(function (ap) { %>
+        <tr><td><%= formatDateTime(ap.createdAt) %></td><td><a class="link" href="/admin/shelter/applications/<%= ap.id %>"><%= ap.name %></a><span class="block text-xs text-stone-500"><%= ap.phone %></span></td><td><%= ap.animal.name %></td><td><span class="status status-<%= ap.status %>"><%= titleCase(ap.status) %></span></td></tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,8 @@
+<h1 class="text-2xl font-extrabold">Forgot your password?</h1>
+<p class="text-sm text-stone-600 mt-1">Enter your phone or email and we will send you a reset link by SMS and email.</p>
+<form action="/forgot-password" method="post" class="mt-6" novalidate>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <%- include('../partials/field', { name: 'identifier', label: 'Phone or email', required: true, attrs: 'autocomplete="username" autofocus' }) %>
+  <button class="btn-primary w-full">Send reset link</button>
+</form>
+<p class="mt-5 text-sm text-center"><a class="link" href="/login">Back to log in</a></p>

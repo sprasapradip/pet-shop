@@ -1,0 +1,25 @@
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <% if (!orders.length) { %>
+    <div class="card p-10 text-center"><p class="font-semibold">No orders yet</p><a href="/shop" class="btn-primary mt-4">Start shopping</a></div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Order</th><th>Date</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <% orders.forEach(function (o) { %>
+            <tr>
+              <td class="font-medium"><a class="link" href="/account/orders/<%= o.orderNo %>"><%= o.orderNo %></a></td>
+              <td><%= formatDate(o.createdAt) %></td>
+              <td><%= o._count.items %></td>
+              <td><%= formatNpr(o.totalPaisa) %></td>
+              <td><%= o.paymentMethod === 'COD' ? 'Cash' : o.paymentMethod %></td>
+              <td><span class="status status-<%= o.status %>"><%= orderStatusLabel(o.status) %></span></td>
+              <td><a class="link text-sm" href="/account/orders/<%= o.orderNo %>/invoice">Invoice</a></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</section>

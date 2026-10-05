@@ -1,0 +1,47 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: mysql
+      DATABASE_URL: mysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}
+    ports: ["3000:3000"]
+    volumes:
+      - uploads:/app/public/uploads
+      - logs:/app/storage/logs
+    depends_on:
+      mysql: { condition: service_healthy }
+    restart: unless-stopped
+
+  worker:
+    build: .
+    env_file: .env
+    environment:
+      DB_HOST: mysql
+      DATABASE_URL: mysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}
+    command: ["node", "dist/worker.js"]
+    volumes:
+      - uploads:/app/public/uploads
+    depends_on:
+      mysql: { condition: service_healthy }
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}_root
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes: [dbdata:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  dbdata:
+  uploads:
+  logs:

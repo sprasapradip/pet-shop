@@ -1,0 +1,54 @@
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+  <% [['Arriving today', arrivals, 'in'], ['Leaving today', departures, 'out'], ['In the kennel now', inHouse, null]].forEach(function (g) { %>
+    <section class="card p-4">
+      <h2 class="font-bold text-sm"><%= g[0] %> (<%= g[1].length %>)</h2>
+      <ul class="mt-2 space-y-2 text-sm">
+        <% g[1].forEach(function (s) { %>
+          <li class="flex justify-between items-center gap-2"><a class="link" href="/admin/bookings/<%= s.id %>"><%= s.contactName %> · <%= s.petSummary %></a>
+            <% if (g[2]) { %><form action="/admin/boarding/<%= s.id %>/check" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button name="action" value="<%= g[2] %>" class="btn-outline btn-sm h-8">Check <%= g[2] %></button></form><% } %></li>
+        <% }) %>
+      </ul>
+    </section>
+  <% }) %>
+</div>
+
+<div class="flex items-center justify-between mb-3">
+  <a href="?start=<%= prev %>" class="btn-outline btn-sm">← Earlier</a>
+  <h2 class="font-bold">Occupancy from <%= formatDay(new Date(start + 'T00:00:00Z')) %> (nights)</h2>
+  <a href="?start=<%= next %>" class="btn-outline btn-sm">Later →</a>
+</div>
+<div class="table-wrap">
+  <table class="text-xs w-full border-collapse">
+    <thead><tr><th class="sticky left-0 bg-stone-50 px-2 py-2 text-left">Kennel</th><% days.forEach(function (d) { %><th class="px-1 py-2 font-medium text-stone-500 min-w-[44px]"><%= d.slice(8) %>/<%= d.slice(5, 7) %></th><% }) %></tr></thead>
+    <tbody>
+      <% units.forEach(function (u) { const row = grid.get(u.id); %>
+        <tr class="border-t border-stone-100">
+          <th class="sticky left-0 bg-white px-2 py-1.5 text-left whitespace-nowrap <%= u.isActive ? '' : 'line-through text-stone-400' %>"><%= u.code %> <span class="font-normal text-stone-500"><%= u.size.toLowerCase() %></span></th>
+          <% days.forEach(function (d) { const s = row && row.get(d); %>
+            <td class="p-0.5"><% if (s) { %><a href="/admin/bookings/<%= s.id %>" title="<%= s.contactName %>: <%= s.petSummary %>" class="block h-7 rounded status-<%= s.status %> text-[10px] leading-7 text-center truncate px-1"><%= s.contactName.split(' ')[0] %></a><% } else { %><span class="block h-7 rounded bg-stone-50"></span><% } %></td>
+          <% }) %>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<section class="card p-5 mt-6" id="units">
+  <h2 class="font-bold mb-3">Kennel units</h2>
+  <% if (role === 'ADMIN') { %>
+    <div class="space-y-2">
+      <% units.concat([null]).forEach(function (u) { %>
+        <form action="<%= u ? '/admin/boarding/units/' + u.id : '/admin/boarding/units' %>" method="post" class="flex flex-wrap gap-2 items-end">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div><label class="label text-xs" for="uc-<%= u ? u.id : 'new' %>">Code</label><input id="uc-<%= u ? u.id : 'new' %>" name="code" value="<%= u ? u.code : '' %>" class="input h-9 w-24" required placeholder="K11"></div>
+          <div><label class="label text-xs" for="us-<%= u ? u.id : 'new' %>">Size</label><select id="us-<%= u ? u.id : 'new' %>" name="size" class="input h-9 w-32"><% ['SMALL','MEDIUM','LARGE'].forEach(function (s) { %><option <%= u && u.size === s ? 'selected' : '' %>><%= s %></option><% }) %></select></div>
+          <div><label class="label text-xs" for="ur-<%= u ? u.id : 'new' %>">Rate / night (Rs)</label><input id="ur-<%= u ? u.id : 'new' %>" name="dailyRate" type="number" min="0" value="<%= u ? u.dailyRate / 100 : '' %>" class="input h-9 w-32" required></div>
+          <label class="flex items-center gap-1 text-sm h-9"><input type="checkbox" name="isActive" class="checkbox" <%= !u || u.isActive ? 'checked' : '' %>> Active</label>
+          <button class="btn-outline btn-sm h-9"><%= u ? 'Save' : 'Add unit' %></button>
+        </form>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <ul class="text-sm grid sm:grid-cols-3 gap-2"><% units.forEach(function (u) { %><li><%= u.code %> · <%= u.size.toLowerCase() %> · <%= formatNpr(u.dailyRate) %>/night<%= u.isActive ? '' : ' (inactive)' %></li><% }) %></ul>
+  <% } %>
+</section>

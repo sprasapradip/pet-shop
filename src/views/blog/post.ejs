@@ -1,0 +1,18 @@
+<article class="container-x py-10 max-w-3xl">
+  <%- include('../partials/breadcrumbs', { seo: { breadcrumbs: [{ name: 'Home', url: '/' }, { name: 'Blog', url: '/blog' }, { name: post.title, url: '/blog/' + post.slug }] } }) %>
+  <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight"><%= post.title %></h1>
+  <p class="text-sm text-stone-500 mt-3"><time datetime="<%= post.publishedAt.toISOString() %>"><%= formatDate(post.publishedAt) %></time> · <%= business.name %></p>
+  <% if (post.coverPath) { %>
+    <img src="<%= imgSrc(post.coverPath, 1200) %>" srcset="<%= imgSrcset(post.coverPath) %>" sizes="(max-width: 768px) 100vw, 768px" alt="" width="1200" height="675" class="rounded-2xl mt-6 w-full" fetchpriority="high">
+  <% } %>
+  <div class="prose-ek mt-6"><%- post.content %></div>
+  <aside class="card p-6 mt-10 bg-brand-50 border-brand-200">
+    <p class="font-bold">Need help with your pet?</p>
+    <p class="text-sm text-stone-700 mt-1">Our vet can visit your home anywhere in the Kathmandu Valley.</p>
+    <div class="mt-4 flex flex-wrap gap-2"><a href="/book" class="btn-primary btn-sm">Book a visit</a><a href="<%= whatsappLink() %>" class="btn-wa btn-sm" target="_blank" rel="noopener">WhatsApp</a></div>
+  </aside>
+  <% if (more.length) { %>
+    <h2 class="text-xl font-bold mt-12">More articles</h2>
+    <ul class="mt-4 space-y-3"><% more.forEach(function (p) { %><li><a class="link" href="/blog/<%= p.slug %>"><%= p.title %></a></li><% }) %></ul>
+  <% } %>
+</article>

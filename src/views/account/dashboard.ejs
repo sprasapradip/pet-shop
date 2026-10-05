@@ -1,0 +1,33 @@
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <% if (dueVaccines.length) { %>
+    <div class="alert alert-info mb-6">
+      <p class="font-semibold">Vaccinations due</p>
+      <ul class="mt-1 space-y-1"><% dueVaccines.forEach(function (v) { %><li><%= v.pet.name %>: <%= v.vaccine %> due <%= formatDay(v.nextDueOn) %></li><% }) %></ul>
+      <a href="/book?service=VACCINATION" class="btn-primary btn-sm mt-3">Book vaccination</a>
+    </div>
+  <% } %>
+  <div class="grid lg:grid-cols-3 gap-5">
+    <div class="card p-5">
+      <div class="flex justify-between items-center"><h2 class="font-bold">Upcoming bookings</h2><a class="link text-sm" href="/account/bookings">All</a></div>
+      <% if (!upcoming.length) { %><p class="text-sm text-stone-500 mt-3">No upcoming bookings.</p><a href="/book" class="btn-outline btn-sm mt-3">Book a service</a><% } %>
+      <ul class="mt-3 space-y-3"><% upcoming.forEach(function (b) { %>
+        <li class="text-sm"><p class="font-medium"><%= b.service.name %></p><p class="text-stone-500"><%= formatDateTime(b.startAt) %> · <span class="status status-<%= b.status %>"><%= bookingStatusLabel(b.status) %></span></p></li>
+      <% }) %></ul>
+    </div>
+    <div class="card p-5">
+      <div class="flex justify-between items-center"><h2 class="font-bold">Recent orders</h2><a class="link text-sm" href="/account/orders">All</a></div>
+      <% if (!orders.length) { %><p class="text-sm text-stone-500 mt-3">No orders yet.</p><a href="/shop" class="btn-outline btn-sm mt-3">Visit the shop</a><% } %>
+      <ul class="mt-3 space-y-3"><% orders.forEach(function (o) { %>
+        <li class="text-sm"><a class="font-medium link" href="/account/orders/<%= o.orderNo %>"><%= o.orderNo %></a><p class="text-stone-500"><%= formatDate(o.createdAt) %> · <%= formatNpr(o.totalPaisa) %> · <span class="status status-<%= o.status %>"><%= orderStatusLabel(o.status) %></span></p></li>
+      <% }) %></ul>
+    </div>
+    <div class="card p-5">
+      <div class="flex justify-between items-center"><h2 class="font-bold">My pets</h2><a class="link text-sm" href="/account/pets/new">+ Add</a></div>
+      <% if (!pets.length) { %><p class="text-sm text-stone-500 mt-3">Add your pets to get vaccination reminders by SMS.</p><a href="/account/pets/new" class="btn-primary btn-sm mt-3">Add a pet</a><% } %>
+      <ul class="mt-3 space-y-3"><% pets.forEach(function (p) { %>
+        <li class="flex items-center gap-3"><img src="<%= imgSrc(p.photoPath, 400) %>" alt="" width="40" height="40" class="w-10 h-10 rounded-full object-cover bg-stone-100"><a href="/account/pets/<%= p.id %>" class="font-medium link"><%= p.name %></a></li>
+      <% }) %></ul>
+    </div>
+  </div>
+</section>

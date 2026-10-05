@@ -1,0 +1,60 @@
+<footer class="bg-brand-900 text-brand-100 mt-16">
+  <div class="container-x py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <a href="/" class="flex items-center gap-2 text-white font-bold text-lg mb-3">
+        <img src="/assets/img/logo.svg" alt="" width="36" height="36"> <%= business.name %>
+      </a>
+      <p class="text-sm leading-relaxed text-brand-200"><%= business.tagline %>. Pet shop, kennel, veterinary home service and animal care shelter at Soaltee Mode.</p>
+      <% if (settings.business.vetName) { %>
+        <p class="text-xs mt-3 text-brand-300">Veterinarian: <%= settings.business.vetName %><% if (settings.business.vetRegistrationNo) { %> (NVC Reg. No. <%= settings.business.vetRegistrationNo %>)<% } %></p>
+      <% } %>
+    </div>
+    <div>
+      <h2 class="footer-h">Shop</h2>
+      <ul class="footer-list">
+        <li><a href="/shop/category/dog-food">Dog food</a></li>
+        <li><a href="/shop/category/cat-food">Cat food</a></li>
+        <li><a href="/shop/category/accessories">Accessories</a></li>
+        <li><a href="/shop/category/toys">Toys</a></li>
+        <li><a href="/shop/category/supplements">Supplements</a></li>
+        <li><a href="/pets">Puppies for sale</a></li>
+        <li><a href="/sell-your-pet">Sell your pet</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-h">Services</h2>
+      <ul class="footer-list">
+        <li><a href="/services/house-call-vet">Vet house call</a></li>
+        <li><a href="/services/vaccination">Vaccination</a></li>
+        <li><a href="/services/dog-boarding-kathmandu">Dog boarding</a></li>
+        <li><a href="/services/dog-training">Dog training</a></li>
+        <li><a href="/services/mating-stud-service">Stud service</a></li>
+        <li><a href="/shelter">Animal shelter</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-h">Visit or call</h2>
+      <address class="not-italic text-sm space-y-2 text-brand-200">
+        <p><%= business.address %></p>
+        <p><a class="hover:text-white" href="<%= telLink() %>">📞 <%= business.landlineDisplay %></a></p>
+        <% if (settings.business.mobile) { %><p><a class="hover:text-white" href="<%= telLink(settings.business.mobile) %>">📱 <%= settings.business.mobile %></a></p><% } %>
+        <p><a class="hover:text-white" href="<%= whatsappLink() %>" target="_blank" rel="noopener">💬 WhatsApp us</a></p>
+        <% if (settings.business.email) { %><p><a class="hover:text-white" href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a></p><% } %>
+      </address>
+      <dl class="text-xs mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-brand-200">
+        <% hours.forEach(function (h) { %>
+          <dt><%= weekdays[h.weekday].slice(0, 3) %></dt><dd><%= h.isClosed ? 'Closed' : h.opensAt + ' – ' + h.closesAt %></dd>
+        <% }) %>
+      </dl>
+    </div>
+  </div>
+  <div class="border-t border-brand-800">
+    <div class="container-x py-5 flex flex-col sm:flex-row gap-3 justify-between text-xs text-brand-300">
+      <p>© <%= new Date().getFullYear() %> <%= business.name %>. All rights reserved.</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1" aria-label="Legal">
+        <a href="/about">About</a><a href="/faq">FAQ</a><a href="/privacy-policy">Privacy</a><a href="/terms">Terms</a><a href="/refund-policy">Refunds</a><a href="/animal-sale-policy">Animal sale policy</a>
+        <% (settings.business.socialLinks || []).forEach(function (l) { %><a href="<%= l %>" rel="noopener" target="_blank"><%= new URL(l).hostname.replace('www.', '').split('.')[0] %></a><% }) %>
+      </nav>
+    </div>
+  </div>
+</footer>

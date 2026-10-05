@@ -1,0 +1,100 @@
+<% const b = s.business, d = s.delivery; const rs = function (p) { return p / 100; }; %>
+<nav class="flex flex-wrap gap-2 mb-6 text-sm"><% [['business','Business'],['hours','Hours & closures'],['services','Services'],['delivery','Delivery'],['payments','Payments'],['seo','SEO'],['home','Home page']].forEach(function (t) { %><a href="#<%= t[0] %>" class="btn-outline btn-sm"><%= t[1] %></a><% }) %></nav>
+<div class="space-y-6">
+  <form id="business" action="/admin/settings/business" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">Business</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="grid md:grid-cols-3 gap-x-4">
+      <%- include('../partials/field', { name: 'mobile', label: 'Mobile number', value: b.mobile }) %>
+      <%- include('../partials/field', { name: 'whatsapp', label: 'WhatsApp (digits with 977)', value: b.whatsapp }) %>
+      <%- include('../partials/field', { name: 'email', label: 'Email', type: 'email', value: b.email }) %>
+      <%- include('../partials/field', { name: 'geoLat', label: 'Latitude', value: b.geoLat }) %>
+      <%- include('../partials/field', { name: 'geoLng', label: 'Longitude', value: b.geoLng }) %>
+      <%- include('../partials/field', { name: 'mapEmbedUrl', label: 'Google Maps embed URL', value: b.mapEmbedUrl }) %>
+      <%- include('../partials/field', { name: 'googleRating', label: 'Google rating', type: 'number', value: b.googleRating, attrs: 'step="0.1" min="0" max="5"' }) %>
+      <%- include('../partials/field', { name: 'googleReviewCount', label: 'Google review count', type: 'number', value: b.googleReviewCount, attrs: 'min="0"', hint: '0 hides the rating' }) %>
+      <%- include('../partials/field', { name: 'googleReviewUrl', label: 'Google reviews link', value: b.googleReviewUrl }) %>
+      <%- include('../partials/field', { name: 'vetName', label: 'Veterinarian name', value: b.vetName }) %>
+      <%- include('../partials/field', { name: 'vetRegistrationNo', label: 'NVC registration no.', value: b.vetRegistrationNo }) %>
+    </div>
+    <%- include('../partials/field', { name: 'socialLinks', label: 'Social links (one per line)', type: 'textarea', rows: 3, value: (b.socialLinks || []).join('\n') }) %>
+    <button class="btn-primary btn-sm">Save business</button>
+  </form>
+
+  <section id="hours" class="card p-5">
+    <h2 class="font-bold mb-4">Opening hours (used for booking slots)</h2>
+    <form action="/admin/settings/hours" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="space-y-2">
+        <% for (let i = 0; i < 7; i++) { const h = hoursList.find(function (x) { return x.weekday === i; }) || { opensAt: '09:00', closesAt: '18:00', isClosed: false }; %>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="w-24 font-medium"><%= weekdays[i] %></span>
+            <label class="sr-only" for="o<%= i %>">Opens</label><input id="o<%= i %>" type="time" name="opens_<%= i %>" value="<%= h.opensAt %>" class="input h-9 w-32">
+            <label class="sr-only" for="c<%= i %>">Closes</label><input id="c<%= i %>" type="time" name="closes_<%= i %>" value="<%= h.closesAt %>" class="input h-9 w-32">
+            <label class="flex items-center gap-1 text-sm"><input type="checkbox" name="closed_<%= i %>" class="checkbox" <%= h.isClosed ? 'checked' : '' %>> Closed</label>
+          </div>
+        <% } %>
+      </div>
+      <button class="btn-primary btn-sm mt-4">Save hours</button>
+    </form>
+    <h3 class="font-bold mt-6 mb-2">Closed dates (holidays, festivals)</h3>
+    <ul class="text-sm space-y-1 mb-3"><% blocked.forEach(function (x) { %><li class="flex items-center gap-3"><%= formatDay(x.date) %><%= x.reason ? ' · ' + x.reason : '' %><form action="/admin/settings/blocked-dates/<%= x.id %>/delete" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Remove</button></form></li><% }) %><% if (!blocked.length) { %><li class="text-stone-500">None upcoming</li><% } %></ul>
+    <form action="/admin/settings/blocked-dates" method="post" class="flex flex-wrap gap-2 items-end">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div><label class="label" for="bd">Date</label><input id="bd" type="date" name="date" class="input h-9" required></div>
+      <div><label class="label" for="br">Reason</label><input id="br" name="reason" class="input h-9" placeholder="Dashain"></div>
+      <button class="btn-outline btn-sm h-9">Block date</button>
+    </form>
+  </section>
+
+  <section id="services" class="card p-5">
+    <h2 class="font-bold mb-3">Services (prices, slots, capacity)</h2>
+    <div class="overflow-x-auto"><table class="table">
+      <thead><tr><th>Service</th><th class="text-right">From</th><th class="text-right">Slot</th><th class="text-right">Capacity</th><th class="text-right">Lead time</th><th class="text-right">Advance</th><th>Active</th></tr></thead>
+      <tbody><% services.forEach(function (sv) { %><tr><td><a class="link" href="/admin/services/<%= sv.id %>"><%= sv.name %></a></td><td class="text-right"><%= sv.basePricePaisa ? formatNpr(sv.basePricePaisa) : '—' %></td><td class="text-right"><%= sv.type === 'BOARDING' ? 'daily' : sv.durationMinutes + ' min' %></td><td class="text-right"><%= sv.type === 'HOUSE_CALL' ? 'active vets' : sv.type === 'BOARDING' ? 'free kennels' : sv.slotCapacity %></td><td class="text-right"><%= sv.leadMinutes / 60 %> h</td><td class="text-right"><%= sv.advancePaisa ? (sv.type === 'BOARDING' ? '1 night' : formatNpr(sv.advancePaisa)) : '—' %></td><td><%= sv.isActive ? 'Yes' : 'No' %></td></tr><% }) %></tbody>
+    </table></div>
+  </section>
+
+  <form id="delivery" action="/admin/settings/delivery" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">Delivery charges (Rs)</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="grid md:grid-cols-5 gap-x-4">
+      <%- include('../partials/field', { name: 'ringRoadPaisa', label: 'Inside Ring Road', type: 'number', value: rs(d.ringRoadPaisa) }) %>
+      <%- include('../partials/field', { name: 'valleyPaisa', label: 'Rest of valley', type: 'number', value: rs(d.valleyPaisa) }) %>
+      <%- include('../partials/field', { name: 'outsideBasePaisa', label: 'Outside valley (first kg)', type: 'number', value: rs(d.outsideBasePaisa) }) %>
+      <%- include('../partials/field', { name: 'outsidePerKgPaisa', label: 'Outside, each extra kg', type: 'number', value: rs(d.outsidePerKgPaisa) }) %>
+      <%- include('../partials/field', { name: 'freeAbovePaisa', label: 'Free in valley above', type: 'number', value: rs(d.freeAbovePaisa), hint: '0 = never free' }) %>
+    </div>
+    <button class="btn-primary btn-sm">Save delivery</button>
+  </form>
+
+  <form id="payments" action="/admin/settings/payments" method="post" class="card p-5">
+    <h2 class="font-bold mb-3">Payment methods</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="flex flex-wrap gap-6">
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="codEnabled" class="checkbox" <%= s.payments.codEnabled ? 'checked' : '' %>> Cash on delivery</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="esewaEnabled" class="checkbox" <%= s.payments.esewaEnabled ? 'checked' : '' %>> eSewa</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="khaltiEnabled" class="checkbox" <%= s.payments.khaltiEnabled ? 'checked' : '' %>> Khalti</label>
+    </div>
+    <p class="hint mt-2">Gateway keys are set in the server’s .env file (ESEWA_*, KHALTI_*), never in the database. SMS provider keys are also in .env (SMS_*).</p>
+    <button class="btn-primary btn-sm mt-4">Save payments</button>
+  </form>
+
+  <form id="seo" action="/admin/settings/seo" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">SEO defaults</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'defaultTitle', label: 'Default title (max 70)', value: s.seo.defaultTitle, attrs: 'maxlength="70"' }) %>
+    <%- include('../partials/field', { name: 'defaultDescription', label: 'Default description (max 160)', value: s.seo.defaultDescription, attrs: 'maxlength="160"' }) %>
+    <%- include('../partials/field', { name: 'ogImage', label: 'Default social image path', value: s.seo.ogImage }) %>
+    <button class="btn-primary btn-sm">Save SEO</button>
+  </form>
+
+  <form id="home" action="/admin/settings/home" method="post" class="card p-5">
+    <h2 class="font-bold mb-4">Home page</h2>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'heroTitle', label: 'Hero title', value: s.home.heroTitle }) %>
+    <%- include('../partials/field', { name: 'heroSubtitle', label: 'Hero subtitle', type: 'textarea', rows: 2, value: s.home.heroSubtitle }) %>
+    <%- include('../partials/field', { name: 'announcement', label: 'Announcement bar (empty = hidden)', value: s.home.announcement }) %>
+    <button class="btn-primary btn-sm">Save home page</button>
+  </form>
+</div>

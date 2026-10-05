@@ -1,0 +1,51 @@
+<section class="bg-brand-50 border-b border-brand-100">
+  <div class="container-x py-10">
+    <%- include('../partials/breadcrumbs') %>
+    <h1 class="text-3xl sm:text-4xl font-extrabold"><%= service.name %> in Kathmandu</h1>
+    <p class="text-lg text-stone-700 mt-3 max-w-2xl"><%= service.shortDesc %></p>
+    <p class="mt-4 text-xl font-bold text-brand-800"><%= service.basePricePaisa ? 'Starting from ' + formatNpr(service.basePricePaisa) : 'Price on request' %><% if (service.type === 'BOARDING') { %> per night<% } %></p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="/book?service=<%= service.type %>" class="btn-primary">Book <%= service.name.toLowerCase() %></a>
+      <a href="<%= whatsappLink('Hello, I have a question about ' + service.name + '.') %>" class="btn-wa" target="_blank" rel="noopener">Ask on WhatsApp</a>
+      <a href="<%= telLink() %>" class="btn-outline">Call <%= business.landlineDisplay %></a>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container-x grid lg:grid-cols-[2fr_1fr] gap-10">
+    <div>
+      <% if (service.content) { %><div class="prose-ek"><%- service.content %></div><% } %>
+      <% if (included.length) { %>
+        <h2 class="text-2xl font-bold mt-8">What is included</h2>
+        <ul class="mt-4 grid sm:grid-cols-2 gap-3">
+          <% included.forEach(function (i) { %><li class="card p-4 flex gap-3"><span class="text-brand-700" aria-hidden="true">✓</span><span><%= i %></span></li><% }) %>
+        </ul>
+      <% } %>
+      <% if (faqs.length) { %>
+        <h2 class="text-2xl font-bold mt-10">Frequently asked questions</h2>
+        <div class="mt-4 space-y-2">
+          <% faqs.forEach(function (f) { %>
+            <details class="card p-4"><summary class="font-semibold cursor-pointer"><%= f.question %></summary><p class="mt-3 text-stone-700 whitespace-pre-line"><%= f.answer %></p></details>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+    <aside class="space-y-4">
+      <div class="card p-6">
+        <h2 class="font-bold text-lg">Good to know</h2>
+        <dl class="mt-3 text-sm space-y-2">
+          <% if (service.type !== 'BOARDING') { %><div class="flex justify-between gap-4"><dt class="text-stone-500">Appointment length</dt><dd><%= service.durationMinutes %> min</dd></div><% } %>
+          <div class="flex justify-between gap-4"><dt class="text-stone-500">Book at least</dt><dd><%= service.leadMinutes >= 1440 ? Math.round(service.leadMinutes / 1440) + ' day(s)' : Math.round(service.leadMinutes / 60) + ' hour(s)' %> ahead</dd></div>
+          <% if (service.advancePaisa > 0) { %><div class="flex justify-between gap-4"><dt class="text-stone-500">Advance</dt><dd><%= service.type === 'BOARDING' ? '1 night' : formatNpr(service.advancePaisa) %></dd></div><% } %>
+          <% if (service.type === 'HOUSE_CALL') { %><div class="flex justify-between gap-4"><dt class="text-stone-500">Area</dt><dd>Kathmandu, Lalitpur, Bhaktapur</dd></div><% } %>
+        </dl>
+      </div>
+      <% if (['HOUSE_CALL','TREATMENT','VACCINATION'].includes(service.type) && settings.business.vetName) { %>
+        <div class="card p-6 text-sm">
+          <p class="font-semibold">Performed by a registered veterinarian</p>
+          <p class="text-stone-600 mt-1"><%= settings.business.vetName %><% if (settings.business.vetRegistrationNo) { %>, NVC Reg. No. <%= settings.business.vetRegistrationNo %><% } %></p>
+        </div>
+      <% } %>
+    </aside>
+  </div>
+</section>

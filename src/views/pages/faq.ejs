@@ -1,0 +1,18 @@
+<section class="section">
+  <div class="container-x max-w-3xl">
+    <h1 class="text-3xl sm:text-4xl font-extrabold">Frequently asked questions</h1>
+    <p class="text-stone-600 mt-3">Can’t find your answer? <a class="link" href="/contact">Contact us</a> or call <a class="link" href="<%= telLink() %>"><%= business.landlineDisplay %></a>.</p>
+    <% if (!groups.size) { %><p class="mt-8 text-stone-500">No questions yet.</p><% } %>
+    <% groups.forEach(function (faqs, group) { %>
+      <h2 class="text-xl font-bold mt-10 mb-3 capitalize"><%= group %></h2>
+      <div class="space-y-2">
+        <% faqs.forEach(function (f) { %>
+          <details class="card p-4 group">
+            <summary class="font-semibold cursor-pointer list-none flex justify-between gap-4"><%= f.question %><span class="text-brand-700 group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <p class="mt-3 text-stone-700 whitespace-pre-line"><%= f.answer %></p>
+          </details>
+        <% }) %>
+      </div>
+    <% }) %>
+  </div>
+</section>

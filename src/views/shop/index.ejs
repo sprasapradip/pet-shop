@@ -1,0 +1,92 @@
+<section class="container-x py-8">
+  <%- include('../partials/breadcrumbs') %>
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+    <div>
+      <h1 class="text-3xl font-extrabold"><%= category ? category.name : (filters.q ? 'Results for “' + filters.q + '”' : 'Pet shop') %></h1>
+      <p class="text-stone-600 mt-1"><%= meta.total %> product<%= meta.total === 1 ? '' : 's' %><% if (category && category.description) { %> · <%= category.description %><% } %></p>
+    </div>
+    <form method="get" class="flex items-center gap-2">
+      <% ['q','brand','species','lifeStage','minPrice','maxPrice'].forEach(function (k) { if (filters[k] !== undefined) { %><input type="hidden" name="<%= k %>" value="<%= filters[k] %>"><% } }) %>
+      <label for="sort" class="text-sm text-stone-600">Sort</label>
+      <select id="sort" name="sort" class="input h-10 w-auto text-sm" data-submit-on-change>
+        <% [['popular','Popular'],['newest','Newest'],['price_asc','Price: low to high'],['price_desc','Price: high to low'],['name','Name']].forEach(function (o) { %>
+          <option value="<%= o[0] %>" <%= filters.sort === o[0] ? 'selected' : '' %>><%= o[1] %></option>
+        <% }) %>
+      </select>
+      <noscript><button class="btn-outline btn-sm">Apply</button></noscript>
+    </form>
+  </div>
+
+  <div class="mt-6 grid lg:grid-cols-[250px_1fr] gap-8">
+    <aside>
+      <details class="card p-4 lg:open" <%= Object.keys(query).length ? 'open' : '' %>>
+        <summary class="font-bold cursor-pointer lg:cursor-default">Filters</summary>
+        <form method="get" action="<%= basePath %>" class="mt-4 space-y-5 text-sm">
+          <div>
+            <label for="fq" class="label">Search</label>
+            <input id="fq" name="q" type="search" value="<%= filters.q || '' %>" class="input h-10" placeholder="Name, brand or SKU">
+          </div>
+          <fieldset>
+            <legend class="label">Category</legend>
+            <ul class="space-y-1">
+              <li><a href="/shop" class="<%= !category ? 'font-semibold text-brand-800' : 'hover:text-brand-700' %>">All products</a></li>
+              <% categories.forEach(function (c) { %>
+                <li><a href="/shop/category/<%= c.slug %>" class="flex justify-between <%= category && category.id === c.id ? 'font-semibold text-brand-800' : 'hover:text-brand-700' %>"><span><%= c.name %></span><span class="text-stone-400"><%= c._count.products %></span></a></li>
+              <% }) %>
+            </ul>
+          </fieldset>
+          <div>
+            <label for="fsp" class="label">For</label>
+            <select id="fsp" name="species" class="input h-10">
+              <option value="">All pets</option>
+              <% [['DOG','Dogs'],['CAT','Cats'],['BIRD','Birds'],['FISH','Fish'],['RABBIT','Rabbits']].forEach(function (o) { %><option value="<%= o[0] %>" <%= filters.species === o[0] ? 'selected' : '' %>><%= o[1] %></option><% }) %>
+            </select>
+          </div>
+          <div>
+            <label for="fls" class="label">Life stage</label>
+            <select id="fls" name="lifeStage" class="input h-10">
+              <option value="">Any</option>
+              <% [['puppy','Puppy / kitten'],['adult','Adult'],['senior','Senior'],['all','All life stages']].forEach(function (o) { %><option value="<%= o[0] %>" <%= filters.lifeStage === o[0] ? 'selected' : '' %>><%= o[1] %></option><% }) %>
+            </select>
+          </div>
+          <div>
+            <label for="fbr" class="label">Brand</label>
+            <select id="fbr" name="brand" class="input h-10">
+              <option value="">All brands</option>
+              <% brands.forEach(function (b) { %><option value="<%= b.slug %>" <%= filters.brand === b.slug ? 'selected' : '' %>><%= b.name %></option><% }) %>
+            </select>
+          </div>
+          <fieldset>
+            <legend class="label">Price (Rs)</legend>
+            <div class="flex gap-2">
+              <label class="sr-only" for="fmin">Minimum price</label>
+              <input id="fmin" name="minPrice" type="number" min="0" inputmode="numeric" placeholder="Min" value="<%= filters.minPrice ?? '' %>" class="input h-10">
+              <label class="sr-only" for="fmax">Maximum price</label>
+              <input id="fmax" name="maxPrice" type="number" min="0" inputmode="numeric" placeholder="Max" value="<%= filters.maxPrice ?? '' %>" class="input h-10">
+            </div>
+          </fieldset>
+          <input type="hidden" name="sort" value="<%= filters.sort %>">
+          <div class="flex gap-2">
+            <button class="btn-primary btn-sm flex-1">Apply</button>
+            <a href="<%= basePath %>" class="btn-ghost btn-sm">Clear</a>
+          </div>
+        </form>
+      </details>
+    </aside>
+
+    <div>
+      <% if (!products.length) { %>
+        <div class="card p-10 text-center">
+          <p class="text-4xl" aria-hidden="true">🔍</p>
+          <p class="font-semibold mt-3">No products found</p>
+          <p class="text-stone-600 text-sm mt-1">Try another search or <a class="link" href="<%= whatsappLink('Hello, do you have ' + (filters.q || 'this product') + '?') %>" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>
+        </div>
+      <% } else { %>
+        <div class="grid gap-4 grid-cols-2 md:grid-cols-3">
+          <% products.forEach(function (p) { %><%- include('../partials/product-card', { p: p }) %><% }) %>
+        </div>
+        <%- include('../partials/pagination') %>
+      <% } %>
+    </div>
+  </div>
+</section>

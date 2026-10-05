@@ -1,0 +1,26 @@
+<section class="container-x py-10 max-w-3xl">
+  <h1 class="text-3xl font-extrabold">Report an injured or stray animal</h1>
+  <p class="text-stone-600 mt-2">If the animal is in immediate danger, please <a class="link" href="<%= telLink() %>">call <%= business.landlineDisplay %></a> as well.</p>
+  <form action="/shelter/report-animal" method="post" enctype="multipart/form-data" class="card p-6 sm:p-8 mt-6" novalidate>
+    <%- include('../partials/form-guard') %>
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'species', label: 'Animal', type: 'select', options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['OTHER','Other']] }) %>
+      <%- include('../partials/field', { name: 'condition', label: 'Condition', type: 'select', required: true, options: [['INJURED','Injured'],['SICK','Sick'],['STRAY','Stray / abandoned'],['ABUSED','Being abused'],['OTHER','Other']] }) %>
+    </div>
+    <%- include('../partials/field', { name: 'location', label: 'Where is the animal?', required: true, hint: 'Street, tole, nearby landmark' }) %>
+    <input type="hidden" name="latitude" value="<%= oldValue('latitude') %>">
+    <input type="hidden" name="longitude" value="<%= oldValue('longitude') %>">
+    <button type="button" class="btn-outline btn-sm mb-1" data-geolocate data-status="#geo-status">📍 Use my current location</button>
+    <p id="geo-status" class="hint mb-4" aria-live="polite"></p>
+    <%- include('../partials/field', { name: 'message', label: 'What did you see?', type: 'textarea', rows: 4, required: true }) %>
+    <div class="field">
+      <label for="photos" class="label">Photos (up to 4)</label>
+      <input id="photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple class="file-input">
+    </div>
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'name', label: 'Your name', required: true, value: oldValue('name', user ? user.name : '') }) %>
+      <%- include('../partials/field', { name: 'phone', label: 'Your phone', type: 'tel', required: true, hint: 'So our team can call you for directions' }) %>
+    </div>
+    <button class="btn-accent w-full sm:w-auto">Send report</button>
+  </form>
+</section>

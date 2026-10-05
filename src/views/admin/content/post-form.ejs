@@ -1,0 +1,21 @@
+<% const p = post; const v = function (k) { return oldValue(k, p ? (p[k] === null ? '' : p[k]) : ''); }; %>
+<a href="/admin/posts" class="link text-sm">← Posts</a>
+<form action="<%= p ? '/admin/posts/' + p.id : '/admin/posts' %>" method="post" enctype="multipart/form-data" class="card p-5 mt-4">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <div class="grid md:grid-cols-[2fr_1fr] gap-x-4">
+    <%- include('../../partials/field', { name: 'title', label: 'Title', required: true, value: v('title') }) %>
+    <%- include('../../partials/field', { name: 'slug', label: 'Slug', value: v('slug'), hint: 'Empty = generated' }) %>
+  </div>
+  <%- include('../../partials/field', { name: 'excerpt', label: 'Excerpt', value: v('excerpt'), attrs: 'maxlength="300"' }) %>
+  <%- include('../../partials/field', { name: 'content', label: 'Content (HTML: h2, h3, p, ul, ol, a, img, strong, em, blockquote, table)', type: 'textarea', rows: 18, required: true, value: v('content'), hint: 'HTML is sanitized on save; scripts and styles are removed.' }) %>
+  <div class="grid md:grid-cols-3 gap-x-4">
+    <%- include('../../partials/field', { name: 'publishedAt', label: 'Publish date', type: 'date', value: oldValue('publishedAt', p && p.publishedAt ? isoDay(p.publishedAt) : ''), hint: 'Empty = draft. Future date = scheduled.' }) %>
+    <%- include('../../partials/field', { name: 'metaTitle', label: 'Meta title', value: v('metaTitle'), attrs: 'maxlength="70"' }) %>
+    <%- include('../../partials/field', { name: 'metaDesc', label: 'Meta description', value: v('metaDesc'), attrs: 'maxlength="160"' }) %>
+  </div>
+  <div class="field flex items-center gap-4">
+    <% if (p && p.coverPath) { %><img src="<%= imgSrc(p.coverPath, 400) %>" alt="" width="120" height="68" class="w-32 rounded-lg"><% } %>
+    <div><label class="label" for="cv">Cover image (1200×630 recommended)</label><input id="cv" name="cover" type="file" accept="image/jpeg,image/png,image/webp" class="file-input"></div>
+  </div>
+  <button class="btn-primary">Save post</button>
+</form>

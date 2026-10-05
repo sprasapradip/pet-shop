@@ -1,0 +1,21 @@
+<div class="flex items-center justify-between mb-4">
+  <a href="?start=<%= prev %>" class="btn-outline btn-sm">← Previous week</a>
+  <form method="get" class="flex gap-2"><label class="sr-only" for="cs">Week starting</label><input id="cs" type="date" name="start" value="<%= start %>" class="input h-9"><button class="btn-outline btn-sm">Go</button></form>
+  <a href="?start=<%= next %>" class="btn-outline btn-sm">Next week →</a>
+</div>
+<div class="grid gap-3 md:grid-cols-7">
+  <% days.forEach(function (d) { const list = byDay.get(d) || []; const dt = new Date(d + 'T00:00:00Z'); %>
+    <section class="card p-3 min-h-[160px]">
+      <h2 class="text-sm font-bold border-b border-stone-100 pb-2 mb-2"><%= weekdays[dt.getUTCDay()].slice(0, 3) %> <%= formatDay(dt) %></h2>
+      <% if (!list.length) { %><p class="text-xs text-stone-400">No bookings</p><% } %>
+      <ul class="space-y-2">
+        <% list.forEach(function (b) { %>
+          <li><a href="/admin/bookings/<%= b.id %>" class="block rounded-lg border border-stone-200 p-2 text-xs hover:border-brand-500 status-<%= b.status %>">
+            <strong><%= nptTime(b.startAt) %></strong> <%= b.service.name %><br><%= b.contactName %><% if (b.assignedTo) { %><br><span class="opacity-75">→ <%= b.assignedTo.name %></span><% } %>
+          </a></li>
+        <% }) %>
+      </ul>
+    </section>
+  <% }) %>
+</div>
+<p class="hint mt-3">Boarding stays are shown on the <a class="link" href="/admin/boarding">Boarding</a> page.</p>

@@ -1,0 +1,46 @@
+<section class="container-x py-8">
+  <%- include('../partials/breadcrumbs') %>
+  <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+    <div class="card overflow-hidden aspect-[4/3] bg-amber-50">
+      <img src="<%= imgSrc(animal.photoPath, 1200) %>" <% if (animal.photoPath) { %>srcset="<%= imgSrcset(animal.photoPath) %>" sizes="(max-width: 1024px) 100vw, 600px"<% } %> alt="<%= animal.name %>" width="1200" height="900" class="w-full h-full object-cover">
+    </div>
+    <div>
+      <h1 class="text-3xl font-extrabold">Meet <%= animal.name %></h1>
+      <p class="text-stone-600 mt-1"><%= [animal.breedText || speciesLabel(animal.species), animal.gender ? (animal.gender === 'MALE' ? 'Male' : 'Female') : '', animal.ageText].filter(Boolean).join(' · ') %></p>
+      <ul class="flex flex-wrap gap-2 mt-4 text-sm">
+        <li class="chip"><%= animal.vaccinated ? '✓ Vaccinated' : 'Vaccination pending' %></li>
+        <li class="chip"><%= animal.sterilized ? '✓ Sterilized' : 'Not sterilized yet' %></li>
+        <li class="chip">In care since <%= formatDay(animal.intakeDate) %></li>
+      </ul>
+      <% if (animal.temperament) { %><p class="mt-4"><strong>Temperament:</strong> <%= animal.temperament %></p><% } %>
+      <% if (animal.story) { %><div class="prose-ek whitespace-pre-line mt-4"><%= animal.story %></div><% } %>
+      <% if (animal.status === 'ADOPTED') { %><div class="alert alert-success mt-6"><%= animal.name %> has been adopted. Thank you for caring!</div><% } %>
+    </div>
+  </div>
+
+  <% if (animal.status === 'ADOPTABLE' || animal.status === 'ADOPTION_PENDING') { %>
+  <form action="/shelter/adopt/<%= animal.slug %>/apply" method="post" class="card p-6 sm:p-8 mt-10 max-w-3xl" novalidate>
+    <h2 class="text-2xl font-bold">Apply to adopt <%= animal.name %></h2>
+    <p class="text-sm text-stone-600 mt-1 mb-5">Adoption is free. We ask a few questions and do a short home check to make sure it is a good match.</p>
+    <%- include('../partials/form-guard') %>
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'name', label: 'Your name', required: true, value: oldValue('name', user ? user.name : '') }) %>
+      <%- include('../partials/field', { name: 'phone', label: 'Phone', type: 'tel', required: true }) %>
+    </div>
+    <%- include('../partials/field', { name: 'address', label: 'Home address', required: true }) %>
+    <div class="grid sm:grid-cols-3 gap-x-4">
+      <%- include('../partials/field', { name: 'homeType', label: 'Home type', type: 'select', options: [['HOUSE_WITH_YARD','House with yard'],['HOUSE','House'],['APARTMENT','Apartment / flat'],['OTHER','Other']] }) %>
+      <%- include('../partials/field', { name: 'ownership', label: 'Do you own or rent?', type: 'select', options: [['OWN','Own'],['RENT','Rent']] }) %>
+      <%- include('../partials/field', { name: 'landlordAllows', label: 'Landlord allows pets?', type: 'select', options: [['NA','Not applicable'],['YES','Yes'],['NO','No']] }) %>
+    </div>
+    <%- include('../partials/field', { name: 'household', label: 'Who lives in your home?', type: 'textarea', rows: 2, required: true, hint: 'Adults, children (ages), anyone with allergies' }) %>
+    <%- include('../partials/field', { name: 'otherPets', label: 'Other pets at home', type: 'textarea', rows: 2 }) %>
+    <%- include('../partials/field', { name: 'experience', label: 'Your experience with pets', type: 'textarea', rows: 2, required: true }) %>
+    <%- include('../partials/field', { name: 'hoursAlone', label: 'Hours the pet would be alone on a normal day', type: 'number', required: true, attrs: 'min="0" max="24"' }) %>
+    <%- include('../partials/field', { name: 'whyAdopt', label: 'Why do you want to adopt ' + animal.name + '?', type: 'textarea', rows: 3, required: true }) %>
+    <label class="flex items-start gap-2 text-sm mb-2"><input type="checkbox" name="homeVisitOk" class="checkbox mt-0.5" required> I agree to a home check before adoption</label>
+    <% if (fieldError('homeVisitOk')) { %><p class="field-error mb-3"><%= fieldError('homeVisitOk') %></p><% } %>
+    <button class="btn-primary mt-3">Send application</button>
+  </form>
+  <% } %>
+</section>

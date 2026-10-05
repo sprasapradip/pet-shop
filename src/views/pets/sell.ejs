@@ -1,0 +1,29 @@
+<section class="container-x py-10 max-w-3xl">
+  <h1 class="text-3xl font-extrabold">Sell your puppy or pet</h1>
+  <p class="text-stone-600 mt-2">Tell us about the animal and add up to 6 photos. Our team will review it and call you with an offer, usually within one day.</p>
+  <form action="/sell-your-pet" method="post" enctype="multipart/form-data" class="card p-6 sm:p-8 mt-6" novalidate>
+    <%- include('../partials/form-guard') %>
+    <h2 class="font-bold text-lg mb-3">The pet</h2>
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'species', label: 'Species', type: 'select', required: true, options: [['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['RABBIT','Rabbit'],['FISH','Fish'],['OTHER','Other']] }) %>
+      <%- include('../partials/field', { name: 'breed', label: 'Breed', required: true, attrs: 'maxlength="120"' }) %>
+      <%- include('../partials/field', { name: 'ageMonths', label: 'Age (months)', type: 'number', required: true, attrs: 'min="0" max="240" inputmode="numeric"' }) %>
+      <%- include('../partials/field', { name: 'gender', label: 'Gender', type: 'select', required: true, options: [['MALE','Male'],['FEMALE','Female']] }) %>
+      <%- include('../partials/field', { name: 'askingPrice', label: 'Asking price (Rs)', type: 'number', required: true, attrs: 'min="0" inputmode="numeric"' }) %>
+      <%- include('../partials/field', { name: 'location', label: 'Your location', required: true, hint: 'Area and city' }) %>
+    </div>
+    <label class="flex items-center gap-2 text-sm mb-4"><input type="checkbox" name="vaccinated" class="checkbox" <%= oldValue('vaccinated') === 'on' ? 'checked' : '' %>> Vaccinated</label>
+    <div class="field">
+      <label for="photos" class="label">Photos (up to 6, JPG/PNG/WebP)</label>
+      <input id="photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple class="file-input">
+    </div>
+    <%- include('../partials/field', { name: 'message', label: 'Anything else? (health, parents, papers)', type: 'textarea', rows: 3 }) %>
+    <h2 class="font-bold text-lg mb-3 mt-2">Your contact</h2>
+    <div class="grid sm:grid-cols-2 gap-x-4">
+      <%- include('../partials/field', { name: 'name', label: 'Your name', required: true, value: oldValue('name', user ? user.name : '') }) %>
+      <%- include('../partials/field', { name: 'phone', label: 'Phone', type: 'tel', required: true }) %>
+    </div>
+    <button class="btn-primary w-full sm:w-auto">Send details</button>
+    <p class="text-xs text-stone-500 mt-3">We only buy healthy animals of at least 8 weeks. We may ask to see the animal before making an offer.</p>
+  </form>
+</section>

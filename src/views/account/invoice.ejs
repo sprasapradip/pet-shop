@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title><%= packingSlip ? 'Packing slip' : 'Invoice' %> <%= order.orderNo %> | <%= business.name %></title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+</head>
+<body class="bg-stone-100 text-stone-900">
+  <div class="max-w-3xl mx-auto my-6 bg-white p-8 sm:p-10 shadow print:shadow-none print:my-0">
+    <div class="flex justify-between items-start gap-6">
+      <div class="flex items-center gap-3">
+        <img src="/assets/img/logo.svg" alt="" width="48" height="48">
+        <div><p class="font-extrabold text-lg"><%= business.name %></p><p class="text-xs text-stone-600"><%= business.address %><br>Phone <%= business.landlineDisplay %><%= settings.business.email ? ' · ' + settings.business.email : '' %></p></div>
+      </div>
+      <div class="text-right">
+        <p class="text-2xl font-extrabold uppercase tracking-wide"><%= packingSlip ? 'Packing slip' : 'Invoice' %></p>
+        <p class="text-sm">No. <strong><%= order.orderNo %></strong></p>
+        <p class="text-sm">Date <%= formatDate(order.createdAt) %></p>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-6 mt-8 text-sm">
+      <div><p class="text-xs uppercase text-stone-500 font-semibold">Bill / ship to</p><p class="font-semibold mt-1"><%= order.customerName %></p><p><%= order.customerPhone %></p><% if (order.customerEmail) { %><p><%= order.customerEmail %></p><% } %><p class="mt-1"><%= order.shippingAddress %></p></div>
+      <div class="text-right"><p class="text-xs uppercase text-stone-500 font-semibold">Payment</p><p class="mt-1"><%= order.paymentMethod === 'COD' ? 'Cash on delivery' : order.paymentMethod %></p><% order.payments.forEach(function (p) { %><p class="text-xs text-stone-500">Ref <%= p.gatewayRef || p.transactionId %></p><% }) %><p class="mt-1"><span class="status status-<%= order.status %>"><%= orderStatusLabel(order.status) %></span></p></div>
+    </div>
+    <table class="w-full text-sm mt-8">
+      <thead><tr class="border-b-2 border-stone-800 text-left"><th class="py-2">Item</th><th class="py-2">SKU</th><th class="py-2 text-right">Qty</th><% if (!packingSlip) { %><th class="py-2 text-right">Rate</th><th class="py-2 text-right">Amount</th><% } else { %><th class="py-2 text-right">Packed</th><% } %></tr></thead>
+      <tbody>
+        <% order.items.forEach(function (i) { %>
+          <tr class="border-b border-stone-200"><td class="py-2"><%= i.name %></td><td class="py-2 text-stone-500"><%= i.sku %></td><td class="py-2 text-right"><%= i.quantity %></td><% if (!packingSlip) { %><td class="py-2 text-right"><%= formatNpr(i.unitPaisa) %></td><td class="py-2 text-right"><%= formatNpr(i.totalPaisa) %></td><% } else { %><td class="py-2 text-right">☐</td><% } %></tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% if (!packingSlip) { %>
+      <dl class="ml-auto w-64 mt-4 text-sm space-y-1">
+        <div class="flex justify-between"><dt>Subtotal</dt><dd><%= formatNpr(order.subtotalPaisa) %></dd></div>
+        <div class="flex justify-between"><dt>Delivery</dt><dd><%= formatNpr(order.deliveryPaisa) %></dd></div>
+        <% if (order.discountPaisa) { %><div class="flex justify-between"><dt>Discount</dt><dd>-<%= formatNpr(order.discountPaisa) %></dd></div><% } %>
+        <div class="flex justify-between font-bold text-base border-t-2 border-stone-800 pt-1"><dt>Total</dt><dd><%= formatNpr(order.totalPaisa) %></dd></div>
+      </dl>
+    <% } else if (order.notes) { %>
+      <p class="mt-6 text-sm"><strong>Notes:</strong> <%= order.notes %></p>
+    <% } %>
+    <p class="text-xs text-stone-500 mt-10">Thank you for shopping with <%= business.name %>. Prices are in Nepali Rupees.</p>
+    <div class="no-print mt-8 flex gap-2">
+      <button type="button" class="btn-primary btn-sm" data-print>Print / Save as PDF</button>
+      <a href="<%= isStaff ? '/admin/orders' : '/account/orders' %>" class="btn-ghost btn-sm">Back to orders</a>
+    </div>
+  </div>
+</body>
+</html>

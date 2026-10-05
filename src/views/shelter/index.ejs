@@ -1,0 +1,36 @@
+<section class="bg-gradient-to-br from-amber-100 via-amber-50 to-white border-b border-amber-200">
+  <div class="container-x py-12 sm:py-16 grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center">
+    <div>
+      <p class="eyebrow text-amber-800">The Everest Kennel</p>
+      <h1 class="text-3xl sm:text-4xl font-extrabold mt-1">Animal Care Shelter</h1>
+      <p class="text-lg text-stone-700 mt-3">We rescue injured, sick and abandoned animals around Kathmandu, treat them, and find them loving homes.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/shelter/adopt" class="btn-primary">🐾 Adopt</a>
+        <a href="/shelter/report-animal" class="btn-accent">🚑 Report an animal</a>
+        <a href="<%= telLink() %>" class="btn-outline">Emergency: <%= business.landlineDisplay %></a>
+      </div>
+    </div>
+    <dl class="grid grid-cols-3 gap-3 text-center">
+      <div class="card p-4"><dt class="text-xs text-stone-500">In our care</dt><dd class="text-3xl font-extrabold text-brand-800"><%= stats.inCare %></dd></div>
+      <div class="card p-4"><dt class="text-xs text-stone-500">Ready to adopt</dt><dd class="text-3xl font-extrabold text-brand-800"><%= stats.adoptable %></dd></div>
+      <div class="card p-4"><dt class="text-xs text-stone-500">Adopted</dt><dd class="text-3xl font-extrabold text-brand-800"><%= stats.adopted %></dd></div>
+    </dl>
+  </div>
+</section>
+<section class="section">
+  <div class="container-x">
+    <div class="flex items-end justify-between"><h2 class="section-title">Looking for a home</h2><a href="/shelter/adopt" class="link text-sm">See all →</a></div>
+    <% if (!animals.length) { %>
+      <p class="mt-6 text-stone-600">All our animals have homes right now. Check back soon!</p>
+    <% } else { %>
+      <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"><% animals.forEach(function (a) { %><%- include('../partials/animal-card', { a: a }) %><% }) %></div>
+    <% } %>
+  </div>
+</section>
+<section class="section pt-0">
+  <div class="container-x grid md:grid-cols-3 gap-5">
+    <div class="card p-6"><h3 class="font-bold text-lg">How adoption works</h3><ol class="list-decimal pl-5 mt-3 text-sm text-stone-700 space-y-1"><li>Apply online for the animal you love.</li><li>We call you and arrange a short home check.</li><li>Meet the animal at our shelter.</li><li>Take your new friend home, vaccinated and checked.</li></ol></div>
+    <div class="card p-6"><h3 class="font-bold text-lg">Found an animal in trouble?</h3><p class="text-sm text-stone-700 mt-3">Send us a photo and location. Our rescue team responds across the Kathmandu Valley as quickly as we can.</p><a href="/shelter/report-animal" class="btn-outline btn-sm mt-4">Report now</a></div>
+    <div class="card p-6"><h3 class="font-bold text-lg">Support the shelter</h3><p class="text-sm text-stone-700 mt-3">Donations of food, blankets and medicines help us care for more animals. Visit us at Soaltee Mode or <a class="link" href="<%= whatsappLink('Hello, I would like to support the shelter.') %>" target="_blank" rel="noopener">message us</a>.</p></div>
+  </div>
+</section>

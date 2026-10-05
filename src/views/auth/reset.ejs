@@ -1,0 +1,12 @@
+<h1 class="text-2xl font-extrabold">Set a new password</h1>
+<% if (!valid) { %>
+  <div class="alert alert-error mt-4">This reset link is invalid or has expired.</div>
+  <a href="/forgot-password" class="btn-primary w-full mt-5">Request a new link</a>
+<% } else { %>
+  <form action="/reset-password/<%= token %>" method="post" class="mt-6" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <%- include('../partials/field', { name: 'password', label: 'New password', type: 'password', required: true, attrs: 'autocomplete="new-password" minlength="8" autofocus', hint: 'At least 8 characters' }) %>
+    <%- include('../partials/field', { name: 'passwordConfirm', label: 'Confirm new password', type: 'password', required: true, attrs: 'autocomplete="new-password"' }) %>
+    <button class="btn-primary w-full">Save password</button>
+  </form>
+<% } %>

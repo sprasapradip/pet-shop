@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d5546">
+  <%- include('../partials/seo') %>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/app.js" defer></script>
+</head>
+<body class="min-h-screen flex flex-col bg-stone-50 text-stone-800 antialiased pb-16 md:pb-0">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <%- include('../partials/header') %>
+  <main id="main" class="flex-1" tabindex="-1">
+    <%- include('../partials/flash') %>
+    <%- body %>
+  </main>
+  <%- include('../partials/footer') %>
+  <%- include('../partials/mobile-bar') %>
+</body>
+</html>

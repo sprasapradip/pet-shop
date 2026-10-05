@@ -1,0 +1,31 @@
+<div class="flex flex-wrap gap-3 justify-between items-end mb-4">
+  <form method="get" class="flex flex-wrap gap-2 items-end">
+    <div><label class="label" for="bq">Search</label><input id="bq" name="q" value="<%= filters.q %>" class="input h-10 w-48" placeholder="Ref, phone, name"></div>
+    <div><label class="label" for="bs">Status</label><select id="bs" name="status" class="input h-10 w-36"><option value="">All</option><% statuses.forEach(function (s) { %><option value="<%= s %>" <%= filters.status === s ? 'selected' : '' %>><%= bookingStatusLabel(s) %></option><% }) %></select></div>
+    <div><label class="label" for="bsv">Service</label><select id="bsv" name="service" class="input h-10 w-44"><option value="">All</option><% services.forEach(function (s) { %><option value="<%= s.id %>" <%= filters.serviceId === s.id ? 'selected' : '' %>><%= s.name %></option><% }) %></select></div>
+    <div><label class="label" for="bf">From</label><input id="bf" type="date" name="from" value="<%= filters.from %>" class="input h-10"></div>
+    <div><label class="label" for="bt">To</label><input id="bt" type="date" name="to" value="<%= filters.to %>" class="input h-10"></div>
+    <button class="btn-outline btn-sm h-10">Filter</button>
+  </form>
+  <div class="flex gap-2"><a href="/admin/bookings/calendar" class="btn-outline btn-sm">Calendar</a><% if (role !== 'VET') { %><a href="/admin/bookings/new" class="btn-primary btn-sm">+ Phone booking</a><% } %></div>
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Ref</th><th>When</th><th>Service</th><th>Customer</th><th>Pet</th><th>Assigned</th><th>Status</th></tr></thead>
+    <tbody>
+      <% if (!bookings.length) { %><tr><td colspan="7" class="text-center text-stone-500 py-8">No bookings.</td></tr><% } %>
+      <% bookings.forEach(function (b) { %>
+        <tr>
+          <td><a class="link font-mono text-xs" href="/admin/bookings/<%= b.id %>"><%= b.reference %></a></td>
+          <td class="whitespace-nowrap"><%= formatDateTime(b.startAt) %><% if (b.service.type === 'BOARDING') { %><span class="block text-xs text-stone-500">→ <%= formatDate(b.endAt) %> · <%= b.kennelUnit ? b.kennelUnit.code : '' %></span><% } %></td>
+          <td><%= b.service.name %></td>
+          <td><%= b.contactName %><span class="block text-xs text-stone-500"><%= b.contactPhone %></span></td>
+          <td class="text-xs max-w-[180px]"><%= b.petSummary %></td>
+          <td><%= b.assignedTo ? b.assignedTo.name : '—' %></td>
+          <td><span class="status status-<%= b.status %>"><%= bookingStatusLabel(b.status) %></span><% if (b.advancePaisa > b.paidPaisa && b.status === 'PENDING') { %><span class="block text-xs text-amber-700">advance unpaid</span><% } %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../../partials/pagination') %>

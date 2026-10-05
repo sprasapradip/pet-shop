@@ -1,0 +1,21 @@
+<section class="container-x py-10">
+  <h1 class="text-3xl font-extrabold">Pet care blog</h1>
+  <p class="text-stone-600 mt-1">Practical advice for pet owners in Nepal from The Everest Kennel team.</p>
+  <% if (!posts.length) { %>
+    <p class="mt-8 text-stone-600">Articles are coming soon.</p>
+  <% } else { %>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <% posts.forEach(function (post) { %>
+        <article class="card overflow-hidden flex flex-col">
+          <a href="/blog/<%= post.slug %>" class="block aspect-[16/9] bg-brand-50"><img src="<%= imgSrc(post.coverPath, 800) %>" alt="" width="800" height="450" loading="lazy" class="w-full h-full object-cover"></a>
+          <div class="p-5 flex-1 flex flex-col">
+            <p class="text-xs text-stone-500"><time datetime="<%= post.publishedAt.toISOString() %>"><%= formatDate(post.publishedAt) %></time></p>
+            <h2 class="font-bold text-lg mt-1 leading-snug"><a href="/blog/<%= post.slug %>" class="hover:text-brand-700"><%= post.title %></a></h2>
+            <% if (post.excerpt) { %><p class="text-sm text-stone-600 mt-2 line-clamp-3"><%= post.excerpt %></p><% } %>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+    <%- include('../partials/pagination') %>
+  <% } %>
+</section>

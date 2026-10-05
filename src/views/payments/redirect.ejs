@@ -1,0 +1,11 @@
+<section class="container-x py-16 max-w-md text-center">
+  <div class="card p-8">
+    <p class="text-4xl" aria-hidden="true">🔒</p>
+    <h1 class="text-xl font-bold mt-3">Redirecting to eSewa…</h1>
+    <p class="text-stone-600 mt-2">You are paying for <%= label %>. If nothing happens, press the button.</p>
+    <form action="<%= start.action %>" method="post" data-autosubmit class="mt-6">
+      <% Object.keys(start.fields).forEach(function (k) { %><input type="hidden" name="<%= k %>" value="<%= start.fields[k] %>"><% }) %>
+      <button class="btn-primary w-full">Continue to eSewa</button>
+    </form>
+  </div>
+</section>

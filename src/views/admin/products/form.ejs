@@ -1,0 +1,125 @@
+<%
+  const p = product;
+  const v = function (k, fb) { return oldValue(k, p ? (p[k] === null || p[k] === undefined ? '' : p[k]) : (fb === undefined ? '' : fb)); };
+  const variants = p ? p.variants : [{ id: '', label: '', sku: '', pricePaisa: '', comparePaisa: null, stock: 0, lowStockAlert: 5, weightGrams: null, isActive: true }];
+  const rupee = function (paisa) { return paisa === null || paisa === undefined || paisa === '' ? '' : paisa / 100; };
+%>
+<div class="flex justify-between items-center mb-4">
+  <a href="/admin/products" class="link text-sm">← All products</a>
+  <% if (p) { %><a href="/shop/product/<%= p.slug %>" class="link text-sm" target="_blank">View on site ↗</a><% } %>
+</div>
+
+<form action="<%= p ? '/admin/products/' + p.id : '/admin/products' %>" method="post" class="space-y-6">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <section class="card p-5">
+    <h2 class="font-bold mb-4">Details</h2>
+    <div class="grid md:grid-cols-2 gap-x-4">
+      <%- include('../../partials/field', { name: 'name', label: 'Name', required: true, value: v('name') }) %>
+      <%- include('../../partials/field', { name: 'slug', label: 'URL slug', value: v('slug'), hint: 'Leave empty to generate from the name' }) %>
+      <%- include('../../partials/field', { name: 'categoryId', label: 'Category', type: 'select', required: true, value: v('categoryId'), options: categories.map(function (c) { return [c.id, c.name]; }) }) %>
+      <%- include('../../partials/field', { name: 'brandId', label: 'Brand', type: 'select', value: v('brandId'), options: [['', 'No brand']].concat(brands.map(function (b) { return [b.id, b.name]; })) }) %>
+      <%- include('../../partials/field', { name: 'species', label: 'For species', type: 'select', value: v('species'), options: [['','Any'],['DOG','Dog'],['CAT','Cat'],['BIRD','Bird'],['FISH','Fish'],['RABBIT','Rabbit'],['OTHER','Other']] }) %>
+      <%- include('../../partials/field', { name: 'lifeStage', label: 'Life stage', type: 'select', value: v('lifeStage'), options: [['','Not specific'],['puppy','Puppy / kitten'],['adult','Adult'],['senior','Senior'],['all','All life stages']] }) %>
+    </div>
+    <%- include('../../partials/field', { name: 'shortDesc', label: 'Short description', value: v('shortDesc'), attrs: 'maxlength="300"' }) %>
+    <%- include('../../partials/field', { name: 'description', label: 'Full description', type: 'textarea', rows: 6, value: v('description') }) %>
+    <div class="flex gap-6">
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isActive" class="checkbox" <%= (p ? p.isActive : true) ? 'checked' : '' %>> Visible in shop</label>
+      <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="isFeatured" class="checkbox" <%= p && p.isFeatured ? 'checked' : '' %>> Featured</label>
+    </div>
+  </section>
+
+  <section class="card p-5" id="variants">
+    <div class="flex justify-between items-center mb-3"><h2 class="font-bold">Variants (size / weight / color)</h2><button type="button" class="btn-outline btn-sm" data-add-variant>+ Add variant</button></div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead><tr><th>Label</th><th>SKU</th><th>Price (Rs)</th><th>Compare at (Rs)</th><th>Weight (g)</th><th>Low alert</th><th>Stock</th><th>Active</th></tr></thead>
+        <tbody data-variant-rows>
+          <% variants.forEach(function (x, i) { %>
+            <tr>
+              <td><input type="hidden" name="v_id" value="<%= x.id %>"><input name="v_label" value="<%= x.label %>" class="input h-9 w-28" placeholder="3 kg" aria-label="Variant label"></td>
+              <td><input name="v_sku" value="<%= x.sku %>" class="input h-9 w-32" aria-label="SKU"></td>
+              <td><input name="v_price" type="number" step="0.01" min="0" value="<%= rupee(x.pricePaisa) %>" class="input h-9 w-28" aria-label="Price"></td>
+              <td><input name="v_compare" type="number" step="0.01" min="0" value="<%= rupee(x.comparePaisa) %>" class="input h-9 w-28" aria-label="Compare at price"></td>
+              <td><input name="v_weight" type="number" min="0" value="<%= x.weightGrams ?? '' %>" class="input h-9 w-24" aria-label="Weight in grams"></td>
+              <td><input name="v_low" type="number" min="0" value="<%= x.lowStockAlert %>" class="input h-9 w-20" aria-label="Low stock alert"></td>
+              <td><% if (x.id) { %><span class="font-semibold"><%= x.stock %></span><input type="hidden" name="v_stock" value=""><% } else { %><input name="v_stock" type="number" min="0" value="<%= x.stock %>" class="input h-9 w-20" aria-label="Opening stock"><% } %></td>
+              <td><input type="checkbox" name="v_active" value="<%= i %>" class="checkbox" <%= x.isActive ? 'checked' : '' %> aria-label="Active"></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <template data-variant-template>
+      <tr>
+        <td><input type="hidden" name="v_id" value=""><input name="v_label" class="input h-9 w-28" placeholder="10 kg" aria-label="Variant label"></td>
+        <td><input name="v_sku" class="input h-9 w-32" aria-label="SKU"></td>
+        <td><input name="v_price" type="number" step="0.01" min="0" class="input h-9 w-28" aria-label="Price"></td>
+        <td><input name="v_compare" type="number" step="0.01" min="0" class="input h-9 w-28" aria-label="Compare at price"></td>
+        <td><input name="v_weight" type="number" min="0" class="input h-9 w-24" aria-label="Weight in grams"></td>
+        <td><input name="v_low" type="number" min="0" value="5" class="input h-9 w-20" aria-label="Low stock alert"></td>
+        <td><input name="v_stock" type="number" min="0" value="0" class="input h-9 w-20" aria-label="Opening stock"></td>
+        <td><input type="checkbox" name="v_active" value="__INDEX__" class="checkbox" checked aria-label="Active"></td>
+      </tr>
+    </template>
+    <p class="hint mt-2">Stock of existing variants is changed with “Adjust stock” below so every change is logged.</p>
+  </section>
+
+  <section class="card p-5">
+    <h2 class="font-bold mb-4">SEO</h2>
+    <div class="grid md:grid-cols-2 gap-x-4">
+      <%- include('../../partials/field', { name: 'metaTitle', label: 'Meta title (max 70)', value: v('metaTitle'), attrs: 'maxlength="70"' }) %>
+      <%- include('../../partials/field', { name: 'metaDesc', label: 'Meta description (max 160)', value: v('metaDesc'), attrs: 'maxlength="160"' }) %>
+    </div>
+  </section>
+  <div class="flex gap-2"><button class="btn-primary">Save product</button><a href="/admin/products" class="btn-ghost">Cancel</a></div>
+</form>
+
+<% if (p) { %>
+  <section class="card p-5 mt-6" id="images">
+    <h2 class="font-bold mb-3">Photos</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+      <% p.images.forEach(function (im) { %>
+        <form action="/admin/product-images/<%= im.id %>" method="post" class="card p-2 text-xs space-y-1">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <img src="<%= imgSrc(im.path, 400) %>" alt="<%= im.alt %>" width="200" height="200" class="w-full aspect-square object-cover rounded-lg">
+          <label class="sr-only" for="alt-<%= im.id %>">Alt text</label><input id="alt-<%= im.id %>" name="alt" value="<%= im.alt %>" class="input h-8 text-xs">
+          <div class="flex gap-1"><label class="sr-only" for="so-<%= im.id %>">Order</label><input id="so-<%= im.id %>" name="sortOrder" type="number" value="<%= im.sortOrder %>" class="input h-8 w-14 text-xs"><button class="btn-outline btn-sm h-8 flex-1">Save</button></div>
+          <button name="action" value="delete" class="text-red-700 hover:underline w-full">Delete</button>
+        </form>
+      <% }) %>
+    </div>
+    <form action="/admin/products/<%= p.id %>/images" method="post" enctype="multipart/form-data" class="mt-4 flex flex-wrap gap-2 items-center">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple required class="file-input max-w-xs">
+      <button class="btn-primary btn-sm">Upload photos</button>
+      <span class="hint">Up to 6 at a time. Saved as WebP in 3 sizes.</span>
+    </form>
+  </section>
+
+  <section class="card p-5 mt-6">
+    <h2 class="font-bold mb-3">Adjust stock</h2>
+    <div class="grid lg:grid-cols-2 gap-4">
+      <% p.variants.forEach(function (x) { %>
+        <div class="border border-stone-200 rounded-xl p-4">
+          <p class="font-semibold"><%= x.label %> <span class="text-stone-500 font-normal">(<%= x.sku %>)</span> · stock <strong><%= x.stock %></strong></p>
+          <form action="/admin/variants/<%= x.id %>/adjust" method="post" class="mt-2 flex flex-wrap gap-2 items-end">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div><label class="label text-xs" for="ch-<%= x.id %>">Change (+/-)</label><input id="ch-<%= x.id %>" name="change" type="number" class="input h-9 w-24" required></div>
+            <div><label class="label text-xs" for="rs-<%= x.id %>">Reason</label><select id="rs-<%= x.id %>" name="reason" class="input h-9 w-36"><option value="RESTOCK">Restock</option><option value="SHOP_SALE">Shop sale</option><option value="DAMAGED">Damaged</option><option value="EXPIRED">Expired</option><option value="RETURN">Return</option><option value="CORRECTION">Correction</option></select></div>
+            <div><label class="label text-xs" for="rf-<%= x.id %>">Reference</label><input id="rf-<%= x.id %>" name="reference" class="input h-9 w-32" placeholder="Bill no."></div>
+            <button class="btn-outline btn-sm h-9">Apply</button>
+          </form>
+          <% if (x.stockMovements.length) { %>
+            <ul class="mt-3 text-xs text-stone-600 space-y-0.5"><% x.stockMovements.forEach(function (m) { %><li><%= formatDateTime(m.createdAt) %> · <strong class="<%= m.change > 0 ? 'text-brand-700' : 'text-red-700' %>"><%= m.change > 0 ? '+' : '' %><%= m.change %></strong> · <%= m.reason %><%= m.reference ? ' · ' + m.reference : '' %></li><% }) %></ul>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <form action="/admin/products/<%= p.id %>/delete" method="post" class="mt-6" data-confirm="Delete this product? Products with orders are hidden instead.">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button class="btn-ghost text-red-700">Delete product</button>
+  </form>
+<% } %>

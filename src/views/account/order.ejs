@@ -1,0 +1,46 @@
+<% const steps = ['PLACED','CONFIRMED','PACKED','OUT_FOR_DELIVERY','DELIVERED']; const reached = steps.indexOf(order.status); %>
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <div class="flex flex-wrap justify-between items-start gap-3">
+    <div>
+      <h2 class="text-xl font-bold">Order <%= order.orderNo %></h2>
+      <p class="text-sm text-stone-500">Placed <%= formatDateTime(order.createdAt) %></p>
+    </div>
+    <div class="flex gap-2">
+      <a href="/account/orders/<%= order.orderNo %>/invoice" class="btn-outline btn-sm" target="_blank">Invoice / PDF</a>
+      <% if (order.status === 'PENDING_PAYMENT') { %><a href="/checkout/failed?order=<%= order.orderNo %>" class="btn-primary btn-sm">Pay now</a><% } %>
+    </div>
+  </div>
+
+  <% if (reached >= 0) { %>
+    <ol class="mt-6 grid grid-cols-5 gap-1 text-[11px] sm:text-sm text-center" aria-label="Order progress">
+      <% steps.forEach(function (s, i) { %>
+        <li class="<%= i <= reached ? 'text-brand-800 font-semibold' : 'text-stone-400' %>">
+          <span class="block h-2 rounded-full mb-2 <%= i <= reached ? 'bg-brand-600' : 'bg-stone-200' %>"></span><%= orderStatusLabel(s) %>
+        </li>
+      <% }) %>
+    </ol>
+  <% } else { %>
+    <p class="mt-4"><span class="status status-<%= order.status %>"><%= orderStatusLabel(order.status) %></span></p>
+  <% } %>
+
+  <div class="mt-8 grid lg:grid-cols-[1fr_320px] gap-6">
+    <div class="card p-5">
+      <ul class="divide-y divide-stone-100 text-sm">
+        <% order.items.forEach(function (i) { %><li class="py-2.5 flex justify-between gap-3"><span><%= i.name %> × <%= i.quantity %></span><span class="font-medium"><%= formatNpr(i.totalPaisa) %></span></li><% }) %>
+      </ul>
+      <dl class="mt-3 pt-3 border-t text-sm space-y-1">
+        <div class="flex justify-between"><dt>Subtotal</dt><dd><%= formatNpr(order.subtotalPaisa) %></dd></div>
+        <div class="flex justify-between"><dt>Delivery</dt><dd><%= order.deliveryPaisa ? formatNpr(order.deliveryPaisa) : 'Free' %></dd></div>
+        <div class="flex justify-between font-bold text-base"><dt>Total</dt><dd><%= formatNpr(order.totalPaisa) %></dd></div>
+      </dl>
+    </div>
+    <div class="space-y-4">
+      <div class="card p-5 text-sm"><h3 class="font-bold mb-2">Delivery</h3><p><%= order.customerName %>, <%= order.customerPhone %></p><p class="text-stone-600 mt-1"><%= order.shippingAddress %></p></div>
+      <div class="card p-5 text-sm">
+        <h3 class="font-bold mb-2">Timeline</h3>
+        <ol class="space-y-2"><% order.events.forEach(function (e) { %><li><p class="font-medium"><%= orderStatusLabel(e.status) %></p><p class="text-stone-500 text-xs"><%= formatDateTime(e.createdAt) %><%= e.note ? ' · ' + e.note : '' %></p></li><% }) %></ol>
+      </div>
+    </div>
+  </div>
+</section>

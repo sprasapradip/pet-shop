@@ -1,0 +1,28 @@
+<section class="container-x py-8">
+  <%- include('_nav') %>
+  <div class="flex justify-end mb-4"><a href="/book" class="btn-primary btn-sm">+ New booking</a></div>
+  <% if (!bookings.length) { %>
+    <div class="card p-10 text-center"><p class="font-semibold">No bookings yet</p></div>
+  <% } else { %>
+    <ul class="space-y-3">
+      <% bookings.forEach(function (b) { %>
+        <li class="card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p class="font-semibold"><%= b.service.name %> <span class="status status-<%= b.status %> ml-1"><%= bookingStatusLabel(b.status) %></span></p>
+            <p class="text-sm text-stone-600 mt-1"><%= formatDateTime(b.startAt) %><%= b.service.type === 'BOARDING' ? ' → ' + formatDateTime(b.endAt) : '' %> · <%= b.pet ? b.pet.name : b.petSummary %></p>
+            <p class="text-xs text-stone-500 mt-1">Ref <a class="link" href="/book/confirmation/<%= b.reference %>"><%= b.reference %></a><%= b.advancePaisa > b.paidPaisa && b.status === 'PENDING' ? ' · advance unpaid' : '' %></p>
+          </div>
+          <% if (canChange(b)) { %>
+            <div class="flex gap-2">
+              <a href="/account/bookings/<%= b.reference %>/reschedule" class="btn-outline btn-sm">Reschedule</a>
+              <form action="/account/bookings/<%= b.reference %>/cancel" method="post" data-confirm="Cancel booking <%= b.reference %>?">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn-ghost btn-sm text-red-700">Cancel</button>
+              </form>
+            </div>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>

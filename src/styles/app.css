@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; scroll-padding-top: 5rem; }
+  :focus-visible { outline: 3px solid theme('colors.accent.500'); outline-offset: 2px; }
+  h1, h2, h3 { color: theme('colors.stone.900'); text-wrap: balance; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .skip-link { @apply sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow; }
+  .card { @apply bg-white rounded-2xl border border-stone-200 shadow-sm; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 h-11 font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap; }
+  .btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900; }
+  .btn-accent { @apply btn bg-accent-500 text-stone-900 hover:bg-accent-400; }
+  .btn-outline { @apply btn border border-stone-300 bg-white text-stone-800 hover:border-brand-600 hover:text-brand-700; }
+  .btn-danger { @apply btn bg-red-600 text-white hover:bg-red-700; }
+  .btn-ghost { @apply btn bg-transparent text-stone-700 hover:bg-stone-100; }
+  .btn-wa { @apply btn bg-[#25D366] text-stone-900 hover:bg-[#1ebe5a]; }
+  .btn-sm { @apply h-9 px-3 text-sm rounded-lg; }
+  .icon-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-xl text-stone-700 hover:bg-stone-100; }
+  .nav-link { @apply px-3 py-2 rounded-lg text-stone-700 hover:text-brand-700 hover:bg-brand-50; }
+  .nav-link-active { @apply text-brand-800 bg-brand-50; }
+  .mobile-link { @apply block px-3 py-3 rounded-lg font-medium hover:bg-stone-100; }
+  .mobile-action { @apply flex flex-col items-center justify-center gap-0.5 h-16 text-xs font-semibold; }
+  .link { @apply text-brand-700 underline underline-offset-2 hover:text-brand-900; }
+  .input { @apply block w-full rounded-xl border border-stone-300 bg-white px-3.5 h-11 text-base text-stone-900 placeholder:text-stone-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-200 focus:outline-none; }
+  textarea.input { @apply h-auto py-2.5; }
+  select.input { @apply pr-8; }
+  .input-error { @apply border-red-500 focus:border-red-600 focus:ring-red-100; }
+  .label { @apply block text-sm font-medium text-stone-800 mb-1.5; }
+  .field { @apply mb-4; }
+  .hint { @apply text-xs text-stone-500 mt-1; }
+  .field-error { @apply text-sm text-red-700 mt-1; }
+  .checkbox { @apply w-5 h-5 rounded border-stone-300 text-brand-700 focus:ring-brand-500 accent-brand-700; }
+  .alert { @apply rounded-xl px-4 py-3 text-sm border; }
+  .alert-success { @apply bg-brand-50 border-brand-200 text-brand-900; }
+  .alert-error { @apply bg-red-50 border-red-200 text-red-900; }
+  .alert-info { @apply bg-sky-50 border-sky-200 text-sky-900; }
+  .badge { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+  .chip { @apply inline-flex items-center rounded-full bg-stone-100 text-stone-700 px-2 py-0.5; }
+  .section { @apply py-12 sm:py-16; }
+  .section-title { @apply text-2xl sm:text-3xl font-extrabold tracking-tight; }
+  .eyebrow { @apply text-sm font-semibold uppercase tracking-wider text-brand-700; }
+  .prose-ek { @apply text-stone-700 leading-relaxed; }
+  .prose-ek h2 { @apply text-2xl font-bold mt-8 mb-3; }
+  .prose-ek h3 { @apply text-xl font-semibold mt-6 mb-2; }
+  .prose-ek p { @apply my-4; }
+  .prose-ek ul { @apply list-disc pl-6 my-4 space-y-1; }
+  .prose-ek ol { @apply list-decimal pl-6 my-4 space-y-1; }
+  .prose-ek a { @apply link; }
+  .prose-ek img { @apply rounded-xl my-6; }
+  .prose-ek blockquote { @apply border-l-4 border-brand-300 pl-4 italic text-stone-600; }
+  .prose-ek table { @apply w-full text-sm my-6 border-collapse; }
+  .prose-ek th, .prose-ek td { @apply border border-stone-200 px-3 py-2 text-left; }
+  .footer-h { @apply text-white font-semibold mb-3; }
+  .footer-list { @apply space-y-2 text-sm text-brand-200; }
+  .footer-list a:hover { @apply text-white; }
+  .table { @apply w-full text-sm; }
+  .table th { @apply text-left font-semibold text-stone-600 bg-stone-50 px-3 py-2.5 border-b border-stone-200 whitespace-nowrap; }
+  .table td { @apply px-3 py-2.5 border-b border-stone-100 align-top; }
+  .table tr:hover td { @apply bg-stone-50/60; }
+  .table-wrap { @apply overflow-x-auto rounded-2xl border border-stone-200 bg-white; }
+  .stat { @apply card p-5; }
+  .stat-label { @apply text-sm text-stone-500; }
+  .stat-value { @apply text-2xl font-bold text-stone-900 mt-1; }
+  .admin-link { @apply flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-brand-100 hover:bg-brand-800 hover:text-white; }
+  .admin-link-active { @apply bg-brand-800 text-white; }
+  .status { @apply badge; }
+  .status-PENDING, .status-PENDING_PAYMENT, .status-NEW { @apply bg-amber-100 text-amber-900; }
+  .status-CONFIRMED, .status-PLACED, .status-AVAILABLE, .status-ADOPTABLE, .status-APPROVED, .status-COMPLETED-pay { @apply bg-sky-100 text-sky-900; }
+  .status-IN_PROGRESS, .status-PACKED, .status-OUT_FOR_DELIVERY, .status-RESERVED, .status-HOME_CHECK, .status-ADOPTION_PENDING, .status-IN_CARE { @apply bg-violet-100 text-violet-900; }
+  .status-COMPLETED, .status-DELIVERED, .status-SOLD, .status-ADOPTED, .status-CLOSED { @apply bg-brand-100 text-brand-900; }
+  .status-CANCELLED, .status-NO_SHOW, .status-REFUNDED, .status-FAILED, .status-REJECTED, .status-SPAM, .status-DECEASED, .status-HIDDEN, .status-WITHDRAWN { @apply bg-stone-200 text-stone-700; }
+  .status-INITIATED { @apply bg-amber-100 text-amber-900; }
+  .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .slot-input:checked + .slot-label { @apply bg-brand-700 text-white border-brand-700; }
+  .slot-input:focus-visible + .slot-label { outline: 3px solid theme('colors.accent.500'); outline-offset: 2px; }
+  .slot-label { @apply flex flex-col items-center justify-center rounded-xl border border-stone-300 bg-white h-14 cursor-pointer text-sm font-semibold hover:border-brand-600; }
+  .choice-input:checked + .choice-card { @apply border-brand-600 ring-2 ring-brand-200 bg-brand-50; }
+  .choice-input:focus-visible + .choice-card { outline: 3px solid theme('colors.accent.500'); outline-offset: 2px; }
+  .choice-card { @apply block cursor-pointer rounded-2xl border border-stone-300 bg-white p-4 hover:border-brand-500 h-full; }
+  .step[hidden] { display: none; }
+  .file-input { @apply block w-full text-sm text-stone-700 file:mr-3 file:rounded-lg file:border file:border-solid file:border-stone-300 file:bg-white file:px-3 file:py-2 file:font-semibold hover:file:border-brand-600; }
+}
+
+@media print {
+  header, footer, nav, .no-print { display: none !important; }
+  body { background: white; padding: 0; }
+}

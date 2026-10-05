@@ -1,0 +1,24 @@
+<%
+  const img = l.images[0];
+  const statusBadge = { AVAILABLE: ['Available', 'bg-brand-100 text-brand-800'], RESERVED: ['Reserved', 'bg-amber-100 text-amber-800'], SOLD: ['Sold', 'bg-stone-200 text-stone-700'] }[l.status];
+%>
+<article class="card overflow-hidden flex flex-col group">
+  <a href="/pets/<%= l.slug %>" class="relative block aspect-[4/3] bg-stone-100 overflow-hidden">
+    <img src="<%= imgSrc(img && img.path, 800) %>" <% if (img) { %>srcset="<%= imgSrcset(img.path) %>" sizes="(max-width: 640px) 100vw, 380px"<% } %> alt="<%= img ? img.alt : l.title %>" width="800" height="600" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 <%= l.status === 'SOLD' ? 'grayscale' : '' %>">
+    <% if (statusBadge) { %><span class="badge absolute top-3 left-3 <%= statusBadge[1] %>"><%= statusBadge[0] %></span><% } %>
+    <% if (l.origin === 'IMPORTED') { %><span class="badge absolute top-3 right-3 bg-white/90 text-stone-800">Imported</span><% } %>
+  </a>
+  <div class="p-4 flex flex-col flex-1">
+    <h3 class="font-semibold text-lg leading-snug"><a href="/pets/<%= l.slug %>" class="hover:text-brand-700"><%= l.title %></a></h3>
+    <p class="text-sm text-stone-600 mt-1"><%= l.breed.name %> · <%= l.gender === 'MALE' ? 'Male' : 'Female' %> · <%= ageFrom(l.dateOfBirth) %></p>
+    <ul class="flex flex-wrap gap-1.5 mt-3 text-xs">
+      <% if (l.vaccinated) { %><li class="chip">✓ Vaccinated</li><% } %>
+      <% if (l.dewormed) { %><li class="chip">✓ Dewormed</li><% } %>
+      <% if (l.registrationNo) { %><li class="chip">KCI papers</li><% } %>
+    </ul>
+    <div class="mt-auto pt-4 flex items-center justify-between">
+      <p class="font-bold text-xl text-brand-800"><%= formatNpr(l.pricePaisa) %></p>
+      <span class="text-xs text-stone-500">Code <%= l.code %></span>
+    </div>
+  </div>
+</article>

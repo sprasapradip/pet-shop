@@ -1,0 +1,145 @@
+<%
+  const sel = serviceType || '';
+  const isGuest = !user;
+  const val = function (k, fb) { return oldValue(k, fb || ''); };
+%>
+<section class="container-x py-8 max-w-4xl">
+  <h1 class="text-3xl font-extrabold">Book a service</h1>
+  <p class="text-stone-600 mt-1">Vet house call, vaccination, treatment, boarding, training or stud service. We confirm every booking by phone.</p>
+
+  <ol class="hidden sm:flex gap-6 mt-6 text-sm text-stone-400" aria-hidden="true">
+    <% ['Service','Pet','Date & time','Address','Contact','Confirm'].forEach(function (s, i) { %><li data-progress-item><%= i + 1 %>. <%= s %></li><% }) %>
+  </ol>
+  <p class="sr-only" aria-live="polite" data-step-live></p>
+
+  <form action="/book" method="post" class="mt-6 space-y-6" data-booking-form data-guest="<%= isGuest ? 1 : 0 %>" novalidate>
+    <%- include('../partials/form-guard') %>
+
+    <!-- 1. Service -->
+    <fieldset class="card p-6 step" data-step data-title="Choose a service">
+      <legend class="sr-only">Service</legend>
+      <h2 class="font-bold text-xl mb-4">1. Choose a service</h2>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <% services.forEach(function (s) { %>
+          <div>
+            <input type="radio" name="serviceType" id="svc-<%= s.type %>" value="<%= s.type %>" data-name="<%= s.name %>" class="choice-input sr-only" <%= sel === s.type || val('serviceType') === s.type ? 'checked' : '' %> required>
+            <label for="svc-<%= s.type %>" class="choice-card">
+              <span class="font-semibold block"><%= s.name %></span>
+              <span class="text-sm text-stone-600 block mt-1"><%= s.shortDesc %></span>
+              <span class="text-sm font-semibold text-brand-800 block mt-2"><%= s.basePricePaisa ? 'From ' + formatNpr(s.basePricePaisa) + (s.type === 'BOARDING' ? '/night' : '') : 'Price on request' %><%= s.advancePaisa > 0 ? ' · advance required' : '' %></span>
+            </label>
+          </div>
+        <% }) %>
+      </div>
+      <% if (fieldError('serviceType')) { %><p class="field-error"><%= fieldError('serviceType') %></p><% } %>
+      <div class="mt-5 flex justify-end"><button type="button" class="btn-primary" data-next>Continue</button></div>
+    </fieldset>
+
+    <!-- 2. Pet -->
+    <fieldset class="card p-6 step" data-step data-title="Your pet" data-needs-pet>
+      <legend class="sr-only">Pet</legend>
+      <h2 class="font-bold text-xl mb-4">2. Your pet</h2>
+      <% if (pets.length) { %>
+        <div class="grid sm:grid-cols-2 gap-3 mb-4">
+          <% pets.forEach(function (p) { %>
+            <div>
+              <input type="radio" name="petId" id="pet-<%= p.id %>" value="<%= p.id %>" data-name="<%= p.name %>" class="choice-input sr-only" <%= String(val('petId')) === String(p.id) ? 'checked' : '' %>>
+              <label for="pet-<%= p.id %>" class="choice-card"><span class="font-semibold"><%= p.name %></span> <span class="text-sm text-stone-500"><%= p.breed ? p.breed.name : speciesLabel(p.species) %><%= p.dateOfBirth ? ', ' + ageFrom(p.dateOfBirth) : '' %></span></label>
+            </div>
+          <% }) %>
+          <div>
+            <input type="radio" name="petId" id="pet-new" value="" class="choice-input sr-only" <%= !val('petId') ? 'checked' : '' %>>
+            <label for="pet-new" class="choice-card"><span class="font-semibold">Another pet</span> <span class="text-sm text-stone-500">Describe below</span></label>
+          </div>
+        </div>
+      <% } %>
+      <%- include('../partials/field', { name: 'petSummary', label: pets.length ? 'Or describe the pet' : 'Tell us about your pet', hint: 'Species, breed, age and name, e.g. “Labrador, 4 months, Max”', attrs: 'maxlength="255"' + (pets.length ? '' : ' required') }) %>
+      <% if (!user) { %><p class="text-sm text-stone-500">Have an account? <a class="link" href="/login?next=/book">Log in</a> to pick a saved pet and keep its vaccination history.</p><% } %>
+      <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button type="button" class="btn-primary" data-next>Continue</button></div>
+    </fieldset>
+
+    <!-- 3. Date and time -->
+    <fieldset class="card p-6 step" data-step data-title="Date and time" data-needs-slot>
+      <legend class="sr-only">Date and time</legend>
+      <h2 class="font-bold text-xl mb-4">3. Date and time</h2>
+      <div class="grid sm:grid-cols-2 gap-x-4">
+        <%- include('../partials/field', { name: 'date', label: sel === 'BOARDING' ? 'Check in' : 'Date', type: 'date', required: true, value: val('date', date), attrs: 'min="' + minDate + '" max="' + maxDate + '"' }) %>
+        <div data-only="BOARDING" <%= sel === 'BOARDING' ? '' : 'hidden' %>>
+          <%- include('../partials/field', { name: 'endDate', label: 'Check out', type: 'date', required: true, value: val('endDate', endDate), attrs: 'min="' + minDate + '"' }) %>
+        </div>
+      </div>
+      <button type="submit" formmethod="get" formaction="/book" formnovalidate class="btn-outline btn-sm" data-nojs-only name="service" value="<%= sel %>">Check available times</button>
+      <div data-only="BOARDING" <%= sel === 'BOARDING' ? '' : 'hidden' %>>
+        <p class="text-sm text-stone-700 mt-3" data-boarding-status aria-live="polite">
+          <% if (boarding) { %><%= boarding.nights %> night(s): <%= boarding.free %> kennel(s) free<%= boarding.sizes.length ? ', from ' + formatNpr(boarding.sizes[0].dailyRate) + ' per night' : '' %>.<% } else { %>Choose check in and check out dates.<% } %>
+        </p>
+        <% if (fieldError('endDate')) { %><p class="field-error"><%= fieldError('endDate') %></p><% } %>
+      </div>
+      <div data-not="BOARDING" <%= sel === 'BOARDING' ? 'hidden' : '' %>>
+        <p class="label mt-3" id="slot-label">Available times</p>
+        <p class="text-sm text-stone-600 mb-2" data-slot-status aria-live="polite"><%= slots ? (slots.length ? slots.length + ' times available.' : 'No times left on this day. Please choose another date.') : 'Choose a date to see available times.' %></p>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" role="radiogroup" aria-labelledby="slot-label" data-slots>
+          <% (slots || []).forEach(function (s, i) { %>
+            <div>
+              <input type="radio" name="slot" id="slot-s<%= i %>" value="<%= s.time %>" class="slot-input sr-only" <%= val('slot') === s.time ? 'checked' : '' %>>
+              <label for="slot-s<%= i %>" class="slot-label"><%= s.time %><span class="text-[11px] font-normal opacity-75"><%= s.available %> left</span></label>
+            </div>
+          <% }) %>
+        </div>
+        <% if (fieldError('slot')) { %><p class="field-error"><%= fieldError('slot') %></p><% } %>
+      </div>
+      <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button type="button" class="btn-primary" data-next>Continue</button></div>
+    </fieldset>
+
+    <!-- 4. Address (house call only) -->
+    <fieldset class="card p-6 step" data-step data-step-only="HOUSE_CALL" data-title="Address">
+      <legend class="sr-only">Address</legend>
+      <div data-only="HOUSE_CALL" <%= sel && sel !== 'HOUSE_CALL' ? 'hidden' : '' %>>
+        <h2 class="font-bold text-xl mb-1">4. Where should the vet come?</h2>
+        <p class="text-sm text-stone-600 mb-4">House calls cover the Kathmandu Valley only (Kathmandu, Lalitpur, Bhaktapur). <span class="sm:hidden">Skip this step for other services.</span></p>
+        <%- include('../partials/field', { name: 'district', label: 'District', type: 'select', required: true, options: [['', 'Choose district']].concat(districts.map(function (d) { return [d, d]; })) }) %>
+        <%- include('../partials/field', { name: 'addressText', label: 'Address and directions', type: 'textarea', rows: 2, required: true, hint: 'Tole, house number and a nearby landmark' }) %>
+        <input type="hidden" name="latitude" value="<%= val('latitude') %>">
+        <input type="hidden" name="longitude" value="<%= val('longitude') %>">
+        <button type="button" class="btn-outline btn-sm" data-geolocate data-status="#geo-status">📍 Use my current location</button>
+        <p id="geo-status" class="hint" aria-live="polite"></p>
+      </div>
+      <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button type="button" class="btn-primary" data-next>Continue</button></div>
+    </fieldset>
+
+    <!-- 5. Contact -->
+    <fieldset class="card p-6 step" data-step data-title="Contact details">
+      <legend class="sr-only">Contact</legend>
+      <h2 class="font-bold text-xl mb-4">5. Your contact details</h2>
+      <div class="grid sm:grid-cols-2 gap-x-4">
+        <%- include('../partials/field', { name: 'contactName', label: 'Your name', required: true, value: val('contactName', profile ? profile.name : ''), attrs: 'autocomplete="name"' }) %>
+        <%- include('../partials/field', { name: 'contactPhone', label: 'Mobile number', type: 'tel', required: true, value: val('contactPhone', profile ? profile.phone : phoneVerified), attrs: 'autocomplete="tel" inputmode="tel"', hint: isGuest ? 'We send a 6 digit code to verify it' : '' }) %>
+      </div>
+      <% if (isGuest) { %>
+        <div class="rounded-xl bg-stone-50 border border-stone-200 p-4" data-otp hidden>
+          <p class="text-sm font-medium">Verify your phone</p>
+          <div class="flex flex-wrap gap-2 mt-2 items-end">
+            <button type="button" class="btn-outline btn-sm" data-otp-send>Send code</button>
+            <div hidden class="flex gap-2 items-end">
+              <div><label for="otp-code" class="sr-only">6 digit code</label><input id="otp-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="input h-9 w-32" placeholder="123456" data-otp-code></div>
+              <button type="button" class="btn-primary btn-sm" data-otp-verify>Verify</button>
+            </div>
+          </div>
+          <p class="hint" data-otp-status aria-live="polite">You can also verify on the next page after submitting.</p>
+        </div>
+      <% } %>
+      <%- include('../partials/field', { name: 'notes', label: 'Notes for us (optional)', type: 'textarea', rows: 3, hint: 'Symptoms, behaviour, special care, training goals…' }) %>
+      <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button type="button" class="btn-primary" data-next>Review</button></div>
+    </fieldset>
+
+    <!-- 6. Confirm -->
+    <fieldset class="card p-6 step" data-step data-title="Confirm">
+      <legend class="sr-only">Confirm</legend>
+      <h2 class="font-bold text-xl mb-4">6. Confirm your booking</h2>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm" data-summary></dl>
+      <p class="text-sm text-stone-600 mt-4">You can reschedule or cancel online until 12 hours before. Services that need an advance (mating, boarding) are held for 30 minutes while you pay.</p>
+      <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button class="btn-primary">Confirm booking</button></div>
+    </fieldset>
+  </form>
+</section>
+<script src="/assets/js/booking.js" defer></script>
