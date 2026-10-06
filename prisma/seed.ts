@@ -226,9 +226,9 @@ async function seedAdmin() {
   const password = process.env.ADMIN_PASSWORD || randomBytes(9).toString('base64url');
   await prisma.user.create({
     data: {
-      name: 'Rajkumar Panta',
+      name: 'Aakriti',
       email,
-      phone: '9800000000',
+      phone: '9843944253',
       role: 'ADMIN',
       passwordHash: await argon2.hash(password, { type: argon2.argon2id }),
       phoneVerifiedAt: new Date(),
@@ -237,7 +237,7 @@ async function seedAdmin() {
   console.log('\n========================================');
   console.log(' Admin login (shown once, save it now):');
   console.log(`   email:    ${email}`);
-  console.log(`   phone:    9800000000`);
+  console.log(`   phone:    9843944253`);
   console.log(`   password: ${password}`);
   console.log('========================================\n');
 }
@@ -377,7 +377,7 @@ async function seedDemo() {
 
   await prisma.testimonial.createMany({
     data: [
-      { name: 'Sujata K., Kalanki', content: 'Our Labrador puppy came healthy with all vaccination records. Rajkumar ji still calls to check on her!', rating: 5, sortOrder: 1 },
+      { name: 'Sujata K., Kalanki', content: 'Our Labrador puppy came healthy with all vaccination records. Aakriti ji still calls to check on her!', rating: 5, sortOrder: 1 },
       { name: 'Anil S., Lalitpur', content: 'The vet house call saved us a stressful trip with our old dog. Very professional and kind.', rating: 5, sortOrder: 2 },
       { name: 'Pratiksha T., Baneshwor', content: 'We boarded Bruno during Dashain. Daily photos and he came back happy. Highly recommended.', rating: 5, sortOrder: 3 },
       { name: 'Ramesh B., Soaltee Mode', content: 'Good dog food prices and quick delivery. Cash on delivery is convenient.', rating: 4, sortOrder: 4 },
@@ -386,7 +386,7 @@ async function seedDemo() {
 
   await prisma.faq.createMany({
     data: [
-      { group: 'general', question: 'Where is The Everest Kennel?', answer: 'We are at Soaltee Mode, Kathmandu. Call 01-5234516 for directions.', sortOrder: 1 },
+      { group: 'general', question: 'Where is The Everest Kennel?', answer: 'We are at Soaltee Mode, Kathmandu. Call +977 9843944253 for directions.', sortOrder: 1 },
       { group: 'general', question: 'What are your opening hours?', answer: 'Sunday to Friday 9:00 to 19:00 and Saturday 10:00 to 17:00.', sortOrder: 2 },
       { group: 'shop', question: 'Do you deliver outside Kathmandu?', answer: 'Yes. We deliver pet food and accessories across Nepal. Charges depend on weight and are shown at checkout.', sortOrder: 1 },
       { group: 'shop', question: 'Which payment methods do you accept?', answer: 'Cash on delivery, eSewa and Khalti.', sortOrder: 2 },

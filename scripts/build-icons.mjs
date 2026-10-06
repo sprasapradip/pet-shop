@@ -19,7 +19,7 @@ const banner = (title, subtitle) =>
   <path d="M500 630 820 260l120 140 90-100 170 330z" fill="#134e4a" opacity=".7"/>
   <text x="80" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="76" font-weight="800" fill="#fff">${title}</text>
   <text x="80" y="330" font-family="Segoe UI, Arial, sans-serif" font-size="38" fill="#ccfbf1">${subtitle}</text>
-  <text x="80" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#fb923c">Soaltee Mode, Kathmandu · 01-5234516</text>
+  <text x="80" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#fb923c">Soaltee Mode, Kathmandu · +977 9843944253</text>
 </svg>`);
 
 await sharp(banner('The Everest Kennel', 'Pet shop · Vet house calls · Boarding · Shelter')).jpeg({ quality: 82 }).toFile(`${out}/og-default.jpg`);

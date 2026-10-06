@@ -1,7 +1,7 @@
 <section class="section">
   <div class="container-x max-w-3xl">
     <h1 class="text-3xl sm:text-4xl font-extrabold">Frequently asked questions</h1>
-    <p class="text-stone-600 mt-3">Can’t find your answer? <a class="link" href="/contact">Contact us</a> or call <a class="link" href="<%= telLink() %>"><%= business.landlineDisplay %></a>.</p>
+    <p class="text-stone-600 mt-3">Can’t find your answer? <a class="link" href="/contact">Contact us</a> or call <a class="link" href="<%= telLink() %>"><%= business.phoneDisplay %></a>.</p>
     <% if (!groups.size) { %><p class="mt-8 text-stone-500">No questions yet.</p><% } %>
     <% groups.forEach(function (faqs, group) { %>
       <h2 class="text-xl font-bold mt-10 mb-3 capitalize"><%= group %></h2>

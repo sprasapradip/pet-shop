@@ -21,7 +21,7 @@ export async function sendVaccinationReminders(today = nptDate()) {
     for (const r of records) {
       const owner = r.pet.user;
       const when = days === 1 ? 'tomorrow' : `on ${formatDay(r.nextDueOn)}`;
-      const text = `${BUSINESS.name}: ${r.pet.name}'s ${r.vaccine} vaccine is due ${when}. Book a home visit: ${env.APP_URL}/book?service=VACCINATION or call ${BUSINESS.landlineDisplay}.`;
+      const text = `${BUSINESS.name}: ${r.pet.name}'s ${r.vaccine} vaccine is due ${when}. Book a home visit: ${env.APP_URL}/book?service=VACCINATION or call ${BUSINESS.phoneDisplay}.`;
       await sendSms(owner.phone, text);
       if (owner.email) {
         await sendMail({ to: owner.email, subject: `${r.pet.name}'s vaccination is due ${when}`, text: `Hello ${owner.name},\n\n${text}\n` });

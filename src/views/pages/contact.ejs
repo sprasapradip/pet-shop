@@ -5,7 +5,7 @@
     <div class="mt-8 grid lg:grid-cols-[1fr_1.2fr] gap-8">
       <div class="space-y-4">
         <div class="card p-6 space-y-3">
-          <a href="<%= telLink() %>" class="flex items-center gap-3 font-semibold text-lg hover:text-brand-700"><%- icon('phone', 'size-[18px]') %> <%= business.landlineDisplay %></a>
+          <a href="<%= telLink() %>" class="flex items-center gap-3 font-semibold text-lg hover:text-brand-700"><%- icon('phone', 'size-[18px]') %> <%= business.phoneDisplay %></a>
           <% if (settings.business.mobile) { %><a href="<%= telLink(settings.business.mobile) %>" class="flex items-center gap-3 font-semibold hover:text-brand-700"><%- icon('smartphone', 'size-[18px]') %> <%= settings.business.mobile %></a><% } %>
           <a href="<%= whatsappLink() %>" class="btn-wa w-full" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-[18px]') %> Chat on WhatsApp</a>
           <% if (settings.business.email) { %><p class="flex items-center gap-3"><%- icon('mail', 'size-[18px] text-brand-700') %><a class="link" href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a></p><% } %>

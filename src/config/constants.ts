@@ -1,9 +1,9 @@
 export const BUSINESS = {
   name: 'The Everest Kennel',
   tagline: 'Pets, Care and Kennel Services in Kathmandu',
-  owner: 'Rajkumar Panta',
-  landline: '+977-1-5234516',
-  landlineDisplay: '01-5234516',
+  owner: 'Aakriti',
+  phone: '+977-9843944253',
+  phoneDisplay: '+977 9843944253',
   address: 'Soaltee Mode, Kathmandu, Nepal',
   street: 'Soaltee Mode',
   city: 'Kathmandu',

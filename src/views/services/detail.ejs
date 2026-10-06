@@ -7,7 +7,7 @@
     <div class="mt-6 flex flex-wrap gap-3">
       <a href="/book?service=<%= service.type %>" class="btn-primary">Book <%= service.name.toLowerCase() %></a>
       <a href="<%= whatsappLink('Hello, I have a question about ' + service.name + '.') %>" class="btn-wa" target="_blank" rel="noopener">Ask on WhatsApp</a>
-      <a href="<%= telLink() %>" class="btn-outline">Call <%= business.landlineDisplay %></a>
+      <a href="<%= telLink() %>" class="btn-outline">Call <%= business.phoneDisplay %></a>
     </div>
   </div>
 </section>

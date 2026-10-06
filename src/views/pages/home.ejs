@@ -13,7 +13,7 @@
       <p class="mt-5 text-lg text-brand-100/90 max-w-xl leading-relaxed"><%= settings.home.heroSubtitle %></p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="/book" class="btn-accent h-12 px-6 text-base"><%- icon('calendar-days', 'size-5') %> Book a service</a>
-        <a href="<%= telLink() %>" class="btn-glass h-12 px-6 text-base"><%- icon('phone', 'size-5') %> <%= business.landlineDisplay %></a>
+        <a href="<%= telLink() %>" class="btn-glass h-12 px-6 text-base"><%- icon('phone', 'size-5') %> <%= business.phoneDisplay %></a>
         <a href="<%= whatsappLink('Hello The Everest Kennel, I would like to know more.') %>" class="btn-glass h-12 px-6 text-base" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-5') %> WhatsApp</a>
       </div>
       <dl class="mt-10 grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg border-t border-white/10 pt-6">
@@ -231,7 +231,7 @@
         <% hours.forEach(function (h) { %><dt class="text-ink-muted <%= h.weekday === todayWeekday ? 'font-semibold text-brand-800' : '' %>"><%= weekdays[h.weekday] %></dt><dd class="font-medium tabular-nums <%= h.weekday === todayWeekday ? 'text-brand-800' : '' %>"><%= h.isClosed ? 'Closed' : h.opensAt + ' – ' + h.closesAt %></dd><% }) %>
       </dl>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="<%= telLink() %>" class="btn-primary"><%- icon('phone', 'size-5') %> Call <%= business.landlineDisplay %></a>
+        <a href="<%= telLink() %>" class="btn-primary"><%- icon('phone', 'size-5') %> Call <%= business.phoneDisplay %></a>
         <a href="https://www.google.com/maps/dir/?api=1&destination=<%= settings.business.geoLat %>,<%= settings.business.geoLng %>" class="btn-outline" target="_blank" rel="noopener"><%- icon('navigation', 'size-5') %> Get directions</a>
       </div>
     </div>

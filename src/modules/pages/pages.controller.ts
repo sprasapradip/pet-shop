@@ -41,7 +41,7 @@ export async function home(_req: Request, res: Response) {
 export function about(_req: Request, res: Response) {
   setSeo(res, {
     title: 'About The Everest Kennel | Pet Shop at Soaltee Mode',
-    description: 'Meet The Everest Kennel, a pet shop, kennel and animal care shelter run by Rajkumar Panta at Soaltee Mode, Kathmandu.',
+    description: 'Meet The Everest Kennel, a pet shop, kennel and animal care shelter run by Aakriti at Soaltee Mode, Kathmandu.',
     canonical: '/about',
   });
   res.render('pages/about');
@@ -66,7 +66,7 @@ export async function faq(_req: Request, res: Response) {
 export function contactPage(req: Request, res: Response) {
   setSeo(res, {
     title: 'Contact The Everest Kennel | Soaltee Mode, Kathmandu',
-    description: 'Call 01-5234516, chat on WhatsApp or visit our pet shop at Soaltee Mode, Kathmandu. Opening hours and map.',
+    description: 'Call +977 9843944253, chat on WhatsApp or visit our pet shop at Soaltee Mode, Kathmandu. Opening hours and map.',
     canonical: '/contact',
   });
   res.render('pages/contact', { subject: typeof req.query.subject === 'string' ? req.query.subject.slice(0, 120) : '' });

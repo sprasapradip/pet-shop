@@ -12,7 +12,7 @@
       <% const today = hours.find(function (h) { return h.weekday === todayWeekday; }); if (today) { %>
         <span class="inline-flex items-center gap-1.5"><%- icon('clock', 'size-3.5 text-brand-300') %> Today <%= today.isClosed ? 'closed' : today.opensAt + '–' + today.closesAt %></span>
       <% } %>
-      <a class="inline-flex items-center gap-1.5 hover:text-white transition" href="<%= telLink() %>"><%- icon('phone', 'size-3.5 text-brand-300') %> <%= business.landlineDisplay %></a>
+      <a class="inline-flex items-center gap-1.5 hover:text-white transition" href="<%= telLink() %>"><%- icon('phone', 'size-3.5 text-brand-300') %> <%= business.phoneDisplay %></a>
       <a class="inline-flex items-center gap-1.5 hover:text-white transition" href="<%= whatsappLink() %>" rel="noopener" target="_blank"><%- icon('whatsapp', 'size-3.5 text-brand-300') %> WhatsApp</a>
     </span>
   </div>

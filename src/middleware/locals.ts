@@ -84,7 +84,7 @@ export const locals: RequestHandler = async (req, res, next) => {
     oldValue: (name: string, fallback: unknown = '') => (old[name] ?? fallback) as string,
     whatsappLink: (message = `Hello ${BUSINESS.name}, I have a question.`) =>
       `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
-    telLink: (num: string = BUSINESS.landline) => `tel:${num.replace(/[^\d+]/g, '')}`,
+    telLink: (num: string = BUSINESS.phone) => `tel:${num.replace(/[^\d+]/g, '')}`,
     formTs: () => Date.now().toString(36),
     isActive: (prefix: string) => (prefix === '/' ? req.path === '/' : req.path.startsWith(prefix)),
   });

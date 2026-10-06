@@ -1,6 +1,6 @@
 <section class="container-x py-10 max-w-3xl">
   <h1 class="text-3xl font-extrabold">Report an injured or stray animal</h1>
-  <p class="text-stone-600 mt-2">If the animal is in immediate danger, please <a class="link" href="<%= telLink() %>">call <%= business.landlineDisplay %></a> as well.</p>
+  <p class="text-stone-600 mt-2">If the animal is in immediate danger, please <a class="link" href="<%= telLink() %>">call <%= business.phoneDisplay %></a> as well.</p>
   <form action="/shelter/report-animal" method="post" enctype="multipart/form-data" class="card p-6 sm:p-8 mt-6" novalidate>
     <%- include('../partials/form-guard') %>
     <div class="grid sm:grid-cols-2 gap-x-4">

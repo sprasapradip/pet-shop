@@ -37,7 +37,7 @@ The local `.env` is already configured, and the database is migrated and seeded 
 
 | | |
 |---|---|
-| Admin | `admin@everestkennel.local` (or phone `9800000000`), password `EverestAdmin#2026` |
+| Admin | `admin@everestkennel.local` (or phone `9843944253`), password `EverestAdmin#2026` |
 | Demo vet | phone `9800000001` (random password; reset it in Admin > Users if needed) |
 
 Change the admin password before using real data. A fresh `npm run db:seed` on an empty database generates a random password, or uses `ADMIN_PASSWORD` if set.

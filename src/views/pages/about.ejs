@@ -26,7 +26,7 @@
       <div class="card p-6">
         <h2 class="font-bold text-lg">Visit us</h2>
         <p class="text-sm text-stone-600 mt-2"><%= business.address %></p>
-        <a href="<%= telLink() %>" class="btn-primary w-full mt-4">Call <%= business.landlineDisplay %></a>
+        <a href="<%= telLink() %>" class="btn-primary w-full mt-4">Call <%= business.phoneDisplay %></a>
         <a href="<%= whatsappLink() %>" class="btn-wa w-full mt-2" target="_blank" rel="noopener">WhatsApp</a>
       </div>
       <% if (settings.business.vetName) { %>

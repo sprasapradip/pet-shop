@@ -15,7 +15,7 @@ export function notifyNewBooking(booking: Booking & { service: Service }) {
     await Promise.all([
       sendSms(
         booking.contactPhone,
-        `${BUSINESS.name}: booking ${booking.reference} for ${booking.service.name} on ${when} received. We will confirm shortly. Call ${BUSINESS.landlineDisplay}.`,
+        `${BUSINESS.name}: booking ${booking.reference} for ${booking.service.name} on ${when} received. We will confirm shortly. Call ${BUSINESS.phoneDisplay}.`,
       ),
       sendMail({
         to: env.ADMIN_NOTIFY_EMAIL,
@@ -41,7 +41,7 @@ export function notifyBookingStatus(booking: Booking & { service: Service }) {
     const when = formatDateTime(booking.startAt);
     const text: Record<string, string> = {
       CONFIRMED: `Your ${booking.service.name} booking ${booking.reference} on ${when} is confirmed.`,
-      CANCELLED: `Your booking ${booking.reference} on ${when} has been cancelled. Call ${BUSINESS.landlineDisplay} for help.`,
+      CANCELLED: `Your booking ${booking.reference} on ${when} has been cancelled. Call ${BUSINESS.phoneDisplay} for help.`,
     };
     const msg = text[booking.status];
     if (msg) await sendSms(booking.contactPhone, `${BUSINESS.name}: ${msg}`);

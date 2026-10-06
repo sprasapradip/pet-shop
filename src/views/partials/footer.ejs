@@ -41,7 +41,7 @@
       <h2 class="footer-h">Visit or call</h2>
       <address class="not-italic text-sm space-y-2.5 text-brand-100/85">
         <p class="flex gap-2.5"><%- icon('map-pin', 'size-4 mt-0.5 text-brand-300') %><span><%= business.address %></span></p>
-        <p><a class="flex gap-2.5 hover:text-white transition" href="<%= telLink() %>"><%- icon('phone', 'size-4 mt-0.5 text-brand-300') %><%= business.landlineDisplay %></a></p>
+        <p><a class="flex gap-2.5 hover:text-white transition" href="<%= telLink() %>"><%- icon('phone', 'size-4 mt-0.5 text-brand-300') %><%= business.phoneDisplay %></a></p>
         <% if (settings.business.mobile) { %><p><a class="flex gap-2.5 hover:text-white transition" href="<%= telLink(settings.business.mobile) %>"><%- icon('smartphone', 'size-4 mt-0.5 text-brand-300') %><%= settings.business.mobile %></a></p><% } %>
         <p><a class="flex gap-2.5 hover:text-white transition" href="<%= whatsappLink() %>" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-4 mt-0.5 text-brand-300') %>WhatsApp us</a></p>
         <% if (settings.business.email) { %><p><a class="flex gap-2.5 hover:text-white transition" href="mailto:<%= settings.business.email %>"><%- icon('mail', 'size-4 mt-0.5 text-brand-300') %><%= settings.business.email %></a></p><% } %>
