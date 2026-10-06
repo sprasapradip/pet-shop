@@ -1,6 +1,8 @@
 {
   "name": "everest-kennel",
   "version": "1.0.0",
+  "license": "MIT",
+  "author": "sprasapradip <subedipradip199@gmail.com>",
   "private": true,
   "type": "module",
   "engines": {

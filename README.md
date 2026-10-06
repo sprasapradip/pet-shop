@@ -173,3 +173,7 @@ These are deliberate, and all of them are documented in the code:
 ## Still needed from the client (blueprint section 21)
 
 Full mobile/WhatsApp number (`WHATSAPP_NUMBER` and Admin > Settings), logo, real photos, prices, vet name and NVC number, exact map pin, live eSewa/Khalti merchant keys, an SMS provider token, social links and real testimonials. Demo products, pets and posts can be removed by resetting the database and seeding with `SEED_DEMO=0`.
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 sprasapradip (subedipradip199@gmail.com).
