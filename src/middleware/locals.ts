@@ -2,8 +2,9 @@ import type { RequestHandler } from 'express';
 import { env } from '../config/env.js';
 import { BUSINESS, BOOKING_STATUS_LABELS, ORDER_STATUS_LABELS, SPECIES_LABELS } from '../config/constants.js';
 import { formatNpr, rupeeString } from '../lib/money.js';
-import { ageFrom, formatDate, formatDateTime, formatDay, isoDay, nptTime } from '../lib/dates.js';
+import { ageFrom, formatDate, formatDateTime, formatDay, isoDay, nptDate, nptTime, weekdayOf } from '../lib/dates.js';
 import { jsonLd } from '../lib/seo.js';
+import { icon } from '../lib/icons.js';
 import { getBusinessHours, getSettings } from '../modules/settings/settings.service.js';
 import { cartCount } from '../modules/cart/cart.service.js';
 import { STAFF_ROLES } from './auth.js';
@@ -45,6 +46,7 @@ export const locals: RequestHandler = async (req, res, next) => {
     settings,
     hours,
     weekdays: WEEKDAYS,
+    todayWeekday: weekdayOf(nptDate()),
     user,
     isStaff: !!user && STAFF_ROLES.includes(user.role),
     isAdmin: user?.role === 'ADMIN',
@@ -71,6 +73,7 @@ export const locals: RequestHandler = async (req, res, next) => {
     isoDay,
     ageFrom,
     jsonLd,
+    icon,
     imgSrc,
     imgSrcset,
     speciesLabel: (s: string | null | undefined) => (s ? (SPECIES_LABELS[s] ?? s) : ''),

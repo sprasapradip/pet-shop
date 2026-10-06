@@ -3,7 +3,7 @@
   <ol class="flex flex-wrap items-center gap-1">
     <% seo.breadcrumbs.forEach(function (c, i) { %>
       <li class="flex items-center gap-1">
-        <% if (i < seo.breadcrumbs.length - 1) { %><a href="<%= c.url %>" class="hover:text-brand-700 hover:underline"><%= c.name %></a><span aria-hidden="true">›</span>
+        <% if (i < seo.breadcrumbs.length - 1) { %><a href="<%= c.url %>" class="hover:text-brand-700 hover:underline"><%= c.name %></a><span class="text-stone-300"><%- icon('chevron-right', 'size-3.5') %></span>
         <% } else { %><span aria-current="page" class="text-stone-700 line-clamp-1"><%= c.name %></span><% } %>
       </li>
     <% }) %>

@@ -10,7 +10,7 @@
     <%- include('../partials/field', { name: 'location', label: 'Where is the animal?', required: true, hint: 'Street, tole, nearby landmark' }) %>
     <input type="hidden" name="latitude" value="<%= oldValue('latitude') %>">
     <input type="hidden" name="longitude" value="<%= oldValue('longitude') %>">
-    <button type="button" class="btn-outline btn-sm mb-1" data-geolocate data-status="#geo-status">📍 Use my current location</button>
+    <button type="button" class="btn-outline btn-sm mb-1" data-geolocate data-status="#geo-status"><%- icon('locate-fixed', 'size-4') %> Use my current location</button>
     <p id="geo-status" class="hint mb-4" aria-live="polite"></p>
     <%- include('../partials/field', { name: 'message', label: 'What did you see?', type: 'textarea', rows: 4, required: true }) %>
     <div class="field">

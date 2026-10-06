@@ -77,7 +77,7 @@
     <div>
       <% if (!products.length) { %>
         <div class="card p-10 text-center">
-          <p class="text-4xl" aria-hidden="true">🔍</p>
+          <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 ring-1 ring-brand-100"><%- icon('search', 'size-8') %></span>
           <p class="font-semibold mt-3">No products found</p>
           <p class="text-stone-600 text-sm mt-1">Try another search or <a class="link" href="<%= whatsappLink('Hello, do you have ' + (filters.q || 'this product') + '?') %>" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>
         </div>

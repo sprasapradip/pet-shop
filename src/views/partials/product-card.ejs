@@ -2,32 +2,35 @@
   const v0 = p.variants[0];
   const inStock = p.variants.some(function (v) { return v.stock > 0; });
   const img = p.images[0];
+  const onSale = v0 && v0.comparePaisa && v0.comparePaisa > v0.pricePaisa;
 %>
-<article class="card group flex flex-col overflow-hidden hover:shadow-md transition">
-  <a href="/shop/product/<%= p.slug %>" class="block aspect-square bg-stone-100 overflow-hidden">
-    <img src="<%= imgSrc(img && img.path, 400) %>" <% if (img) { %>srcset="<%= imgSrcset(img.path) %>" sizes="(max-width: 640px) 50vw, 280px"<% } %> alt="<%= img ? img.alt : p.name %>" width="400" height="400" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+<article class="card card-hover group flex flex-col overflow-hidden">
+  <a href="/shop/product/<%= p.slug %>" class="relative block aspect-square bg-stone-100 overflow-hidden">
+    <img src="<%= imgSrc(img && img.path, 400) %>" <% if (img) { %>srcset="<%= imgSrcset(img.path) %>" sizes="(max-width: 640px) 50vw, 280px"<% } %> alt="<%= img ? img.alt : p.name %>" width="400" height="400" loading="lazy" class="w-full h-full object-cover transition duration-300 group-hover:scale-[1.04]">
+    <% if (onSale) { %><span class="badge absolute top-2.5 left-2.5 bg-accent-700 text-white shadow-soft">Save <%= Math.round((1 - v0.pricePaisa / v0.comparePaisa) * 100) %>%</span><% } %>
+    <% if (!inStock) { %><span class="badge absolute top-2.5 left-2.5 bg-white/95 text-stone-700 shadow-soft">Out of stock</span><% } %>
   </a>
-  <div class="p-3 sm:p-4 flex flex-col flex-1">
-    <% if (p.brand) { %><p class="text-xs uppercase tracking-wide text-stone-500"><%= p.brand.name %></p><% } %>
-    <h3 class="font-semibold text-stone-900 leading-snug mt-0.5 line-clamp-2"><a href="/shop/product/<%= p.slug %>" class="hover:text-brand-700"><%= p.name %></a></h3>
+  <div class="p-3.5 sm:p-4 flex flex-col flex-1">
+    <% if (p.brand) { %><p class="text-[11px] font-bold uppercase tracking-wider text-brand-700"><%= p.brand.name %></p><% } %>
+    <h3 class="font-semibold text-ink leading-snug mt-1 line-clamp-2 text-[15px]"><a href="/shop/product/<%= p.slug %>" class="hover:text-brand-700"><%= p.name %></a></h3>
     <div class="mt-auto pt-3 flex items-end justify-between gap-2">
       <div>
         <% if (v0) { %>
-          <p class="font-bold text-brand-800"><%= p.variants.length > 1 ? 'From ' : '' %><%= formatNpr(v0.pricePaisa) %></p>
-          <% if (v0.comparePaisa && v0.comparePaisa > v0.pricePaisa) { %><p class="text-xs text-stone-400 line-through"><%= formatNpr(v0.comparePaisa) %></p><% } %>
+          <p class="font-extrabold text-ink tabular-nums"><% if (p.variants.length > 1) { %><span class="text-xs font-medium text-ink-muted">From </span><% } %><%= formatNpr(v0.pricePaisa) %></p>
+          <% if (onSale) { %><p class="text-xs text-stone-400 line-through tabular-nums"><%= formatNpr(v0.comparePaisa) %></p><% } %>
         <% } %>
       </div>
       <% if (!inStock) { %>
-        <span class="badge bg-stone-200 text-stone-600">Out of stock</span>
+        <a href="/shop/product/<%= p.slug %>" class="btn-outline btn-sm" aria-label="Get notified about <%= p.name %>"><%- icon('info', 'size-4') %></a>
       <% } else if (p.variants.length === 1) { %>
         <form action="/cart/add" method="post" data-add-to-cart>
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <input type="hidden" name="variantId" value="<%= v0.id %>">
           <input type="hidden" name="redirect" value="back">
-          <button class="btn-primary h-9 px-3 text-sm" aria-label="Add <%= p.name %> to cart">Add</button>
+          <button class="btn-primary btn-sm size-10 p-0 rounded-xl" aria-label="Add <%= p.name %> to cart" title="Add to cart"><%- icon('shopping-cart', 'size-[18px]') %></button>
         </form>
       <% } else { %>
-        <a href="/shop/product/<%= p.slug %>" class="btn-outline h-9 px-3 text-sm">Options</a>
+        <a href="/shop/product/<%= p.slug %>" class="btn-outline btn-sm">Options</a>
       <% } %>
     </div>
   </div>

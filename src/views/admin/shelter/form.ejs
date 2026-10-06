@@ -1,5 +1,5 @@
 <% const a = animal; const v = function (k, fb) { return oldValue(k, a ? (a[k] === null || a[k] === undefined ? '' : a[k]) : (fb === undefined ? '' : fb)); }; %>
-<div class="flex justify-between mb-4"><a href="/admin/shelter" class="link text-sm">← Shelter</a><% if (a && ['ADOPTABLE','ADOPTION_PENDING','ADOPTED'].includes(a.status)) { %><a class="link text-sm" href="/shelter/adopt/<%= a.slug %>" target="_blank">View ↗</a><% } %></div>
+<div class="flex justify-between mb-4"><a href="/admin/shelter" class="back-link"><%- icon('chevron-left', 'size-4') %>Shelter</a><% if (a && ['ADOPTABLE','ADOPTION_PENDING','ADOPTED'].includes(a.status)) { %><a class="link text-sm" href="/shelter/adopt/<%= a.slug %>" target="_blank">View <%- icon('arrow-up-right', 'size-4 inline -mt-0.5') %></a><% } %></div>
 <div class="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
   <form action="<%= a ? '/admin/shelter/' + a.id : '/admin/shelter' %>" method="post" enctype="multipart/form-data" class="card p-5">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

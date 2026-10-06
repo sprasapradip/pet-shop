@@ -72,7 +72,7 @@
     <div>
       <% if (!listings.length) { %>
         <div class="card p-10 text-center">
-          <p class="text-4xl" aria-hidden="true">🐕</p>
+          <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 ring-1 ring-brand-100"><%- icon('dog', 'size-8') %></span>
           <p class="font-semibold mt-3">No pets match these filters right now</p>
           <p class="text-stone-600 text-sm mt-1">New litters arrive often. <a class="link" href="<%= whatsappLink('Hello, I am looking for a puppy. Please let me know when one is available.') %>" target="_blank" rel="noopener">Tell us what you are looking for on WhatsApp</a>.</p>
         </div>

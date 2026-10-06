@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-extrabold">Your cart</h1>
   <% if (!summary.items.length) { %>
     <div class="card p-10 text-center mt-6">
-      <p class="text-5xl" aria-hidden="true">🛒</p>
+      <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 ring-1 ring-brand-100"><%- icon('shopping-cart', 'size-8') %></span>
       <p class="font-semibold mt-3">Your cart is empty</p>
       <a href="/shop" class="btn-primary mt-5">Start shopping</a>
     </div>

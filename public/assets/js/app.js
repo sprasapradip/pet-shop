@@ -65,7 +65,7 @@
         .then(function (res) {
           if (res.ok) {
             setCartCount(res.body.data.count);
-            toast('Added to cart ✓  View cart →', true);
+            toast('Added to cart', true);
           } else {
             toast((res.body.error && res.body.error.message) || 'Could not add to cart', false);
           }
@@ -199,7 +199,7 @@
       navigator.geolocation.getCurrentPosition(function (pos) {
         document.querySelector('[name="latitude"]').value = pos.coords.latitude.toFixed(7);
         document.querySelector('[name="longitude"]').value = pos.coords.longitude.toFixed(7);
-        if (status) status.textContent = 'Location added ✓';
+        if (status) status.textContent = 'Location added.';
       }, function () {
         if (status) status.textContent = 'Could not get location. Please describe the place instead.';
       }, { enableHighAccuracy: true, timeout: 10000 });

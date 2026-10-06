@@ -1,7 +1,7 @@
 <% if (meta.pages > 1) { %>
 <nav class="flex items-center justify-center gap-2 mt-10" aria-label="Pagination">
-  <% if (meta.hasPrev) { %><a class="btn-outline" href="<%= pageLink(meta.page - 1) %>" rel="prev">← Previous</a><% } %>
-  <span class="text-sm text-stone-600 px-3">Page <%= meta.page %> of <%= meta.pages %></span>
-  <% if (meta.hasNext && meta.page < 50) { %><a class="btn-outline" href="<%= pageLink(meta.page + 1) %>" rel="next">Next →</a><% } %>
+  <% if (meta.hasPrev) { %><a class="btn-outline" href="<%= pageLink(meta.page - 1) %>" rel="prev"><%- icon('chevron-left', 'size-4') %> Previous</a><% } %>
+  <span class="text-sm text-ink-muted px-3 tabular-nums">Page <%= meta.page %> of <%= meta.pages %></span>
+  <% if (meta.hasNext && meta.page < 50) { %><a class="btn-outline" href="<%= pageLink(meta.page + 1) %>" rel="next">Next <%- icon('chevron-right', 'size-4') %></a><% } %>
 </nav>
 <% } %>

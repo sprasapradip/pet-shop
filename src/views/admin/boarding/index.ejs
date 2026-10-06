@@ -13,9 +13,9 @@
 </div>
 
 <div class="flex items-center justify-between mb-3">
-  <a href="?start=<%= prev %>" class="btn-outline btn-sm">← Earlier</a>
+  <a href="?start=<%= prev %>" class="btn-outline btn-sm"><%- icon('chevron-left', 'size-4') %> Earlier</a>
   <h2 class="font-bold">Occupancy from <%= formatDay(new Date(start + 'T00:00:00Z')) %> (nights)</h2>
-  <a href="?start=<%= next %>" class="btn-outline btn-sm">Later →</a>
+  <a href="?start=<%= next %>" class="btn-outline btn-sm">Later <%- icon('arrow-right', 'size-4 inline -mt-0.5') %></a>
 </div>
 <div class="table-wrap">
   <table class="text-xs w-full border-collapse">

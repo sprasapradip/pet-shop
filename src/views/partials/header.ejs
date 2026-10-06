@@ -1,55 +1,67 @@
+<%
+  const mainNav = [['/shop', 'Shop'], ['/pets', 'Puppies & Pets'], ['/services', 'Services'], ['/shelter', 'Shelter'], ['/blog', 'Blog'], ['/contact', 'Contact']];
+  const mobileNav = [['/shop', 'Shop', 'shopping-bag'], ['/pets', 'Puppies & Pets', 'paw-print'], ['/services', 'Services', 'stethoscope'], ['/book', 'Book a service', 'calendar-days'], ['/shelter', 'Animal shelter', 'hand-heart'], ['/sell-your-pet', 'Sell your pet', 'tag'], ['/blog', 'Blog', 'file-text'], ['/about', 'About us', 'info'], ['/faq', 'FAQ', 'clipboard-list'], ['/contact', 'Contact', 'phone']];
+%>
 <% if (settings.home.announcement) { %>
-<div class="bg-accent-500 text-stone-900 text-sm text-center px-4 py-2 font-medium"><%= settings.home.announcement %></div>
+<div class="bg-accent-700 text-white text-sm text-center px-4 py-2 font-medium"><%= settings.home.announcement %></div>
 <% } %>
-<div class="bg-brand-900 text-brand-100 text-xs sm:text-sm hidden md:block">
-  <div class="container-x flex items-center justify-between py-1.5">
-    <span>📍 <%= business.address %></span>
-    <span class="flex gap-4">
-      <a class="hover:text-white" href="<%= telLink() %>">📞 <%= business.landlineDisplay %></a>
-      <a class="hover:text-white" href="<%= whatsappLink() %>" rel="noopener" target="_blank">WhatsApp</a>
+<div class="bg-brand-950 text-brand-100/90 text-[13px] hidden md:block">
+  <div class="container-x flex items-center justify-between h-9">
+    <span class="inline-flex items-center gap-1.5"><%- icon('map-pin', 'size-3.5 text-brand-300') %> <%= business.address %></span>
+    <span class="flex items-center gap-5">
+      <% const today = hours.find(function (h) { return h.weekday === todayWeekday; }); if (today) { %>
+        <span class="inline-flex items-center gap-1.5"><%- icon('clock', 'size-3.5 text-brand-300') %> Today <%= today.isClosed ? 'closed' : today.opensAt + '–' + today.closesAt %></span>
+      <% } %>
+      <a class="inline-flex items-center gap-1.5 hover:text-white transition" href="<%= telLink() %>"><%- icon('phone', 'size-3.5 text-brand-300') %> <%= business.landlineDisplay %></a>
+      <a class="inline-flex items-center gap-1.5 hover:text-white transition" href="<%= whatsappLink() %>" rel="noopener" target="_blank"><%- icon('whatsapp', 'size-3.5 text-brand-300') %> WhatsApp</a>
     </span>
   </div>
 </div>
-<header class="bg-white/95 backdrop-blur border-b border-stone-200 sticky top-0 z-30" data-nav>
-  <div class="container-x flex items-center justify-between h-16 gap-4">
-    <a href="/" class="flex items-center gap-2 shrink-0" aria-label="<%= business.name %> home">
-      <img src="/assets/img/logo.svg" alt="" width="40" height="40">
-      <span class="font-extrabold text-brand-800 leading-tight text-lg">The Everest<br class="sm:hidden"> Kennel</span>
+<header class="bg-white/90 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-30" data-nav>
+  <div class="container-x flex items-center justify-between h-[68px] gap-4">
+    <a href="/" class="flex items-center gap-2.5 shrink-0" aria-label="<%= business.name %> home">
+      <img src="/assets/img/logo.svg" alt="" width="42" height="42" class="size-[42px]">
+      <span class="leading-none">
+        <span class="block font-extrabold text-ink text-[17px] tracking-tight">The Everest Kennel</span>
+        <span class="hidden sm:block text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700 mt-1">Pets · Care · Kennel</span>
+      </span>
     </a>
-    <nav class="hidden lg:flex items-center gap-1 text-[15px] font-medium" aria-label="Main">
-      <% [['/shop','Shop'],['/pets','Puppies & Pets'],['/services','Services'],['/shelter','Shelter'],['/blog','Blog'],['/contact','Contact']].forEach(function (item) { %>
+    <nav class="hidden lg:flex items-center gap-0.5 text-[15px]" aria-label="Main">
+      <% mainNav.forEach(function (item) { %>
         <a href="<%= item[0] %>" class="nav-link <%= isActive(item[0]) ? 'nav-link-active' : '' %>" <%= isActive(item[0]) ? 'aria-current=page' : '' %>><%= item[1] %></a>
       <% }) %>
     </nav>
-    <div class="flex items-center gap-1 sm:gap-2">
-      <form action="/shop" method="get" role="search" class="hidden md:block">
+    <div class="flex items-center gap-1 sm:gap-1.5">
+      <form action="/shop" method="get" role="search" class="hidden md:block relative">
         <label for="hdr-q" class="sr-only">Search products</label>
-        <input id="hdr-q" name="q" type="search" placeholder="Search dog food, toys…" class="input h-10 w-48 xl:w-64 text-sm" value="<%= typeof query.q === 'string' && currentPath.startsWith('/shop') ? query.q : '' %>">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"><%- icon('search', 'size-4') %></span>
+        <input id="hdr-q" name="q" type="search" placeholder="Search food, toys…" class="input h-10 pl-9 w-44 xl:w-60 text-sm rounded-full bg-stone-50" value="<%= typeof query.q === 'string' && currentPath.startsWith('/shop') ? query.q : '' %>">
       </form>
-      <a href="<%= user ? (isStaff ? '/admin' : '/account') : '/login' %>" class="icon-btn" aria-label="<%= user ? 'My account' : 'Log in' %>">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <a href="<%= user ? (isStaff ? '/admin' : '/account') : '/login' %>" class="icon-btn" aria-label="<%= user ? 'My account' : 'Log in' %>" title="<%= user ? 'My account' : 'Log in' %>">
+        <%- icon('user', 'size-[22px]') %>
       </a>
-      <a href="/cart" class="icon-btn relative" aria-label="Cart, <%= cartCount %> items">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>
-        <span data-cart-count class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-accent-500 text-stone-900 text-xs font-bold flex items-center justify-center <%= cartCount ? '' : 'hidden' %>"><%= cartCount %></span>
+      <a href="/cart" class="icon-btn relative" aria-label="Cart, <%= cartCount %> items" title="Cart">
+        <%- icon('shopping-cart', 'size-[22px]') %>
+        <span data-cart-count class="absolute top-0.5 right-0.5 min-w-[20px] h-5 px-1 rounded-full bg-accent-700 text-white text-[11px] font-bold flex items-center justify-center ring-2 ring-white <%= cartCount ? '' : 'hidden' %>"><%= cartCount %></span>
       </a>
-      <a href="/book" class="btn-primary hidden sm:inline-flex h-10">Book now</a>
+      <a href="/book" class="btn-accent hidden sm:inline-flex h-10 ml-1"><%- icon('calendar-days', 'size-4') %> Book now</a>
       <button type="button" class="icon-btn lg:hidden" data-nav-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <%- icon('menu', 'size-6') %>
       </button>
     </div>
   </div>
-  <nav id="mobile-nav" class="lg:hidden hidden border-t border-stone-200 bg-white" aria-label="Mobile">
-    <div class="container-x py-3 grid gap-1">
-      <form action="/shop" method="get" role="search" class="mb-2">
+  <nav id="mobile-nav" class="lg:hidden hidden border-t border-stone-200 bg-white max-h-[calc(100vh-68px)] overflow-y-auto" aria-label="Mobile">
+    <div class="container-x py-3 grid gap-0.5">
+      <form action="/shop" method="get" role="search" class="mb-2 relative">
         <label for="m-q" class="sr-only">Search products</label>
-        <input id="m-q" name="q" type="search" placeholder="Search products" class="input w-full">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"><%- icon('search', 'size-4') %></span>
+        <input id="m-q" name="q" type="search" placeholder="Search products" class="input pl-9">
       </form>
-      <% [['/shop','Shop'],['/pets','Puppies & Pets'],['/services','Services'],['/book','Book a service'],['/shelter','Animal shelter'],['/sell-your-pet','Sell your pet'],['/blog','Blog'],['/about','About us'],['/faq','FAQ'],['/contact','Contact']].forEach(function (item) { %>
-        <a href="<%= item[0] %>" class="mobile-link"><%= item[1] %></a>
+      <% mobileNav.forEach(function (item) { %>
+        <a href="<%= item[0] %>" class="mobile-link <%= isActive(item[0]) ? 'bg-brand-50 text-brand-800' : '' %>"><span class="icon-tile-sm"><%- icon(item[2], 'size-[18px]') %></span><%= item[1] %></a>
       <% }) %>
       <% if (user) { %>
-        <form action="/logout" method="post" class="mt-2"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="mobile-link w-full text-left">Log out</button></form>
+        <form action="/logout" method="post" class="mt-2 border-t border-stone-100 pt-2"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="mobile-link w-full text-left"><span class="icon-tile-sm"><%- icon('log-out', 'size-[18px]') %></span>Log out</button></form>
       <% } %>
     </div>
   </nav>

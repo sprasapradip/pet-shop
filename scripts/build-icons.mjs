@@ -13,13 +13,13 @@ await sharp(logo, { density: 384 }).resize(48, 48).png().toFile('public/favicon.
 
 const banner = (title, subtitle) =>
   Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#163830"/><stop offset="1" stop-color="#2f846c"/></linearGradient></defs>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#042f2e"/><stop offset="1" stop-color="#0d9488"/></linearGradient></defs>
   <rect width="1200" height="630" fill="url(#g)"/>
-  <path d="M0 630 300 300l120 150 110-130 300 310z" fill="#226a56" opacity=".6"/>
-  <path d="M500 630 820 260l120 140 90-100 170 330z" fill="#1a4439" opacity=".7"/>
+  <path d="M0 630 300 300l120 150 110-130 300 310z" fill="#115e59" opacity=".6"/>
+  <path d="M500 630 820 260l120 140 90-100 170 330z" fill="#134e4a" opacity=".7"/>
   <text x="80" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="76" font-weight="800" fill="#fff">${title}</text>
-  <text x="80" y="330" font-family="Segoe UI, Arial, sans-serif" font-size="38" fill="#d5ece4">${subtitle}</text>
-  <text x="80" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#f6b445">Soaltee Mode, Kathmandu · 01-5234516</text>
+  <text x="80" y="330" font-family="Segoe UI, Arial, sans-serif" font-size="38" fill="#ccfbf1">${subtitle}</text>
+  <text x="80" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#fb923c">Soaltee Mode, Kathmandu · 01-5234516</text>
 </svg>`);
 
 await sharp(banner('The Everest Kennel', 'Pet shop · Vet house calls · Boarding · Shelter')).jpeg({ quality: 82 }).toFile(`${out}/og-default.jpg`);

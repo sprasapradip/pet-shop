@@ -1,5 +1,5 @@
 <% const sv = service; const inc = Array.isArray(sv.included) ? sv.included : []; %>
-<div class="flex justify-between mb-4"><a href="/admin/settings#services" class="link text-sm">← Settings</a><a href="/services/<%= sv.slug %>" class="link text-sm" target="_blank">View page ↗</a></div>
+<div class="flex justify-between mb-4"><a href="/admin/settings#services" class="back-link"><%- icon('chevron-left', 'size-4') %>Settings</a><a href="/services/<%= sv.slug %>" class="link text-sm" target="_blank">View page <%- icon('arrow-up-right', 'size-4 inline -mt-0.5') %></a></div>
 <div class="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
   <form action="/admin/services/<%= sv.id %>" method="post" class="card p-5">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

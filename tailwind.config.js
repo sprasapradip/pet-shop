@@ -1,29 +1,48 @@
 /** @type {import('tailwindcss').Config} */
+// Design system (UI/UX Pro Max): "Soft UI Evolution" style, caring teal + warm orange CTA,
+// Figtree type. Contrast checked: brand-700 on white 5.4:1, accent-700 on white 5.2:1.
 export default {
-  content: ['./src/views/**/*.ejs', './public/assets/js/**/*.js'],
+  content: ['./src/views/**/*.ejs', './src/lib/icons.ts', './public/assets/js/**/*.js'],
   theme: {
     extend: {
       colors: {
         brand: {
-          50: '#eef7f4',
-          100: '#d5ece4',
-          200: '#acd9ca',
-          300: '#7bbfa9',
-          400: '#4da087',
-          500: '#2f846c',
-          600: '#226a56',
-          700: '#1d5546',
-          800: '#1a4439',
-          900: '#163830',
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
+          950: '#042f2e',
         },
         accent: {
-          400: '#f6b445',
-          500: '#ee9a1a',
-          600: '#d27b0f',
+          50: '#fff7ed',
+          100: '#ffedd5',
+          400: '#fb923c',
+          500: '#f97316',
+          600: '#ea580c',
+          700: '#c2410c',
+          800: '#9a3412',
+        },
+        ink: {
+          DEFAULT: '#0f2f2c',
+          muted: '#4b5f5c',
         },
       },
       fontFamily: {
-        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['Figtree', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
+      },
+      boxShadow: {
+        soft: '0 1px 2px rgb(15 47 44 / 0.04), 0 2px 8px rgb(15 47 44 / 0.06)',
+        lift: '0 2px 4px rgb(15 47 44 / 0.05), 0 12px 28px -6px rgb(15 47 44 / 0.14)',
+        cta: '0 6px 16px -4px rgb(194 65 12 / 0.45)',
+      },
+      borderRadius: {
+        '4xl': '2rem',
       },
     },
   },

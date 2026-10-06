@@ -5,8 +5,8 @@
   const rupee = function (paisa) { return paisa === null || paisa === undefined || paisa === '' ? '' : paisa / 100; };
 %>
 <div class="flex justify-between items-center mb-4">
-  <a href="/admin/products" class="link text-sm">← All products</a>
-  <% if (p) { %><a href="/shop/product/<%= p.slug %>" class="link text-sm" target="_blank">View on site ↗</a><% } %>
+  <a href="/admin/products" class="back-link"><%- icon('chevron-left', 'size-4') %>All products</a>
+  <% if (p) { %><a href="/shop/product/<%= p.slug %>" class="link text-sm" target="_blank">View on site <%- icon('arrow-up-right', 'size-4 inline -mt-0.5') %></a><% } %>
 </div>
 
 <form action="<%= p ? '/admin/products/' + p.id : '/admin/products' %>" method="post" class="space-y-6">

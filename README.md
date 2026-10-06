@@ -62,6 +62,16 @@ Roles: `STAFF` (operations), `VET` (assigned bookings and medical records only),
 - Cancels unpaid online orders and bookings after 30 minutes.
 - Regenerates the hourly sitemap.
 
+## Design system
+
+These were picked with the UI/UX Pro Max design database:
+
+- **Style:** "Soft UI Evolution": white surfaces, soft layered shadows (`shadow-soft`, `shadow-lift`), 12–16px radius, 200ms transitions, `prefers-reduced-motion` respected.
+- **Colors** (`tailwind.config.js`): teal `brand-*` (primary `brand-700` #0f766e, 5.4:1 on white) and orange `accent-*` for calls to action (`accent-700` #c2410c with white text, 5.2:1).
+- **Type:** Figtree, self-hosted as one variable WOFF2 file (`public/assets/fonts`, 20 KB).
+- **Icons:** [Lucide](https://lucide.dev) outline icons (ISC), rendered server side as inline SVG with `<%- icon('name', 'size-5') %>`. Icons are decorative by default; pass a third `label` argument for meaningful ones. To add an icon, download `https://cdn.jsdelivr.net/npm/lucide-static@1.52.0/icons/<name>.svg` into `src/icons/` and run `node scripts/build-icon-module.mjs`. WhatsApp uses its brand mark. No emoji are used as icons.
+- **Logo and social images:** `public/assets/img/logo.svg`. Regenerate the PNG icons and Open Graph images with `npm run icons`.
+
 ## Scripts
 
 | Command | |

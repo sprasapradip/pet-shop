@@ -1,15 +1,18 @@
-<section class="bg-brand-50 border-b border-brand-100">
-  <div class="container-x py-12">
-    <h1 class="text-3xl sm:text-4xl font-extrabold">Pet services in the Kathmandu Valley</h1>
+<% const svcIcon = { HOUSE_CALL: 'house', VACCINATION: 'syringe', TREATMENT: 'stethoscope', BOARDING: 'warehouse', TRAINING: 'graduation-cap', MATING: 'heart', PUPPY_TRADE: 'paw-print', SHELTER: 'hand-heart' }; %>
+<section class="bg-gradient-to-br from-brand-50 via-white to-accent-50/50 border-b border-brand-100">
+  <div class="container-x py-14">
+    <p class="eyebrow"><%- icon('stethoscope', 'size-4') %> Services</p>
+    <h1 class="mt-2 text-3xl sm:text-4xl font-extrabold">Pet services in the Kathmandu Valley</h1>
     <p class="text-stone-700 mt-3 max-w-2xl">Vet house calls, vaccination, treatment, boarding, training and stud service, all from one trusted team. Book online in a minute.</p>
-    <a href="/book" class="btn-primary mt-6">Book a service</a>
+    <a href="/book" class="btn-accent mt-6"><%- icon('calendar-days', 'size-5') %> Book a service</a>
   </div>
 </section>
 <section class="section">
   <div class="container-x grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
     <% services.forEach(function (s) { %>
-      <article class="card p-6 flex flex-col">
-        <h2 class="text-xl font-bold"><a href="/services/<%= s.slug %>" class="hover:text-brand-700"><%= s.name %></a></h2>
+      <article class="card card-hover p-6 flex flex-col">
+        <span class="icon-tile"><%- icon(svcIcon[s.type], 'size-6') %></span>
+        <h2 class="text-xl font-bold mt-4"><a href="/services/<%= s.slug %>" class="hover:text-brand-700"><%= s.name %></a></h2>
         <p class="text-stone-600 mt-2 flex-1"><%= s.shortDesc %></p>
         <p class="mt-4 font-semibold text-brand-800"><%= s.basePricePaisa ? 'From ' + formatNpr(s.basePricePaisa) : 'Price on request' %><% if (s.type === 'BOARDING') { %> / night<% } %></p>
         <div class="mt-4 flex gap-2">
@@ -19,8 +22,9 @@
       </article>
     <% }) %>
     <% serviceCards.filter(function (c) { return c.code === 'PUPPY_TRADE' || c.code === 'SHELTER'; }).forEach(function (c) { %>
-      <article class="card p-6 flex flex-col bg-amber-50/50">
-        <h2 class="text-xl font-bold"><a href="<%= c.href %>" class="hover:text-brand-700"><%= c.title %></a></h2>
+      <article class="card card-hover p-6 flex flex-col bg-accent-50/60">
+        <span class="icon-tile bg-white text-accent-700 ring-accent-100"><%- icon(svcIcon[c.code], 'size-6') %></span>
+        <h2 class="text-xl font-bold mt-4"><a href="<%= c.href %>" class="hover:text-brand-700"><%= c.title %></a></h2>
         <p class="text-stone-600 mt-2 flex-1"><%= c.text %></p>
         <a href="<%= c.href %>" class="btn-outline btn-sm mt-4">Learn more</a>
       </article>

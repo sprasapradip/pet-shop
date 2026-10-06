@@ -101,7 +101,7 @@
         <%- include('../partials/field', { name: 'addressText', label: 'Address and directions', type: 'textarea', rows: 2, required: true, hint: 'Tole, house number and a nearby landmark' }) %>
         <input type="hidden" name="latitude" value="<%= val('latitude') %>">
         <input type="hidden" name="longitude" value="<%= val('longitude') %>">
-        <button type="button" class="btn-outline btn-sm" data-geolocate data-status="#geo-status">📍 Use my current location</button>
+        <button type="button" class="btn-outline btn-sm" data-geolocate data-status="#geo-status"><%- icon('locate-fixed', 'size-4') %> Use my current location</button>
         <p id="geo-status" class="hint" aria-live="polite"></p>
       </div>
       <div class="mt-5 flex justify-between"><button type="button" class="btn-ghost" data-back>Back</button><button type="button" class="btn-primary" data-next>Continue</button></div>

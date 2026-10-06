@@ -32,7 +32,7 @@
           <td class="text-xs"><%= p.variants.map(function (v) { return v.label; }).join(', ') %></td>
           <td class="text-right whitespace-nowrap"><%= p.variants[0] ? formatNpr(p.variants[0].pricePaisa) : '—' %></td>
           <td class="text-right <%= low ? 'text-amber-700 font-semibold' : '' %>"><%= stock %></td>
-          <td><%= p.isActive ? (p.isFeatured ? '★ Featured' : 'Active') : 'Hidden' %></td>
+          <td><% if (!p.isActive) { %><span class="status status-HIDDEN">Hidden</span><% } else if (p.isFeatured) { %><span class="badge bg-accent-100 text-accent-800"><%- icon('star', 'size-3 fill-current') %> Featured</span><% } else { %><span class="status status-AVAILABLE">Active</span><% } %></td>
         </tr>
       <% }) %>
     </tbody>

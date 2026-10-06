@@ -1,5 +1,5 @@
 <% const p = post; const v = function (k) { return oldValue(k, p ? (p[k] === null ? '' : p[k]) : ''); }; %>
-<a href="/admin/posts" class="link text-sm">← Posts</a>
+<a href="/admin/posts" class="back-link"><%- icon('chevron-left', 'size-4') %>Posts</a>
 <form action="<%= p ? '/admin/posts/' + p.id : '/admin/posts' %>" method="post" enctype="multipart/form-data" class="card p-5 mt-4">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="grid md:grid-cols-[2fr_1fr] gap-x-4">

@@ -1,8 +1,8 @@
-<% const flashTypes = { success: 'alert-success', error: 'alert-error', info: 'alert-info' }; %>
+<% const flashTypes = { success: ['alert-success', 'circle-check'], error: ['alert-error', 'triangle-alert'], info: ['alert-info', 'info'] }; %>
 <% if (flash && (flash.success || flash.error || flash.info)) { %>
 <div class="container-x pt-4 space-y-2" role="status" aria-live="polite">
   <% Object.keys(flashTypes).forEach(function (type) { (flash[type] || []).forEach(function (msg) { %>
-    <div class="alert <%= flashTypes[type] %>" <%= type === 'error' ? 'role=alert' : '' %>><%= msg %></div>
+    <div class="alert <%= flashTypes[type][0] %>" <%= type === 'error' ? 'role=alert' : '' %>><%- icon(flashTypes[type][1], 'size-5 mt-px') %><span><%= msg %></span></div>
   <% }) }) %>
 </div>
 <% } %>

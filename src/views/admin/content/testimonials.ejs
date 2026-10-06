@@ -5,7 +5,7 @@
       <thead><tr><th>Name</th><th>Testimonial</th><th>Rating</th><th>Shown</th><th></th></tr></thead>
       <tbody>
         <% testimonials.forEach(function (t) { %>
-          <tr><td class="whitespace-nowrap"><a class="link" href="?edit=<%= t.id %>"><%= t.name %></a></td><td class="text-xs"><%= t.content.slice(0, 120) %></td><td><%= '★'.repeat(t.rating) %></td><td><%= t.isActive ? 'Yes' : 'No' %></td>
+          <tr><td class="whitespace-nowrap"><a class="link" href="?edit=<%= t.id %>"><%= t.name %></a></td><td class="text-xs"><%= t.content.slice(0, 120) %></td><td class="whitespace-nowrap" aria-label="<%= t.rating %> stars"><% for (let s = 0; s < t.rating; s++) { %><%- icon('star', 'size-3.5 inline text-accent-500 fill-accent-500') %><% } %></td><td><%= t.isActive ? 'Yes' : 'No' %></td>
             <td><form action="/admin/testimonials/<%= t.id %>/delete" method="post" data-confirm="Delete?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-xs text-red-700 hover:underline">Delete</button></form></td></tr>
         <% }) %>
       </tbody>

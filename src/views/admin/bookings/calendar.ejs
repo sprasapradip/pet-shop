@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between mb-4">
-  <a href="?start=<%= prev %>" class="btn-outline btn-sm">← Previous week</a>
+  <a href="?start=<%= prev %>" class="btn-outline btn-sm"><%- icon('chevron-left', 'size-4') %> Previous week</a>
   <form method="get" class="flex gap-2"><label class="sr-only" for="cs">Week starting</label><input id="cs" type="date" name="start" value="<%= start %>" class="input h-9"><button class="btn-outline btn-sm">Go</button></form>
-  <a href="?start=<%= next %>" class="btn-outline btn-sm">Next week →</a>
+  <a href="?start=<%= next %>" class="btn-outline btn-sm">Next week <%- icon('arrow-right', 'size-4 inline -mt-0.5') %></a>
 </div>
 <div class="grid gap-3 md:grid-cols-7">
   <% days.forEach(function (d) { const list = byDay.get(d) || []; const dt = new Date(d + 'T00:00:00Z'); %>

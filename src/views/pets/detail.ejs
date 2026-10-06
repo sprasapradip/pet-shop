@@ -38,16 +38,16 @@
 
       <h2 class="font-bold mt-6">Health and papers</h2>
       <ul class="mt-2 grid sm:grid-cols-2 gap-2 text-sm">
-        <li class="flex gap-2"><span aria-hidden="true"><%= listing.vaccinated ? '✅' : '⬜' %></span> Vaccinated<%= listing.vaccinated ? '' : ' (not yet)' %></li>
-        <li class="flex gap-2"><span aria-hidden="true"><%= listing.dewormed ? '✅' : '⬜' %></span> Dewormed<%= listing.dewormed ? '' : ' (not yet)' %></li>
-        <li class="flex gap-2"><span aria-hidden="true"><%= listing.microchipNo ? '✅' : '⬜' %></span> Microchip<%= listing.microchipNo ? ': ' + listing.microchipNo : ' (none)' %></li>
-        <li class="flex gap-2"><span aria-hidden="true"><%= listing.registrationNo ? '✅' : '⬜' %></span> KCI / registration<%= listing.registrationNo ? ': ' + listing.registrationNo : ' (none)' %></li>
-        <% if (listing.origin === 'IMPORTED') { %><li class="flex gap-2 sm:col-span-2"><span aria-hidden="true"><%= listing.healthCertificate ? '✅' : '⬜' %></span> Import permit and health certificate <%= listing.healthCertificate ? 'available to view' : 'pending' %></li><% } %>
+        <li class="flex gap-2"><%- listing.vaccinated ? icon('circle-check', 'size-5 text-brand-700') : icon('circle-x', 'size-5 text-stone-400') %> Vaccinated<%= listing.vaccinated ? '' : ' (not yet)' %></li>
+        <li class="flex gap-2"><%- listing.dewormed ? icon('circle-check', 'size-5 text-brand-700') : icon('circle-x', 'size-5 text-stone-400') %> Dewormed<%= listing.dewormed ? '' : ' (not yet)' %></li>
+        <li class="flex gap-2"><%- listing.microchipNo ? icon('circle-check', 'size-5 text-brand-700') : icon('circle-x', 'size-5 text-stone-400') %> Microchip<%= listing.microchipNo ? ': ' + listing.microchipNo : ' (none)' %></li>
+        <li class="flex gap-2"><%- listing.registrationNo ? icon('circle-check', 'size-5 text-brand-700') : icon('circle-x', 'size-5 text-stone-400') %> KCI / registration<%= listing.registrationNo ? ': ' + listing.registrationNo : ' (none)' %></li>
+        <% if (listing.origin === 'IMPORTED') { %><li class="flex gap-2 sm:col-span-2"><%- listing.healthCertificate ? icon('circle-check', 'size-5 text-brand-700') : icon('circle-x', 'size-5 text-stone-400') %> Import permit and health certificate <%= listing.healthCertificate ? 'available to view' : 'pending' %></li><% } %>
       </ul>
 
       <% if (listing.status === 'AVAILABLE') { %>
         <div class="mt-6 space-y-3">
-          <a href="<%= whatsappLink(waMsg) %>" class="btn-wa w-full" target="_blank" rel="noopener">💬 Ask on WhatsApp (<%= listing.code %>)</a>
+          <a href="<%= whatsappLink(waMsg) %>" class="btn-wa w-full" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-5') %> Ask on WhatsApp (<%= listing.code %>)</a>
           <% if (listing.depositPaisa > 0 && (settings.payments.esewaEnabled || settings.payments.khaltiEnabled)) { %>
             <div class="card p-4">
               <p class="font-semibold">Reserve with a <%= formatNpr(listing.depositPaisa) %> deposit</p>
@@ -64,7 +64,7 @@
             </div>
           <% } %>
           <details class="card p-4" <%= fieldError('name') || fieldError('phone') ? 'open' : '' %>>
-            <summary class="font-semibold cursor-pointer">📅 Schedule a visit</summary>
+            <summary class="font-semibold cursor-pointer flex items-center gap-2"><%- icon('calendar-days', 'size-5 text-brand-700') %> Schedule a visit</summary>
             <form action="/pets/<%= listing.slug %>/visit" method="post" class="mt-4">
               <%- include('../partials/form-guard') %>
               <div class="grid sm:grid-cols-2 gap-x-3">

@@ -3,7 +3,7 @@
   <div class="flex justify-end mb-4"><a href="/account/pets/new" class="btn-primary btn-sm">+ Add a pet</a></div>
   <% if (!pets.length) { %>
     <div class="card p-10 text-center">
-      <p class="text-4xl" aria-hidden="true">🐕</p>
+      <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 ring-1 ring-brand-100"><%- icon('dog', 'size-8') %></span>
       <p class="font-semibold mt-2">Add your first pet</p>
       <p class="text-sm text-stone-600 mt-1">We will keep its vaccination and medical history and remind you before each due date.</p>
     </div>

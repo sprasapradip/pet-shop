@@ -23,5 +23,5 @@
     <input id="<%= fid %>" name="<%= name %>" type="<%= t %>" value="<%= t === 'password' ? '' : v %>" class="input <%= err ? 'input-error' : '' %>" <%= req ? 'required' : '' %> <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %> <% if (err) { %>aria-invalid="true"<% } %> <%- extra %>>
   <% } %>
   <% if (typeof hint !== 'undefined' && hint) { %><p id="<%= fid %>-hint" class="hint"><%= hint %></p><% } %>
-  <% if (err) { %><p id="<%= fid %>-err" class="field-error"><%= err %></p><% } %>
+  <% if (err) { %><p id="<%= fid %>-err" class="field-error"><%- icon('circle-x', 'size-4') %><%= err %></p><% } %>
 </div>

@@ -1,15 +1,15 @@
 <section class="container-x py-8">
   <%- include('../partials/breadcrumbs') %>
   <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
-    <div class="card overflow-hidden aspect-[4/3] bg-amber-50">
+    <div class="card overflow-hidden aspect-[4/3] bg-accent-50">
       <img src="<%= imgSrc(animal.photoPath, 1200) %>" <% if (animal.photoPath) { %>srcset="<%= imgSrcset(animal.photoPath) %>" sizes="(max-width: 1024px) 100vw, 600px"<% } %> alt="<%= animal.name %>" width="1200" height="900" class="w-full h-full object-cover">
     </div>
     <div>
       <h1 class="text-3xl font-extrabold">Meet <%= animal.name %></h1>
       <p class="text-stone-600 mt-1"><%= [animal.breedText || speciesLabel(animal.species), animal.gender ? (animal.gender === 'MALE' ? 'Male' : 'Female') : '', animal.ageText].filter(Boolean).join(' · ') %></p>
       <ul class="flex flex-wrap gap-2 mt-4 text-sm">
-        <li class="chip"><%= animal.vaccinated ? '✓ Vaccinated' : 'Vaccination pending' %></li>
-        <li class="chip"><%= animal.sterilized ? '✓ Sterilized' : 'Not sterilized yet' %></li>
+        <li class="<%= animal.vaccinated ? 'chip-ok' : 'chip' %>"><%- icon(animal.vaccinated ? 'syringe' : 'clock', 'size-3.5') %> <%= animal.vaccinated ? 'Vaccinated' : 'Vaccination pending' %></li>
+        <li class="<%= animal.sterilized ? 'chip-ok' : 'chip' %>"><%- icon(animal.sterilized ? 'shield-check' : 'clock', 'size-3.5') %> <%= animal.sterilized ? 'Sterilized' : 'Not sterilized yet' %></li>
         <li class="chip">In care since <%= formatDay(animal.intakeDate) %></li>
       </ul>
       <% if (animal.temperament) { %><p class="mt-4"><strong>Temperament:</strong> <%= animal.temperament %></p><% } %>

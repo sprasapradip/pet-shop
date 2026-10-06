@@ -21,7 +21,7 @@
           <td><%= o.customerName %><span class="block text-xs text-stone-500"><%= o.customerPhone %></span></td>
           <td><%= o._count.items %></td>
           <td class="text-right"><%= formatNpr(o.totalPaisa) %></td>
-          <td><%= o.paymentMethod %><%= o.paymentMethod === 'COD' && o.codCollected ? ' ✓' : '' %></td>
+          <td><%= o.paymentMethod %><% if (o.paymentMethod === 'COD' && o.codCollected) { %> <%- icon('check', 'size-4 inline text-brand-700', 'Cash collected') %><% } %></td>
           <td><span class="status status-<%= o.status %>"><%= orderStatusLabel(o.status) %></span></td>
         </tr>
       <% }) %>

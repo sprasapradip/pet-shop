@@ -179,7 +179,7 @@
       post('/api/v1/otp/verify', { phone: phoneInput.value, code: codeInput.value, purpose: 'booking' }).then(function (res) {
         verifyBtn.disabled = false;
         if (res.ok) {
-          status.textContent = 'Phone verified ✓';
+          status.textContent = 'Phone verified.';
           form.setAttribute('data-verified', res.body.data.phone);
           codeInput.parentElement.hidden = true;
           sendBtn.hidden = true;
@@ -196,7 +196,7 @@
     var lines = [];
     if (svc) lines.push(['Service', svc.getAttribute('data-name')]);
     var date = ($('input[name="date"]') || {}).value;
-    if (serviceType() === 'BOARDING') lines.push(['Dates', date + ' → ' + (($('input[name="endDate"]') || {}).value || '')]);
+    if (serviceType() === 'BOARDING') lines.push(['Dates', date + ' to ' + (($('input[name="endDate"]') || {}).value || '')]);
     else { var slot = $('input[name="slot"]:checked'); lines.push(['When', date + (slot ? ' at ' + slot.value : '')]); }
     var pet = $('[name="petId"]:checked');
     lines.push(['Pet', pet && pet.value ? pet.getAttribute('data-name') : (($('[name="petSummary"]') || {}).value || '')]);

@@ -1,4 +1,4 @@
-<a href="/admin/bookings" class="link text-sm">← All bookings</a>
+<a href="/admin/bookings" class="back-link"><%- icon('chevron-left', 'size-4') %>All bookings</a>
 <form action="/admin/bookings" method="post" class="card p-6 mt-4 max-w-3xl">
   <p class="text-sm text-stone-600 mb-4">For phone and walk-in customers. No SMS verification or lead time; the booking is created as confirmed. Capacity rules still apply. If the phone matches a customer account, the booking is linked to it.</p>
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">

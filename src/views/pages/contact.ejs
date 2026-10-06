@@ -5,11 +5,11 @@
     <div class="mt-8 grid lg:grid-cols-[1fr_1.2fr] gap-8">
       <div class="space-y-4">
         <div class="card p-6 space-y-3">
-          <a href="<%= telLink() %>" class="flex items-center gap-3 font-semibold text-lg hover:text-brand-700">📞 <%= business.landlineDisplay %></a>
-          <% if (settings.business.mobile) { %><a href="<%= telLink(settings.business.mobile) %>" class="flex items-center gap-3 font-semibold hover:text-brand-700">📱 <%= settings.business.mobile %></a><% } %>
-          <a href="<%= whatsappLink() %>" class="btn-wa w-full" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
-          <% if (settings.business.email) { %><p>✉️ <a class="link" href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a></p><% } %>
-          <p>📍 <%= business.address %></p>
+          <a href="<%= telLink() %>" class="flex items-center gap-3 font-semibold text-lg hover:text-brand-700"><%- icon('phone', 'size-[18px]') %> <%= business.landlineDisplay %></a>
+          <% if (settings.business.mobile) { %><a href="<%= telLink(settings.business.mobile) %>" class="flex items-center gap-3 font-semibold hover:text-brand-700"><%- icon('smartphone', 'size-[18px]') %> <%= settings.business.mobile %></a><% } %>
+          <a href="<%= whatsappLink() %>" class="btn-wa w-full" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-[18px]') %> Chat on WhatsApp</a>
+          <% if (settings.business.email) { %><p class="flex items-center gap-3"><%- icon('mail', 'size-[18px] text-brand-700') %><a class="link" href="mailto:<%= settings.business.email %>"><%= settings.business.email %></a></p><% } %>
+          <p class="flex items-start gap-3 text-ink-muted"><%- icon('map-pin', 'size-[18px] mt-0.5 text-brand-700') %><%= business.address %></p>
         </div>
         <div class="card p-6">
           <h2 class="font-bold text-lg">Opening hours</h2>
@@ -19,7 +19,7 @@
         </div>
         <div class="card overflow-hidden h-72 relative bg-brand-50">
           <button type="button" class="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-2 text-brand-800 hover:bg-brand-100" data-map-src="<%= settings.business.mapEmbedUrl %>">
-            <span class="text-4xl" aria-hidden="true">🗺️</span><span class="font-semibold">Show map</span><span class="text-xs text-stone-500">Loads Google Maps</span>
+            <span class="inline-flex size-14 items-center justify-center rounded-2xl bg-white text-brand-700 shadow-soft"><%- icon('map', 'size-7') %></span><span class="font-semibold">Show map</span><span class="text-xs text-stone-500">Loads Google Maps</span>
           </button>
         </div>
       </div>

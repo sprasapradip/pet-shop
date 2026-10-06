@@ -5,7 +5,7 @@
       <h2 class="font-bold text-lg mb-4">Profile</h2>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <%- include('../partials/field', { name: 'name', label: 'Name', required: true, value: oldValue('name', profile.name) }) %>
-      <div class="field"><p class="label">Phone</p><p class="text-stone-700"><%= profile.phone %> <%= profile.phoneVerifiedAt ? '✓ verified' : '' %></p><p class="hint">To change your phone number, please contact us.</p></div>
+      <div class="field"><p class="label">Phone</p><p class="text-stone-700"><%= profile.phone %> <% if (profile.phoneVerifiedAt) { %><span class="chip-ok ml-1"><%- icon('badge-check', 'size-3.5') %> Verified</span><% } %></p><p class="hint">To change your phone number, please contact us.</p></div>
       <%- include('../partials/field', { name: 'email', label: 'Email', type: 'email', value: oldValue('email', profile.email || '') }) %>
       <button class="btn-primary">Save profile</button>
     </form>

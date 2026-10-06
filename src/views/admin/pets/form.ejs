@@ -4,8 +4,8 @@
   const checked = function (k, fb) { const o = oldValue(k, null); if (o !== null && o !== '') return o === 'on'; return l ? !!l[k] : !!fb; };
 %>
 <div class="flex justify-between items-center mb-4">
-  <a href="/admin/pets" class="link text-sm">← All listings</a>
-  <% if (l) { %><span class="text-sm">Code <strong class="font-mono"><%= l.code %></strong> · <a href="/pets/<%= l.slug %>" class="link" target="_blank">View ↗</a></span><% } %>
+  <a href="/admin/pets" class="back-link"><%- icon('chevron-left', 'size-4') %>All listings</a>
+  <% if (l) { %><span class="text-sm">Code <strong class="font-mono"><%= l.code %></strong> · <a href="/pets/<%= l.slug %>" class="link" target="_blank">View <%- icon('arrow-up-right', 'size-4 inline -mt-0.5') %></a></span><% } %>
 </div>
 <form action="<%= l ? '/admin/pets/' + l.id : '/admin/pets' %>" method="post" class="space-y-6">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">

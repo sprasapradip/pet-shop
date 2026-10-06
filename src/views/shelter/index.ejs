@@ -1,12 +1,12 @@
-<section class="bg-gradient-to-br from-amber-100 via-amber-50 to-white border-b border-amber-200">
+<section class="bg-gradient-to-br from-accent-50 via-white to-brand-50 border-b border-accent-100">
   <div class="container-x py-12 sm:py-16 grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center">
     <div>
-      <p class="eyebrow text-amber-800">The Everest Kennel</p>
+      <p class="eyebrow text-accent-700">The Everest Kennel</p>
       <h1 class="text-3xl sm:text-4xl font-extrabold mt-1">Animal Care Shelter</h1>
       <p class="text-lg text-stone-700 mt-3">We rescue injured, sick and abandoned animals around Kathmandu, treat them, and find them loving homes.</p>
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="/shelter/adopt" class="btn-primary">🐾 Adopt</a>
-        <a href="/shelter/report-animal" class="btn-accent">🚑 Report an animal</a>
+        <a href="/shelter/adopt" class="btn-primary"><%- icon('paw-print', 'size-[18px]') %> Adopt</a>
+        <a href="/shelter/report-animal" class="btn-accent"><%- icon('ambulance', 'size-[18px]') %> Report an animal</a>
         <a href="<%= telLink() %>" class="btn-outline">Emergency: <%= business.landlineDisplay %></a>
       </div>
     </div>
@@ -19,7 +19,7 @@
 </section>
 <section class="section">
   <div class="container-x">
-    <div class="flex items-end justify-between"><h2 class="section-title">Looking for a home</h2><a href="/shelter/adopt" class="link text-sm">See all →</a></div>
+    <div class="flex items-end justify-between"><h2 class="section-title">Looking for a home</h2><a href="/shelter/adopt" class="link text-sm">See all <%- icon('arrow-right', 'size-4 inline -mt-0.5') %></a></div>
     <% if (!animals.length) { %>
       <p class="mt-6 text-stone-600">All our animals have homes right now. Check back soon!</p>
     <% } else { %>

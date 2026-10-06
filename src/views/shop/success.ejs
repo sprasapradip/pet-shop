@@ -1,6 +1,6 @@
 <section class="container-x py-12 max-w-2xl">
   <div class="card p-8 text-center">
-    <p class="text-5xl" aria-hidden="true">🎉</p>
+    <span class="inline-flex size-16 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 ring-1 ring-brand-100"><%- icon('party-popper', 'size-8') %></span>
     <h1 class="text-2xl sm:text-3xl font-extrabold mt-3">Thank you, <%= order.customerName.split(' ')[0] %>!</h1>
     <p class="text-stone-600 mt-2">Your order <strong><%= order.orderNo %></strong> has been received<%= order.status === 'PENDING_PAYMENT' ? ' and is waiting for payment confirmation' : '' %>. We will call <%= order.customerPhone %> to confirm delivery.</p>
     <p class="mt-3"><span class="status status-<%= order.status %>"><%= orderStatusLabel(order.status) %></span></p>

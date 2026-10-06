@@ -68,7 +68,7 @@
           <input id="qty" name="quantity" type="number" min="1" max="50" value="1" class="input w-20 text-center">
           <button class="btn-primary flex-1">Add to cart</button>
         </form>
-        <a href="<%= whatsappLink('Hello, I want to order ' + product.name + '. Is it available?') %>" class="btn-wa w-full mt-3" target="_blank" rel="noopener">💬 Order on WhatsApp</a>
+        <a href="<%= whatsappLink('Hello, I want to order ' + product.name + '. Is it available?') %>" class="btn-wa w-full mt-3" target="_blank" rel="noopener"><%- icon('whatsapp', 'size-[18px]') %> Order on WhatsApp</a>
       </div>
 
       <div class="mt-6 card p-5 bg-stone-50" data-when-out <%= selOut ? '' : 'hidden' %>>
@@ -86,9 +86,9 @@
       </div>
 
       <ul class="mt-6 grid sm:grid-cols-3 gap-2 text-sm">
-        <li class="chip justify-center py-2">🚚 Valley delivery</li>
-        <li class="chip justify-center py-2">💵 Cash on delivery</li>
-        <li class="chip justify-center py-2">📱 eSewa / Khalti</li>
+        <li class="chip justify-center py-2"><%- icon('truck', 'size-[18px]') %> Valley delivery</li>
+        <li class="chip justify-center py-2"><%- icon('banknote', 'size-[18px]') %> Cash on delivery</li>
+        <li class="chip justify-center py-2"><%- icon('smartphone', 'size-[18px]') %> eSewa / Khalti</li>
       </ul>
 
       <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">

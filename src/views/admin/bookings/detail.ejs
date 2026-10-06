@@ -1,5 +1,5 @@
 <% const b = booking; const isBoarding = b.service.type === 'BOARDING'; %>
-<a href="/admin/bookings" class="link text-sm">← All bookings</a>
+<a href="/admin/bookings" class="back-link"><%- icon('chevron-left', 'size-4') %>All bookings</a>
 <div class="grid lg:grid-cols-[1fr_360px] gap-6 items-start mt-4">
   <div class="space-y-6">
     <section class="card p-5">
@@ -38,7 +38,7 @@
         </div>
         <ul class="mt-3 space-y-2 text-sm">
           <% b.careLogs.forEach(function (l) { %>
-            <li class="flex gap-3 items-start"><strong class="w-28 shrink-0"><%= formatDay(l.logDate) %></strong><span><%= l.fed ? '🍽 fed ' : '' %><%= l.walked ? '🚶 walked ' : '' %><%= l.medsGiven ? '💊 meds ' : '' %><%= l.notes || '' %></span><% if (l.photoPath) { %><img src="<%= imgSrc(l.photoPath, 400) %>" alt="" width="48" height="48" class="w-12 h-12 rounded object-cover"><% } %></li>
+            <li class="flex gap-3 items-start"><strong class="w-28 shrink-0"><%= formatDay(l.logDate) %></strong><span class="flex flex-wrap items-center gap-2"><% if (l.fed) { %><span class="chip-ok"><%- icon('utensils', 'size-3.5') %> Fed</span><% } %><% if (l.walked) { %><span class="chip-ok"><%- icon('footprints', 'size-3.5') %> Walked</span><% } %><% if (l.medsGiven) { %><span class="chip-ok"><%- icon('pill', 'size-3.5') %> Meds</span><% } %><%= l.notes || '' %></span><% if (l.photoPath) { %><img src="<%= imgSrc(l.photoPath, 400) %>" alt="" width="48" height="48" class="w-12 h-12 rounded object-cover"><% } %></li>
           <% }) %>
         </ul>
         <% if (role !== 'VET') { %>

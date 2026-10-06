@@ -18,7 +18,7 @@
       <% if (included.length) { %>
         <h2 class="text-2xl font-bold mt-8">What is included</h2>
         <ul class="mt-4 grid sm:grid-cols-2 gap-3">
-          <% included.forEach(function (i) { %><li class="card p-4 flex gap-3"><span class="text-brand-700" aria-hidden="true">✓</span><span><%= i %></span></li><% }) %>
+          <% included.forEach(function (i) { %><li class="card p-4 flex gap-3"><span class="text-brand-700"><%- icon('circle-check', 'size-5') %></span><span><%= i %></span></li><% }) %>
         </ul>
       <% } %>
       <% if (faqs.length) { %>
