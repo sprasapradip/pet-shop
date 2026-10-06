@@ -6,6 +6,59 @@ Built from `everest-kennel-project.md` (the blueprint) with Node.js, Express 5, 
 
 > This is a Node.js app. It lives in `htdocs` but is **not** served by Apache/PHP. XAMPP is only used for its MySQL (MariaDB) server.
 
+## Screenshots
+
+### Home page
+Call, WhatsApp and booking buttons up front, the eight services, featured puppies, best sellers, reviews and the shelter.
+
+![Home page](docs/screenshots/01-home.jpg)
+
+### On a phone
+Built mobile first. A sticky bar keeps **Call · WhatsApp · Book** one tap away on every page.
+
+![Mobile views](docs/screenshots/02-mobile.jpg)
+
+### Shop: food, accessories and toys
+Filter by category, pet, life stage, brand and price, and search by name, brand or SKU. Pay by cash on delivery, eSewa or Khalti.
+
+| Shop | Product |
+|---|---|
+| ![Shop](docs/screenshots/03-shop.jpg) | ![Product page](docs/screenshots/04-product.jpg) |
+
+### Puppies and pets for sale
+Every listing shows age, vaccination, deworming, microchip and KCI papers. Buyers can ask on WhatsApp with the listing code, schedule a visit, or reserve with a deposit.
+
+| Pets for sale | Pet details |
+|---|---|
+| ![Pets](docs/screenshots/05-pets.jpg) | ![Pet details](docs/screenshots/06-pet-detail.jpg) |
+
+### Booking and checkout
+Book a vet house call, vaccination, treatment, boarding, training or stud service with live free slots. Guests verify their phone by SMS. Checkout works as a guest or with an account.
+
+| Book a service | Checkout |
+|---|---|
+| ![Booking](docs/screenshots/07-booking.jpg) | ![Checkout](docs/screenshots/08-checkout.jpg) |
+
+### Customer account and animal shelter
+Customers keep their pets' vaccination history and get SMS reminders before each dose. The shelter lists animals for adoption and takes reports of injured animals.
+
+| My account | Shelter |
+|---|---|
+| ![Account](docs/screenshots/09-account.jpg) | ![Shelter](docs/screenshots/10-shelter.jpg) |
+
+### Admin panel (for the shop team)
+One place for orders, stock, bookings, boarding, medical records, the shelter and reports.
+
+| Dashboard | Booking calendar |
+|---|---|
+| ![Admin dashboard](docs/screenshots/11-admin-dashboard.jpg) | ![Booking calendar](docs/screenshots/12-admin-calendar.jpg) |
+
+| Boarding occupancy | Order management |
+|---|---|
+| ![Boarding](docs/screenshots/13-admin-boarding.jpg) | ![Order](docs/screenshots/14-admin-order.jpg) |
+
+Products, pets and posts in the screenshots are demo data.
+
 ## Quick start (Windows + XAMPP)
 
 1. Start **MySQL** in the XAMPP control panel.
